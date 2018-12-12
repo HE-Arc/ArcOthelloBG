@@ -21,26 +21,79 @@ namespace ArcOthelloBG
     public partial class MainWindow : Window
     {
 
-        private void _initBoard(int colCount,int rowCount)
+        private void _initBoard(int colCount, int rowCount)
         {
             Grid grid = this.FindName("Board") as Grid;
-
             Button[,] btnMatrix = new Button[colCount, rowCount];
+            Label[] rowLabels = new Label[rowCount];
+            Label[] colLabels = new Label[colCount];
 
-            for(int col=0;col<colCount;col++)
+
+            //The first column (row labels) should be smaller
+            grid.ColumnDefinitions.Add(new ColumnDefinition()
             {
-                for(int row=0;row<rowCount;row++)
+                Width = new GridLength(20, GridUnitType.Pixel) //TO-DO: find dynamic solution
+            });
+
+            for (int col = 0; col < colCount; col++)
+            {
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+            }
+
+            for (int row = 0; row < rowCount; row++)
+            {
+
+                grid.RowDefinitions.Add(new RowDefinition()
                 {
-                    //THE BUTTON IS TEMPORARY, WE SHOULD REPLACE IT WITH A MORE APPROPRIATE WIDGET FOR A BOARD ELEMENT
-                    btnMatrix[col,row]= new Button()
+                    Height = new GridLength(1, GridUnitType.Star)
+                });
+
+                rowLabels[row] = new Label()
+                {
+                    Content = row + 1,
+                    HorizontalContentAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+
+                Grid.SetColumn(rowLabels[row], 0);
+                Grid.SetRow(rowLabels[row], row + 1);
+                grid.Children.Add(rowLabels[row]);
+            }
+
+            grid.RowDefinitions.Add(new RowDefinition()
+            {
+                Height = new GridLength(1, GridUnitType.Star)
+            }); //we need one more row
+
+            for (int col = 0; col < colCount; col++)
+            {
+
+                char letter = (char)(col + 'A');
+                colLabels[col] = new Label()
+                {
+                    Content = letter,
+                    HorizontalContentAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Bottom
+                };
+
+                Grid.SetColumn(colLabels[col], col + 1);
+                Grid.SetRow(colLabels[col], 0);
+                grid.Children.Add(colLabels[col]);
+
+                for (int row = 0; row < rowCount; row++)
+                {
+                    //TO-DO: THE BUTTON IS TEMPORARY, WE SHOULD REPLACE IT WITH A MORE APPROPRIATE/CUSTOM WIDGET FOR A BOARD ELEMENT
+
+                    btnMatrix[col, row] = new Button()
                     {
-                       Name="Col"+col+"Row"+row,
-                       Content=(char)(col+'A')+row.ToString()
+
+                        Name = "Col" + letter + "Row" + (row + 1),
+                        Content = letter + (row + 1).ToString()
                     };
-                    Grid.SetColumn(btnMatrix[col, row], col);
-                    Grid.SetRow(btnMatrix[col, row], row);
+                    Grid.SetColumn(btnMatrix[col, row], col + 1);
+                    Grid.SetRow(btnMatrix[col, row], row + 1);
                     grid.Children.Add(btnMatrix[col, row]);
-                    //wtf, only the last added button is visible and takes all the horizontal space
+
                 }
             }
         }
