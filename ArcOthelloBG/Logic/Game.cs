@@ -56,7 +56,7 @@ namespace ArcOthelloBG.Logic
             {
                 if (instance.board == null)
                 {
-                    return new InvalidOperationException;
+                    throw new InvalidOperationException("board not init");
                 }
 
                 return board;
