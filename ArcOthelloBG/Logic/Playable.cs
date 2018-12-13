@@ -4,12 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IPlayable;
+using System.Configuration;
 
 namespace ArcOthelloBG.Logic
 {
     class Playable : IPlayable.IPlayable
     {
-        int[,] board;
+        Game game;
+        private int rows;
+        private int columns;
+
+
+        public Playable()
+        {
+            game = Game.Instance;
+            this.readSettings();
+            game.init(this.rows, this.columns);
+        }
+
         int IPlayable.IPlayable.GetBlackScore()
         {
             throw new NotImplementedException();
@@ -17,7 +29,7 @@ namespace ArcOthelloBG.Logic
 
         int[,] IPlayable.IPlayable.GetBoard()
         {
-            throw new NotImplementedException();
+            return game.Board;
         }
 
         string IPlayable.IPlayable.GetName()
@@ -43,6 +55,23 @@ namespace ArcOthelloBG.Logic
         bool IPlayable.IPlayable.PlayMove(int column, int line, bool isWhite)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// read the app.config file
+        /// </summary>
+        private void readSettings()
+        {
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                this.rows = Convert.ToInt32(appSettings["rows"]);
+                this.columns = Convert.ToInt32(appSettings["columns"]);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error reading app settings");
+            }
         }
     }
 }

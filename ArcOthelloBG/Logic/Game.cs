@@ -26,9 +26,9 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         /// <param name="width">width of the grid</param>
         /// <param name="height">height of the grid</param>
-        public void init(int width, int height)
+        public void init(int columns, int rows)
         {
-            this.board = new int[width, height];
+            this.board = new int[columns, rows];
         }
 
 
@@ -46,15 +46,21 @@ namespace ArcOthelloBG.Logic
                     instance = new Game();
                 }
 
+                return instance;
+            }
+        }
+
+        public int[,] Board
+        {
+            get
+            {
                 if (instance.board == null)
                 {
                     return new InvalidOperationException;
                 }
 
-                return instance;
+                return board;
             }
         }
-
-        public int[,] Board { get; }
     }
 }
