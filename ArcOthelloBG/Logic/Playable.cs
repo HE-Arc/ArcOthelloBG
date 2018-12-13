@@ -8,7 +8,6 @@ using IPlayable;
 namespace ArcOthelloBG.Logic
 {
     class Playable : IPlayable.IPlayable
-
     {
         int IPlayable.IPlayable.GetBlackScore()
         {
