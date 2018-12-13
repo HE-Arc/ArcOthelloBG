@@ -90,12 +90,21 @@ namespace ArcOthelloBG
                         Name = "Col" + letter + "Row" + (row + 1),
                         Content = letter + (row + 1).ToString()
                     };
+
+                    btnMatrix[col,row].Click += new RoutedEventHandler(ClickHandler);
+
                     Grid.SetColumn(btnMatrix[col, row], col + 1);
                     Grid.SetRow(btnMatrix[col, row], row + 1);
                     grid.Children.Add(btnMatrix[col, row]);
 
                 }
             }
+        }
+
+        private void ClickHandler(object sender, EventArgs e)
+        {
+            Button senderButton = (Button)sender;
+            senderButton.Content = FindResource("bfm");
         }
 
         public MainWindow()
