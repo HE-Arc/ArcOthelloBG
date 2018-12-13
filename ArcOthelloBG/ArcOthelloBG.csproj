@@ -129,8 +129,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="bfm.png" />
-    <Resource Include="prixGarantie.jpg" />
+    <Resource Include="Visual\bfm.png" />
+    <Resource Include="Visual\prixGarantie.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
