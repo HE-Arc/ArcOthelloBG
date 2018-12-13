@@ -9,6 +9,7 @@ namespace ArcOthelloBG.Logic
 {
     class Playable : IPlayable.IPlayable
     {
+        int[,] board;
         int IPlayable.IPlayable.GetBlackScore()
         {
             throw new NotImplementedException();
