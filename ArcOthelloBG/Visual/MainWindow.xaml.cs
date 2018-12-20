@@ -21,6 +21,9 @@ namespace ArcOthelloBG
     public partial class MainWindow : Window
     {
 
+        //TO-DO: ADAPT TO GAME LOGIC
+        private bool isWhiteTurn;
+
         private void _initBoard(int colCount, int rowCount)
         {
             Grid grid = this.FindName("Board") as Grid;
@@ -104,12 +107,25 @@ namespace ArcOthelloBG
         private void ClickHandler(object sender, EventArgs e)
         {
             Button senderButton = (Button)sender;
-            senderButton.Content = FindResource("bfm");
+            Uri imageUri;
+
+            if (isWhiteTurn)
+                 imageUri = new Uri("pack://application:,,,/Visual/bfm.png");
+            else
+                 imageUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
+
+            senderButton.Background = new ImageBrush()
+            {
+                ImageSource = new BitmapImage(imageUri),
+                Stretch=Stretch.Fill
+            };
+            isWhiteTurn = !isWhiteTurn;
         }
 
         public MainWindow()
         {
             InitializeComponent();
+            isWhiteTurn = true;
             _initBoard(9, 7);
 
         }
