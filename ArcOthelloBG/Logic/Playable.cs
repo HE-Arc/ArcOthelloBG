@@ -13,18 +13,20 @@ namespace ArcOthelloBG.Logic
         Game game;
         private int rows;
         private int columns;
+        private int whiteId;
+        private int blackId;
 
 
         public Playable()
         {
             game = Game.Instance;
             this.readSettings();
-            game.init(this.rows, this.columns);
+            game.init(this.rows, this.columns, this.whiteId, this.blackId);
         }
 
         int IPlayable.IPlayable.GetBlackScore()
         {
-            throw new NotImplementedException();
+           return game.GetBlackScore();
         }
   
         int IPlayable.IPlayable.GetWhiteScore()
@@ -67,6 +69,8 @@ namespace ArcOthelloBG.Logic
                 var appSettings = ConfigurationManager.AppSettings;
                 this.rows = Convert.ToInt32(appSettings["rows"]);
                 this.columns = Convert.ToInt32(appSettings["columns"]);
+                this.whiteId = Convert.ToInt32(appSettings["whiteId"]);
+                this.blackId = Convert.ToInt32(appSettings["blackId"]);
             }
             catch (ConfigurationErrorsException)
             {

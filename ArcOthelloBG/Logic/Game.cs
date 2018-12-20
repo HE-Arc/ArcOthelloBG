@@ -65,15 +65,20 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         /// <param name="width">width of the grid</param>
         /// <param name="height">height of the grid</param>
-        public void init(int columns, int rows)
+        public void init(int columns, int rows, int whiteId, int blackId)
         {
             this.board = new int[columns, rows];
-            var appSettings = ConfigurationManager.AppSettings;
-            this.whiteId = Convert.ToInt32(appSettings["whiteId"]);
-            this.blackId = Convert.ToInt32(appSettings["blackId"]);
+            this.whiteId = whiteId;
+            this.blackId = blackId;
+
             this.initBoard();
         }
 
+
+        public void play(Tuple<int,int> position, int pawnColor)
+        {
+
+        }
 
         // GETTERS AND SETTERS
 
