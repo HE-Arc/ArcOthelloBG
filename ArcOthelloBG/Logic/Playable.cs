@@ -26,6 +26,11 @@ namespace ArcOthelloBG.Logic
         {
             throw new NotImplementedException();
         }
+  
+        int IPlayable.IPlayable.GetWhiteScore()
+        {
+            return game.GetWhiteScore();
+        }
 
         int[,] IPlayable.IPlayable.GetBoard()
         {
@@ -38,11 +43,6 @@ namespace ArcOthelloBG.Logic
         }
 
         Tuple<int, int> IPlayable.IPlayable.GetNextMove(int[,] game, int level, bool whiteTurn)
-        {
-            throw new NotImplementedException();
-        }
-
-        int IPlayable.IPlayable.GetWhiteScore()
         {
             throw new NotImplementedException();
         }

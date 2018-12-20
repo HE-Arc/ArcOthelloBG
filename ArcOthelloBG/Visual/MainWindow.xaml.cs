@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArcOthelloBG.Logic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -112,6 +113,7 @@ namespace ArcOthelloBG
             InitializeComponent();
             _initBoard(9, 7);
 
+            Playable playable = new Playable();
         }
     }
 }
