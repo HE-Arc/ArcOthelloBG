@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArcOthelloBG.Logic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -128,6 +129,7 @@ namespace ArcOthelloBG
             isWhiteTurn = true;
             _initBoard(9, 7);
 
+            Playable playable = new Playable();
         }
     }
 }
