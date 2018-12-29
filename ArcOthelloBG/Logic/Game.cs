@@ -107,7 +107,7 @@ namespace ArcOthelloBG.Logic
             return true;
         }
 
-        public List<Direction> getValidMoves(Tuple<int,int> position, bool isWhite)
+        private List<Direction> getValidMoves(Tuple<int,int> position, bool isWhite)
         {
             var validMoves = new List<Direction>();
             var possibleMoves = new List<Tuple<int, int>>();
