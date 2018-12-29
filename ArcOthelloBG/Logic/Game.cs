@@ -12,8 +12,12 @@ namespace ArcOthelloBG.Logic
         // MEMBERS
         private int[,] board;
         private static Game instance = null;
-        private int blackId;
+        private int lastPlayed;
         private int whiteId;
+        private int blackId;
+
+        private enum Direction {LEFT, TOP, RIGHT, BOTTOM };
+
 
         // METHODS
 
@@ -68,6 +72,7 @@ namespace ArcOthelloBG.Logic
         public void init(int columns, int rows, int whiteId, int blackId)
         {
             this.board = new int[columns, rows];
+            this.lastPlayed = blackId;
             this.whiteId = whiteId;
             this.blackId = blackId;
 
@@ -75,9 +80,74 @@ namespace ArcOthelloBG.Logic
         }
 
 
-        public void play(Tuple<int,int> position, int pawnColor)
+        public void play(Tuple<int,int> position, bool isWhite)
         {
+            if(this.isPlayable(position, isWhite))
+            {
 
+            }
+            else
+            {
+                throw new ArgumentException("This move isn't possible");
+            }
+        }
+
+        public bool isPlayable(Tuple<int,int> position, bool isWhite)
+        {
+            if(this.lastPlayed == this.whiteId && isWhite || this.lastPlayed == this.blackId && !isWhite)
+            {
+                return false;
+            }
+
+            if(this.getValidMoves(position, isWhite).Count == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public List<Direction> getValidMoves(Tuple<int,int> position, bool isWhite)
+        {
+            var validMoves = new List<Direction>();
+            var possibleMoves = new List<Tuple<int, int>>();
+
+            possibleMoves.Add(new Tuple<int, int>(position.Item1 - 1, position.Item2)); // left
+            possibleMoves.Add(new Tuple<int, int>(position.Item1, position.Item2 - 1)); // top
+            possibleMoves.Add(new Tuple<int, int>(position.Item1 + 1, position.Item2)); // right
+            possibleMoves.Add(new Tuple<int, int>(position.Item1, position.Item2 + 1)); // bottom
+
+            for(int i = 0; i < possibleMoves.Count; i++)
+            {
+                if (this.isNeighborValid(possibleMoves[i], isWhite))
+                {
+                    validMoves.Add((Direction)i);
+                }
+            }
+
+            return validMoves;
+        }
+
+        public bool isNeighborValid(Tuple<int,int> position, bool isWhite)
+        {
+            if (position.Item1 >= 0 && position.Item1 < this.board.GetLength(1)
+                && position.Item2 >= 0 && position.Item2 < this.board.GetLength(0)
+                && (isWhite && this.getColor(position) == this.blackId 
+                    || !isWhite && this.getColor(position) == this.whiteId
+                    )
+                )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public int getColor(Tuple<int,int> position)
+        {
+            return this.board[position.Item2, position.Item1];
         }
 
         // GETTERS AND SETTERS
@@ -113,8 +183,9 @@ namespace ArcOthelloBG.Logic
 
         private void initBoard()
         {
-            int w = this.board.GetLength(0);
-            int h = this.board.GetLength(1);
+            int w = this.board.GetLength(1);
+            int h = this.board.GetLength(0);
+
             for (int i = 0; i < this.board.GetLength(0); i++)
             {
                 for (int j = 0; j < board.GetLength(1); j++)
