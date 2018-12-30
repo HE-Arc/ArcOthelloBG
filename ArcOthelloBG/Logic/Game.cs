@@ -16,8 +16,6 @@ namespace ArcOthelloBG.Logic
         private int whiteId;
         private int blackId;
 
-        private enum Direction {LEFT, TOP, RIGHT, BOTTOM };
-
 
         // METHODS
 
@@ -79,12 +77,27 @@ namespace ArcOthelloBG.Logic
             this.initBoard();
         }
 
-
-        public void play(Tuple<int,int> position, bool isWhite)
+        /// <summary>
+        /// Play a move
+        /// </summary>
+        /// <param name="position">Position to put a pawn</param>
+        /// <param name="isWhite">color of the pawn</param>
+        public void play(Vector2 position, bool isWhite)
         {
             if(this.isPlayable(position, isWhite))
             {
+                int idToplay = isWhite ? this.whiteId : this.blackId;
 
+                var directions = this.getValidMoves(position, isWhite);
+
+                foreach (Vector2 direction in directions)
+                {
+                    do
+                    {
+                        this.board[position.X, position.Y] = idToplay;
+                        position = position.add(direction);
+                    } while (this.board[position.X, position.Y] == idToplay);
+                }
             }
             else
             {
@@ -92,7 +105,13 @@ namespace ArcOthelloBG.Logic
             }
         }
 
-        public bool isPlayable(Tuple<int,int> position, bool isWhite)
+        /// <summary>
+        /// Check if a move is possible
+        /// </summary>
+        /// <param name="position">Position to put a pawn</param>
+        /// <param name="isWhite">Color of the pawn</param>
+        /// <returns>move is playable or not</returns>
+        public bool isPlayable(Vector2 position, bool isWhite)
         {
             if(this.lastPlayed == this.whiteId && isWhite || this.lastPlayed == this.blackId && !isWhite)
             {
@@ -107,47 +126,66 @@ namespace ArcOthelloBG.Logic
             return true;
         }
 
-        private List<Direction> getValidMoves(Tuple<int,int> position, bool isWhite)
+        /// <summary>
+        /// Get the directions which make the move position
+        /// </summary>
+        /// <param name="position">position of the move</param>
+        /// <param name="isWhite">color of the pawns</param>
+        /// <returns>list of the directions possible</returns>
+        private List<Vector2> getValidMoves(Vector2 position, bool isWhite)
         {
-            var validMoves = new List<Direction>();
-            var possibleMoves = new List<Tuple<int, int>>();
+            var validMoves = new List<Vector2>();
+            var possibleMoves = new List<Vector2>();
 
-            possibleMoves.Add(new Tuple<int, int>(position.Item1 - 1, position.Item2)); // left
-            possibleMoves.Add(new Tuple<int, int>(position.Item1, position.Item2 - 1)); // top
-            possibleMoves.Add(new Tuple<int, int>(position.Item1 + 1, position.Item2)); // right
-            possibleMoves.Add(new Tuple<int, int>(position.Item1, position.Item2 + 1)); // bottom
+            for(int i = -1; i <= 1; i++ )
+            {
+                for(int j = -1; j <= 1; j++)
+                {
+                    if(i != 0 && j != 0)
+                    {
+                        possibleMoves.Add(new Vector2(i, j));
+                    }
+                }
+            }
 
             for(int i = 0; i < possibleMoves.Count; i++)
             {
                 if (this.isNeighborValid(possibleMoves[i], isWhite))
                 {
-                    validMoves.Add((Direction)i);
+                    validMoves.Add(possibleMoves[i]);
                 }
             }
 
             return validMoves;
         }
 
-        public bool isNeighborValid(Tuple<int,int> position, bool isWhite)
+        /// <summary>
+        /// Check which neighbors allows this move
+        /// </summary>
+        /// <param name="position">position of the neighbors</param>
+        /// <param name="isWhite">colors of the pawn played</param>
+        /// <returns>neighbor playable or not</returns>
+        public bool isNeighborValid(Vector2 position, bool isWhite)
         {
-            if (position.Item1 >= 0 && position.Item1 < this.board.GetLength(1)
-                && position.Item2 >= 0 && position.Item2 < this.board.GetLength(0)
-                && (isWhite && this.getColor(position) == this.blackId 
+            // TODO CORRECT, ONLY CHECK NEIGHBORS AND NOT THE END OF THE LINE
+            return position.X >= 0 && position.X < this.board.GetLength(1)
+                && position.Y >= 0 && position.Y < this.board.GetLength(0)
+                && 
+                (
+                    isWhite && this.getColor(position) == this.blackId
                     || !isWhite && this.getColor(position) == this.whiteId
-                    )
                 )
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            ;
         }
 
-        public int getColor(Tuple<int,int> position)
+        /// <summary>
+        /// get the color of a position (used to shortened the code)
+        /// </summary>
+        /// <param name="position">position of the pawns</param>
+        /// <returns>Color of the pawns</returns>
+        public int getColor(Vector2 position)
         {
-            return this.board[position.Item2, position.Item1];
+            return this.board[position.X, position.Y];
         }
 
         // GETTERS AND SETTERS
@@ -181,6 +219,9 @@ namespace ArcOthelloBG.Logic
             }
         }
 
+        /// <summary>
+        /// init the board with the right numbers
+        /// </summary>
         private void initBoard()
         {
             int w = this.board.GetLength(1);

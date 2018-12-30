@@ -85,6 +85,7 @@
     </Compile>
     <Compile Include="Logic\Game.cs" />
     <Compile Include="Logic\Playable.cs" />
+    <Compile Include="Logic\Vector2.cs" />
     <Compile Include="Visual\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
