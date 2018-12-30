@@ -19,9 +19,9 @@ namespace ArcOthelloBG.Logic
 
         public Playable()
         {
-            game = Game.Instance;
+            this.game = Game.Instance;
             this.readSettings();
-            game.init(this.rows, this.columns, this.whiteId, this.blackId);
+            this.game.init(this.rows, this.columns, this.whiteId, this.blackId);
         }
 
         int IPlayable.IPlayable.GetBlackScore()

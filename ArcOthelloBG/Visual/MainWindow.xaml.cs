@@ -24,6 +24,7 @@ namespace ArcOthelloBG
 
         //TO-DO: ADAPT TO GAME LOGIC
         private bool isWhiteTurn;
+        private Playable game;
 
         private void _initBoard(int colCount, int rowCount)
         {
@@ -127,6 +128,7 @@ namespace ArcOthelloBG
         {
             InitializeComponent();
             isWhiteTurn = true;
+            this.game = new Playable();
             _initBoard(9, 7);
 
             Playable playable = new Playable();

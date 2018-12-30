@@ -88,7 +88,7 @@ namespace ArcOthelloBG.Logic
             }
             else
             {
-                throw new ArgumentException("This move isn't possible");
+                 throw new ArgumentException("This move isn't possible");
             }
         }
 
