@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace ArcOthelloBG.Logic
 {
+    /// <summary>
+    /// Class that implements the rules of the game
+    /// </summary>
     class Game
     {
         // MEMBERS
@@ -15,6 +18,7 @@ namespace ArcOthelloBG.Logic
         private int lastPlayed;
         private int whiteId;
         private int blackId;
+        private List<Vector2> possibleMoves;
 
 
         // METHODS
@@ -25,42 +29,50 @@ namespace ArcOthelloBG.Logic
         private Game()
         { }
 
-        // TODO : Transform into property
-        public int GetWhiteScore()
+        /// <summary>
+        /// property for the white score, only getter, and it's a computed value
+        /// </summary>
+        public int WhiteScore
         {
-            int score = 0;
-            for(int i = 0; i < board.GetLength(0); i++)
-            {
-                for(int j = 0; j < board.GetLength(1); j++)
+            get {
+                int score = 0;
+                for (int i = 0; i < board.GetLength(0); i++)
                 {
-                    if(board[i,j] == this.whiteId)
+                    for (int j = 0; j < board.GetLength(1); j++)
                     {
-                        score++;
+                        if (board[i, j] == this.whiteId)
+                        {
+                            score++;
+                        }
                     }
                 }
-            }
 
-            return score;
+                return score;
+            }
         }
 
-        // TODO : Transform into property
-        public int GetBlackScore()
+        /// <summary>
+        /// property for the black score, only getter, and it's a computed value
+        /// </summary>
+        public int BlackScore
         {
-            int score = 0;
-            for (int i = 0; i < board.GetLength(0); i++)
+            get
             {
-                for (int j = 0; j < board.GetLength(1); j++)
+                int score = 0;
+                for (int i = 0; i < board.GetLength(0); i++)
                 {
-                    if (board[i, j] == this.blackId)
+                    for (int j = 0; j < board.GetLength(1); j++)
                     {
-                        score++;
+                        if (board[i, j] == this.blackId)
+                        {
+                            score++;
+                        }
                     }
                 }
+
+                return score;
             }
-
-            return score;
         }
-
 
         /// <summary>
         /// Init the grid
@@ -73,6 +85,7 @@ namespace ArcOthelloBG.Logic
             this.lastPlayed = blackId;
             this.whiteId = whiteId;
             this.blackId = blackId;
+            this.buildPossibleDirections();
 
             this.initBoard();
         }
@@ -82,21 +95,19 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         /// <param name="position">Position to put a pawn</param>
         /// <param name="isWhite">color of the pawn</param>
-        public void play(Vector2 position, bool isWhite)
+        public void play(Vector2 position, int idToPlay)
         {
-            if(this.isPlayable(position, isWhite))
+            if(this.isPlayable(position, idToPlay))
             {
-                int idToplay = isWhite ? this.whiteId : this.blackId;
-
-                var directions = this.getValidMoves(position, isWhite);
+                var directions = this.getValidMoves(position, idToPlay);
 
                 foreach (Vector2 direction in directions)
                 {
                     do
                     {
-                        this.board[position.X, position.Y] = idToplay;
+                        this.putPawn(position, idToPlay);
                         position = position.add(direction);
-                    } while (this.board[position.X, position.Y] == idToplay);
+                    } while (this.getColor(position) == idToPlay && this.isInBoundaries(position));
                 }
             }
             else
@@ -111,14 +122,14 @@ namespace ArcOthelloBG.Logic
         /// <param name="position">Position to put a pawn</param>
         /// <param name="isWhite">Color of the pawn</param>
         /// <returns>move is playable or not</returns>
-        public bool isPlayable(Vector2 position, bool isWhite)
+        public bool isPlayable(Vector2 position, int idToPlay)
         {
-            if(this.lastPlayed == this.whiteId && isWhite || this.lastPlayed == this.blackId && !isWhite)
+            if(this.lastPlayed != idToPlay)
             {
                 return false;
             }
 
-            if(this.getValidMoves(position, isWhite).Count == 0)
+            if(this.getValidMoves(position, idToPlay).Count == 0)
             {
                 return false;
             }
@@ -132,31 +143,55 @@ namespace ArcOthelloBG.Logic
         /// <param name="position">position of the move</param>
         /// <param name="isWhite">color of the pawns</param>
         /// <returns>list of the directions possible</returns>
-        private List<Vector2> getValidMoves(Vector2 position, bool isWhite)
+        private List<Vector2> getValidMoves(Vector2 position, int idToPlay)
         {
             var validMoves = new List<Vector2>();
-            var possibleMoves = new List<Vector2>();
-
-            for(int i = -1; i <= 1; i++ )
+            
+            foreach(Vector2 move in this.possibleMoves)
             {
-                for(int j = -1; j <= 1; j++)
+                if (this.isNeighborValid(move, idToPlay) && this.checkLine(position, move, idToPlay))
                 {
-                    if(i != 0 && j != 0)
-                    {
-                        possibleMoves.Add(new Vector2(i, j));
-                    }
-                }
-            }
-
-            for(int i = 0; i < possibleMoves.Count; i++)
-            {
-                if (this.isNeighborValid(possibleMoves[i], isWhite))
-                {
-                    validMoves.Add(possibleMoves[i]);
+                    Vector2 validMove = new Vector2(move);
+                    validMoves.Add(move);
                 }
             }
 
             return validMoves;
+        }
+
+        /// <summary>
+        /// check there is another pawn of the same color on the same line
+        /// </summary>
+        /// <param name="position">position to start from</param>
+        /// <param name="direction">direction to go</param>
+        /// <param name="idToPlay">color of the pawn</param>
+        /// <returns>if there is a pawn of the same color</returns>
+        private bool checkLine(Vector2 position, Vector2 direction, int idToPlay)
+        {
+            do
+            {
+                position = position.add(direction);
+
+                if (this.getColor(position) == idToPlay)
+                {
+                    return true;
+                }
+            } while (this.getColor(position) == idToPlay && this.isInBoundaries(position));
+
+            return false;
+        }
+
+
+
+        /// <summary>
+        /// check a position is in the board
+        /// </summary>
+        /// <param name="position">position to check</param>
+        /// <returns>is in the board or not</returns>
+        private bool isInBoundaries(Vector2 position)
+        {
+            return position.X < this.board.GetLength(1) && position.Y < this.board.GetLength(0) 
+                && position.X >= 0 && position.Y >= 0;
         }
 
         /// <summary>
@@ -165,16 +200,10 @@ namespace ArcOthelloBG.Logic
         /// <param name="position">position of the neighbors</param>
         /// <param name="isWhite">colors of the pawn played</param>
         /// <returns>neighbor playable or not</returns>
-        public bool isNeighborValid(Vector2 position, bool isWhite)
+        public bool isNeighborValid(Vector2 position, int idToPlay)
         {
-            // TODO CORRECT, ONLY CHECK NEIGHBORS AND NOT THE END OF THE LINE
-            return position.X >= 0 && position.X < this.board.GetLength(1)
-                && position.Y >= 0 && position.Y < this.board.GetLength(0)
-                && 
-                (
-                    isWhite && this.getColor(position) == this.blackId
-                    || !isWhite && this.getColor(position) == this.whiteId
-                )
+            return this.isInBoundaries(position) && this.getColor(position) == idToPlay;
+                
             ;
         }
 
@@ -185,7 +214,12 @@ namespace ArcOthelloBG.Logic
         /// <returns>Color of the pawns</returns>
         public int getColor(Vector2 position)
         {
-            return this.board[position.X, position.Y];
+            return this.board[position.Y, position.X];
+        }
+
+        public void putPawn(Vector2 position, int idColor)
+        {
+            this.board[position.Y, position.X] = idColor;
         }
 
         // GETTERS AND SETTERS
@@ -242,6 +276,26 @@ namespace ArcOthelloBG.Logic
                     else
                     {
                         this.board[i, j] = 0;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// build the list of Direction possible to play
+        /// </summary>
+        private void buildPossibleDirections()
+        {
+            this.possibleMoves = new List<Vector2>();
+
+            //list is always the same, see if we can make it elsewhere
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    if (i != 0 && j != 0)
+                    {
+                        this.possibleMoves.Add(new Vector2(i, j));
                     }
                 }
             }

@@ -26,12 +26,12 @@ namespace ArcOthelloBG.Logic
 
         int IPlayable.IPlayable.GetBlackScore()
         {
-           return game.GetBlackScore();
+           return game.BlackScore;
         }
   
         int IPlayable.IPlayable.GetWhiteScore()
         {
-            return game.GetWhiteScore();
+            return game.WhiteScore;
         }
 
         int[,] IPlayable.IPlayable.GetBoard()
@@ -51,12 +51,30 @@ namespace ArcOthelloBG.Logic
 
         bool IPlayable.IPlayable.IsPlayable(int column, int line, bool isWhite)
         {
-            throw new NotImplementedException();
+            return this.game.isPlayable(new Vector2(column, line), this.getIdFromBool(isWhite));
         }
 
         bool IPlayable.IPlayable.PlayMove(int column, int line, bool isWhite)
         {
-            throw new NotImplementedException();
+            try
+            {
+                this.game.play(new Vector2(column, line), this.getIdFromBool(isWhite));
+                return true;
+            }
+            catch(ArgumentException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// return the id corresponding to the bool
+        /// </summary>
+        /// <param name="isWhite">boolean to check</param>
+        /// <returns>the id of the corresponding color</returns>
+        private int getIdFromBool(bool isWhite)
+        {
+            return isWhite ? this.whiteId : this.blackId;
         }
 
         /// <summary>
