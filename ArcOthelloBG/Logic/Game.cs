@@ -75,6 +75,22 @@ namespace ArcOthelloBG.Logic
         }
 
         /// <summary>
+        /// getter for the board
+        /// </summary>
+        public int[,] Board
+        {
+            get
+            {
+                if (instance.board == null)
+                {
+                    throw new InvalidOperationException("board not init");
+                }
+
+                return board;
+            }
+        }
+
+        /// <summary>
         /// Init the grid
         /// </summary>
         /// <param name="width">width of the grid</param>
@@ -109,6 +125,8 @@ namespace ArcOthelloBG.Logic
                         position = position.add(direction);
                     } while (this.getColor(position) == idToPlay && this.isInBoundaries(position));
                 }
+
+                this.lastPlayed = idToPlay;
             }
             else
             {
@@ -181,6 +199,31 @@ namespace ArcOthelloBG.Logic
             return false;
         }
 
+        /// <summary>
+        /// Get all the move a player can do
+        /// </summary>
+        /// <param name="playerColor">id of the player</param>
+        /// <returns>list of position playable</returns>
+        private List<Vector2> getPositionAvailable(int playerColor)
+        {
+            var positionAvailables = new List<Vector2>();
+
+            for(int i = 0; i < this.board.GetLength(0); i++)
+            {
+                for(int j = 0; j < this.board.GetLength(1); j++)
+                {
+                    var position = new Vector2(j, i);
+
+                    if(this.isPlayable(position, playerColor))
+                    {
+                        positionAvailables.Add(position);
+                    }
+                }
+            }
+
+            return positionAvailables;
+        }
+
 
 
         /// <summary>
@@ -237,19 +280,6 @@ namespace ArcOthelloBG.Logic
                 }
 
                 return instance;
-            }
-        }
-
-        public int[,] Board
-        {
-            get
-            {
-                if (instance.board == null)
-                {
-                    throw new InvalidOperationException("board not init");
-                }
-
-                return board;
             }
         }
 
