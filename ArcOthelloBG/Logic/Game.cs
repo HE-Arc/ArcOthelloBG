@@ -204,9 +204,9 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         /// <param name="playerColor">id of the player</param>
         /// <returns>list of position playable</returns>
-        private List<Vector2> getPositionAvailable(int playerColor)
+        private List<Vector2> getPositionsAvailable(int playerColor)
         {
-            var positionAvailables = new List<Vector2>();
+            var positionsAvailable = new List<Vector2>();
 
             for(int i = 0; i < this.board.GetLength(0); i++)
             {
@@ -216,12 +216,12 @@ namespace ArcOthelloBG.Logic
 
                     if(this.isPlayable(position, playerColor))
                     {
-                        positionAvailables.Add(position);
+                        positionsAvailable.Add(position);
                     }
                 }
             }
 
-            return positionAvailables;
+            return positionsAvailable;
         }
 
 
@@ -246,8 +246,6 @@ namespace ArcOthelloBG.Logic
         public bool isNeighborValid(Vector2 position, int idToPlay)
         {
             return this.isInBoundaries(position) && this.getColor(position) == idToPlay;
-                
-            ;
         }
 
         /// <summary>

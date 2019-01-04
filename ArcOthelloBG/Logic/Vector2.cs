@@ -55,9 +55,14 @@ namespace ArcOthelloBG.Logic
         /// clone of a vector
         /// </summary>
         /// <returns>cloned vector</returns>
-        public object Clone()
+        public Vector2 Clone()
         {
             return new Vector2(this.x, this.y);
+        }
+
+        public Tuple<int,int> toTupleIntInt()
+        {
+            return new Tuple<int, int>(this.x, this.y);
         }
     }
 }
