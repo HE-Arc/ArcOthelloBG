@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Configuration;
 
 namespace ArcOthelloBG
 {
@@ -27,6 +28,8 @@ namespace ArcOthelloBG
         private int whiteId;
         private int blackId;
         private Button[,] btnMatrix;
+        private String blackUri;
+        private String whiteUri;
 
 
         private void _initBoard(int colCount, int rowCount)
@@ -95,11 +98,21 @@ namespace ArcOthelloBG
                     btnMatrix[col, row] = new Button()
                     {
 
-                        Name = "Col" + letter + "Row" + (row + 1),
-                        Content = letter + (row + 1).ToString()
+                        Name = Convert.ToString("_" + col + "_" + row), //because of XAML name restrictions, it must start with a "_"
+                        Content = letter + (row + 1).ToString(),
+                        Background = new SolidColorBrush(Colors.White)
                     };
 
                     btnMatrix[col, row].Click += new RoutedEventHandler(ClickHandler);
+
+
+                    btnMatrix[col, row].Style = Resources["MyButtonStyle"] as Style;
+
+                    //btnMatrix[col, row].MouseEnter += new MouseEventHandler((sender, e) =>
+                    //{
+                    //    Button senderButton = (Button)sender;
+                    //    senderButton.BorderBrush = new SolidColorBrush(Colors.Red);
+                    //});
 
                     Grid.SetColumn(btnMatrix[col, row], col + 1);
                     Grid.SetRow(btnMatrix[col, row], row + 1);
@@ -115,70 +128,103 @@ namespace ArcOthelloBG
             Button senderButton = (Button)sender;
             Uri imageUri;
 
-            if (this.currentPlayId == this.whiteId)
+            String[] colRowString = senderButton.Name.Split('_');
+            int col = Convert.ToInt16(colRowString[1]);
+            int row = Convert.ToInt16(colRowString[2]);
+            if (Game.Instance.isPlayable(new Vector2(col, row), this.currentPlayId))
             {
-                imageUri = new Uri("pack://application:,,,/Visual/bfm.png");
-                this.currentPlayId = this.blackId;
-            }
-            else
-            {
-                imageUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
-                this.currentPlayId = this.whiteId;
-            }
-                
 
-            senderButton.Background = new ImageBrush()
+                Game.Instance.play(new Vector2(col, row), this.currentPlayId);
+
+                StackPanel player1StackPanel = this.FindName("Player1") as StackPanel;
+                StackPanel player2StackPanel = this.FindName("Player2") as StackPanel;
+
+
+                if (this.currentPlayId == this.whiteId)
+                {
+                    imageUri = new Uri(this.whiteUri);
+                    this.currentPlayId = this.blackId;
+                    player1StackPanel.Background = new SolidColorBrush(Colors.Green);
+                    player2StackPanel.Background = new SolidColorBrush(Colors.White);
+                }
+                else
+                {
+                    imageUri = new Uri(this.blackUri);
+                    this.currentPlayId = this.whiteId;
+                    player1StackPanel.Background = new SolidColorBrush(Colors.White);
+                    player2StackPanel.Background = new SolidColorBrush(Colors.Green);
+                }
+
+                changeCellImage(senderButton, imageUri);
+            }
+
+        }
+
+        private void changeCellImage(Button cell, System.Uri imageUri)
+        {
+            cell.Background = new ImageBrush()
             {
                 ImageSource = new BitmapImage(imageUri),
                 Stretch = Stretch.Fill
             };
-            
         }
 
         public MainWindow()
         {
             InitializeComponent();
-            
-            int width = 7;
-            int height = 7;
-            this.blackId = 1;
-            this.whiteId = 2;
-            //if (new Random().Next(2)==0) //TO-DO: check who begins game
-            //    this.currentPlayId = this.whiteId;
-            //else
-            this.currentPlayId = this.blackId;
-            Game.Instance.init(width, height, this.whiteId, this.blackId);
-            _initBoard(width, height);
-            Uri imageUri=null;
-            for (int i = 0; i < width; i++)
+            try
             {
-                for (int j = 0; j < height; j++)
-                {
-                    if (Game.Instance.Board[i, j] == this.blackId)
-                    {
-                         imageUri = new Uri("pack://application:,,,/Visual/bfm.png");
-                       
-                    }
-                    else if (Game.Instance.Board[i, j] == this.whiteId)
-                    {
-                         imageUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
-                       
-                    }
+                var appSettings = ConfigurationManager.AppSettings;
+                int width = Convert.ToInt16(appSettings["columns"]); ;
+                int height = Convert.ToInt16(appSettings["rows"]); ;
+                this.whiteId = Convert.ToInt16(appSettings["whiteId"]);
+                this.blackId = Convert.ToInt16(appSettings["blackId"]);
 
-                    if (Game.Instance.Board[i, j] != 0)
+                this.whiteUri = "pack://application:,,,/Visual/bfm.png";
+                this.blackUri = "pack://application:,,,/Visual/prixGarantie.jpg";
+
+                StackPanel playerStackPanel = this.FindName("Player1") as StackPanel;//Player who starts : black => player1 = black and player2 = white
+                playerStackPanel.Background = new SolidColorBrush(Colors.Green);
+
+                Game.Instance.init(width, height, this.whiteId, this.blackId);
+                _initBoard(width, height);
+
+                Uri imageUri = null;
+                for (int i = 0; i < width; i++)
+                {
+                    for (int j = 0; j < height; j++)
                     {
-                        this.btnMatrix[i, j].Background = new ImageBrush()
+                        if (Game.Instance.Board[i, j] == this.blackId)
                         {
-                            ImageSource = new BitmapImage(imageUri),
-                            Stretch = Stretch.Fill
-                        };
-                    }
-                    else if(Game.Instance.isPlayable(new Vector2(i,j),this.currentPlayId))//TO-DO: doesn't work !
-                    {
-                        this.btnMatrix[i, j].Content = "X";
+                            imageUri = new Uri(this.whiteUri);
+                        }
+                        else if (Game.Instance.Board[i, j] == this.whiteId)
+                        {
+                            imageUri = new Uri(this.blackUri);
+                        }
+
+                        if (Game.Instance.Board[i, j] != 0)
+                        {
+                            changeCellImage(this.btnMatrix[i, j], imageUri);
+                        }
+                        else 
+                        {
+                            List<Vector2> validMoves = Game.Instance.getValidMoves(new Vector2(i, j), this.currentPlayId);
+                            foreach (Vector2 CellCoor in validMoves)
+                            {
+                                this.btnMatrix[CellCoor.X, CellCoor.Y].Content = "VALID MOVE";
+                            }
+                            
+                        }
                     }
                 }
+
             }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error reading app settings");
+            }
+
         }
     }
 }
