@@ -23,13 +23,16 @@ namespace ArcOthelloBG
     {
 
         //TO-DO: ADAPT TO GAME LOGIC
-        private bool isWhiteTurn;
-        private Playable game;
+        private int currentPlayId;
+        private int whiteId;
+        private int blackId;
+        private Button[,] btnMatrix;
+
 
         private void _initBoard(int colCount, int rowCount)
         {
             Grid grid = this.FindName("Board") as Grid;
-            Button[,] btnMatrix = new Button[colCount, rowCount];
+            this.btnMatrix = new Button[colCount, rowCount];
             Label[] rowLabels = new Label[rowCount];
             Label[] colLabels = new Label[colCount];
 
@@ -96,7 +99,7 @@ namespace ArcOthelloBG
                         Content = letter + (row + 1).ToString()
                     };
 
-                    btnMatrix[col,row].Click += new RoutedEventHandler(ClickHandler);
+                    btnMatrix[col, row].Click += new RoutedEventHandler(ClickHandler);
 
                     Grid.SetColumn(btnMatrix[col, row], col + 1);
                     Grid.SetRow(btnMatrix[col, row], row + 1);
@@ -108,30 +111,74 @@ namespace ArcOthelloBG
 
         private void ClickHandler(object sender, EventArgs e)
         {
+            //TO-DO: check game logic
             Button senderButton = (Button)sender;
             Uri imageUri;
 
-            if (isWhiteTurn)
-                 imageUri = new Uri("pack://application:,,,/Visual/bfm.png");
+            if (this.currentPlayId == this.whiteId)
+            {
+                imageUri = new Uri("pack://application:,,,/Visual/bfm.png");
+                this.currentPlayId = this.blackId;
+            }
             else
-                 imageUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
+            {
+                imageUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
+                this.currentPlayId = this.whiteId;
+            }
+                
 
             senderButton.Background = new ImageBrush()
             {
                 ImageSource = new BitmapImage(imageUri),
-                Stretch=Stretch.Fill
+                Stretch = Stretch.Fill
             };
-            isWhiteTurn = !isWhiteTurn;
+            
         }
 
         public MainWindow()
         {
             InitializeComponent();
-            isWhiteTurn = true;
-            this.game = new Playable();
-            _initBoard(9, 7);
+            
+            int width = 7;
+            int height = 7;
+            this.blackId = 1;
+            this.whiteId = 2;
+            //if (new Random().Next(2)==0) //TO-DO: check who begins game
+            //    this.currentPlayId = this.whiteId;
+            //else
+            this.currentPlayId = this.blackId;
+            Game.Instance.init(width, height, this.whiteId, this.blackId);
+            _initBoard(width, height);
+            Uri imageUri=null;
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    if (Game.Instance.Board[i, j] == this.blackId)
+                    {
+                         imageUri = new Uri("pack://application:,,,/Visual/bfm.png");
+                       
+                    }
+                    else if (Game.Instance.Board[i, j] == this.whiteId)
+                    {
+                         imageUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
+                       
+                    }
 
-            Playable playable = new Playable();
+                    if (Game.Instance.Board[i, j] != 0)
+                    {
+                        this.btnMatrix[i, j].Background = new ImageBrush()
+                        {
+                            ImageSource = new BitmapImage(imageUri),
+                            Stretch = Stretch.Fill
+                        };
+                    }
+                    else if(Game.Instance.isPlayable(new Vector2(i,j),this.currentPlayId))//TO-DO: doesn't work !
+                    {
+                        this.btnMatrix[i, j].Content = "X";
+                    }
+                }
+            }
         }
     }
 }
