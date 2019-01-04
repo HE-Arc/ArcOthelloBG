@@ -11,6 +11,31 @@
     <Window.Resources>
         <Image x:Key="bfm" Source="bfm.png" Height="170" Width="170" />
         <Image x:Key="pg" Source="prixGarantie.jpg" Height="170" Width="170"/>
+        <!-- https://stackoverflow.com/questions/3854317/how-to-remove-default-mouse-over-effect-on-wpf-buttons --> 
+        <!-- This style is used for buttons, to remove the WPF default 'animated' mouse over effect -->
+        <Style x:Key="MyButtonStyle" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" 
+                            BorderThickness="1"
+                            Padding="4,2" 
+                            BorderBrush="DarkGray" 
+                            CornerRadius="3" 
+                            Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Black" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <Grid Margin="25">
         <Grid.ColumnDefinitions>
@@ -22,14 +47,17 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Column="0" Height="Auto" Width="Auto">
+        <StackPanel Grid.Column="0" Height="Auto" Width="Auto" Name="Player1">
+            <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="bfm.png" />
             <Label Name="Player1Name" Content="NomJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
             <Label Name="Player1Score" Content="ScoreJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
             <Label Name="Player1Time" Content="TempsJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
+
         </StackPanel>
         <Grid Name="Board" Grid.Column="1" Margin="20">
         </Grid>
-        <StackPanel Grid.Column="2" Height="Auto" Width="Auto">
+        <StackPanel Grid.Column="2" Height="Auto" Width="Auto" Name="Player2">
+            <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="prixGarantie.jpg" />
             <Label Name="Player2Name" Content="NomJoueur2" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
             <Label Name="Player2Score" Content="ScoreJoueur2" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
             <Label Name="Player2Time" Content="TempsJoueur2" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />

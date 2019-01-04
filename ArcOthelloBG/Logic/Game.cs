@@ -34,7 +34,8 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         public int WhiteScore
         {
-            get {
+            get
+            {
                 int score = 0;
                 for (int i = 0; i < board.GetLength(0); i++)
                 {
@@ -82,7 +83,7 @@ namespace ArcOthelloBG.Logic
         public void init(int columns, int rows, int whiteId, int blackId)
         {
             this.board = new int[columns, rows];
-            this.lastPlayed = blackId;
+            this.lastPlayed = whiteId;
             this.whiteId = whiteId;
             this.blackId = blackId;
             this.buildPossibleDirections();
@@ -97,7 +98,8 @@ namespace ArcOthelloBG.Logic
         /// <param name="isWhite">color of the pawn</param>
         public void play(Vector2 position, int idToPlay)
         {
-            if(this.isPlayable(position, idToPlay))
+
+            if (this.isPlayable(position, idToPlay))
             {
                 var directions = this.getValidMoves(position, idToPlay);
 
@@ -109,10 +111,11 @@ namespace ArcOthelloBG.Logic
                         position = position.add(direction);
                     } while (this.getColor(position) == idToPlay && this.isInBoundaries(position));
                 }
+                this.lastPlayed = idToPlay;
             }
             else
             {
-                 throw new ArgumentException("This move isn't possible");
+                throw new ArgumentException("This move isn't possible");
             }
         }
 
@@ -124,12 +127,12 @@ namespace ArcOthelloBG.Logic
         /// <returns>move is playable or not</returns>
         public bool isPlayable(Vector2 position, int idToPlay)
         {
-            if(this.lastPlayed != idToPlay)
+            if (this.lastPlayed == idToPlay)
             {
                 return false;
             }
 
-            if(this.getValidMoves(position, idToPlay).Count == 0)
+            if (this.getValidMoves(position, idToPlay).Count == 0)
             {
                 return false;
             }
@@ -143,11 +146,11 @@ namespace ArcOthelloBG.Logic
         /// <param name="position">position of the move</param>
         /// <param name="isWhite">color of the pawns</param>
         /// <returns>list of the directions possible</returns>
-        private List<Vector2> getValidMoves(Vector2 position, int idToPlay)
+        public List<Vector2> getValidMoves(Vector2 position, int idToPlay)
         {
             var validMoves = new List<Vector2>();
-            
-            foreach(Vector2 move in this.possibleMoves)
+
+            foreach (Vector2 move in this.possibleMoves)
             {
                 if (this.isNeighborValid(move, idToPlay) && this.checkLine(position, move, idToPlay))
                 {
@@ -190,7 +193,7 @@ namespace ArcOthelloBG.Logic
         /// <returns>is in the board or not</returns>
         private bool isInBoundaries(Vector2 position)
         {
-            return position.X < this.board.GetLength(1) && position.Y < this.board.GetLength(0) 
+            return position.X < this.board.GetLength(0) && position.Y < this.board.GetLength(1)
                 && position.X >= 0 && position.Y >= 0;
         }
 
@@ -202,9 +205,7 @@ namespace ArcOthelloBG.Logic
         /// <returns>neighbor playable or not</returns>
         public bool isNeighborValid(Vector2 position, int idToPlay)
         {
-            return this.isInBoundaries(position) && this.getColor(position) == idToPlay;
-                
-            ;
+            return this.isInBoundaries(position) && this.getColor(position) != idToPlay;
         }
 
         /// <summary>
@@ -258,18 +259,18 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         private void initBoard()
         {
-            int w = this.board.GetLength(1);
-            int h = this.board.GetLength(0);
+            int w = this.board.GetLength(0);
+            int h = this.board.GetLength(1);
 
             for (int i = 0; i < this.board.GetLength(0); i++)
             {
                 for (int j = 0; j < board.GetLength(1); j++)
                 {
-                    if(i == w / 2 - 1 && j == h / 2 - 1 || i == w / 2 && j == h / 2)
+                    if (i == w / 2 - 1 && j == h / 2 - 1 || i == w / 2 && j == h / 2)
                     {
                         this.board[i, j] = this.whiteId;
                     }
-                    else if(i == w / 2  && j == h / 2 - 1 || i == w / 2 - 1 && j == h / 2)
+                    else if (i == w / 2 && j == h / 2 - 1 || i == w / 2 - 1 && j == h / 2)
                     {
                         this.board[i, j] = this.blackId;
                     }
