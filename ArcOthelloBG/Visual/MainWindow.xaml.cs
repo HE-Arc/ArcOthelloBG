@@ -30,6 +30,7 @@ namespace ArcOthelloBG
         private Button[,] btnMatrix;
         private String blackUri;
         private String whiteUri;
+        private List<Vector2> oldValidMoves;
 
 
         private void _initBoard(int colCount, int rowCount)
@@ -105,7 +106,6 @@ namespace ArcOthelloBG
 
                     btnMatrix[col, row].Click += new RoutedEventHandler(ClickHandler);
 
-
                     btnMatrix[col, row].Style = Resources["MyButtonStyle"] as Style;
 
                     //btnMatrix[col, row].MouseEnter += new MouseEventHandler((sender, e) =>
@@ -131,10 +131,12 @@ namespace ArcOthelloBG
             String[] colRowString = senderButton.Name.Split('_');
             int col = Convert.ToInt16(colRowString[1]);
             int row = Convert.ToInt16(colRowString[2]);
-            if (Game.Instance.isPlayable(new Vector2(col, row), this.currentPlayId))
+            Vector2 position = new Vector2(row, col);
+
+            if (Game.Instance.isPlayable(position, this.currentPlayId))
             {
 
-                Game.Instance.play(new Vector2(col, row), this.currentPlayId);
+                Game.Instance.play(position, this.currentPlayId);
 
                 StackPanel player1StackPanel = this.FindName("Player1") as StackPanel;
                 StackPanel player2StackPanel = this.FindName("Player2") as StackPanel;
@@ -144,7 +146,7 @@ namespace ArcOthelloBG
                 {
                     imageUri = new Uri(this.whiteUri);
                     this.currentPlayId = this.blackId;
-                    player1StackPanel.Background = new SolidColorBrush(Colors.Green);
+                    player1StackPanel.Background = new SolidColorBrush(Colors.PaleGreen);
                     player2StackPanel.Background = new SolidColorBrush(Colors.White);
                 }
                 else
@@ -152,21 +154,46 @@ namespace ArcOthelloBG
                     imageUri = new Uri(this.blackUri);
                     this.currentPlayId = this.whiteId;
                     player1StackPanel.Background = new SolidColorBrush(Colors.White);
-                    player2StackPanel.Background = new SolidColorBrush(Colors.Green);
+                    player2StackPanel.Background = new SolidColorBrush(Colors.PaleGreen);
                 }
 
+                showValidMoves();
                 changeCellImage(senderButton, imageUri);
             }
 
         }
 
-        private void changeCellImage(Button cell, System.Uri imageUri)
+        private void changeCellImage(Button cell, Uri imageUri)
         {
             cell.Background = new ImageBrush()
             {
                 ImageSource = new BitmapImage(imageUri),
                 Stretch = Stretch.Fill
             };
+        }
+
+
+        private void showValidMoves()
+        {
+            foreach (Vector2 CellCoor in this.oldValidMoves)
+            {
+                if (Game.Instance.getColor(CellCoor) == 0)
+                {
+                    this.btnMatrix[CellCoor.Y, CellCoor.X].Background = new SolidColorBrush(Colors.White);
+                }
+            }
+
+            this.oldValidMoves.Clear();
+
+            List<Vector2> validMoves = Game.Instance.getPositionsAvailable(this.currentPlayId);
+            foreach (Vector2 CellCoor in validMoves)
+            {
+                if (Game.Instance.getColor(CellCoor) == 0)
+                {
+                    this.oldValidMoves.Add(CellCoor);
+                    this.btnMatrix[CellCoor.Y, CellCoor.X].Background = new SolidColorBrush(Colors.LightGreen);
+                }
+            }
         }
 
         public MainWindow()
@@ -180,22 +207,18 @@ namespace ArcOthelloBG
                 this.whiteId = Convert.ToInt16(appSettings["whiteId"]);
                 this.blackId = Convert.ToInt16(appSettings["blackId"]);
 
-                this.whiteUri = "pack://application:,,,/Visual/bfm.png";
-                this.blackUri = "pack://application:,,,/Visual/prixGarantie.jpg";
+                this.blackUri = "pack://application:,,,/Visual/bfm.png";
+                this.whiteUri = "pack://application:,,,/Visual/prixGarantie.jpg";
+
+                this.oldValidMoves = new List<Vector2>();
 
                 StackPanel playerStackPanel = this.FindName("Player1") as StackPanel;//Player who starts : black => player1 = black and player2 = white
-                playerStackPanel.Background = new SolidColorBrush(Colors.Green);
+                playerStackPanel.Background = new SolidColorBrush(Colors.PaleGreen);
 
                 Game.Instance.init(width, height, this.whiteId, this.blackId);
                 _initBoard(width, height);
 
                 Uri imageUri = null;
-
-                List<Vector2> validMoves = Game.Instance.getPositionsAvailable(this.currentPlayId);
-                foreach (Vector2 CellCoor in validMoves)
-                {
-                    this.btnMatrix[CellCoor.X, CellCoor.Y].Content = "VALID MOVE";
-                }
 
                 for (int i = 0; i < width; i++)
                 {
@@ -205,11 +228,11 @@ namespace ArcOthelloBG
 
                         if (idPlayer == this.blackId)
                         {
-                            imageUri = new Uri(this.whiteUri);
+                            imageUri = new Uri(this.blackUri);
                         }
                         else if (idPlayer == this.whiteId)
                         {
-                            imageUri = new Uri(this.blackUri);
+                            imageUri = new Uri(this.whiteUri);
                         }
 
                         if (idPlayer != 0)
@@ -218,7 +241,7 @@ namespace ArcOthelloBG
                         }
                     }
                 }
-
+                this.showValidMoves();
             }
             catch (ConfigurationErrorsException)
             {

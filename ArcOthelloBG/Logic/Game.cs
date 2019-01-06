@@ -114,18 +114,21 @@ namespace ArcOthelloBG.Logic
         /// <param name="isWhite">color of the pawn</param>
         public void play(Vector2 position, int idToPlay)
         {
-
+           
             if (this.isPlayable(position, idToPlay))
             {
+                Vector2 initialPosition = new Vector2(position);
+
                 var directions = this.getValidMoves(position, idToPlay);
 
                 foreach (Vector2 direction in directions)
                 {
+                    position = initialPosition;
                     do
                     {
                         this.putPawn(position, idToPlay);
                         position = position.add(direction);
-                    } while (this.getColor(position) == idToPlay && this.isInBoundaries(position));
+                    } while (this.isInBoundaries(position) && this.getColor(position) == idToPlay);
                 }
 
                 this.lastPlayed = idToPlay;
@@ -222,7 +225,7 @@ namespace ArcOthelloBG.Logic
                 {
                     var position = new Vector2(i, j);
 
-                    if (this.isPlayable(position, playerColor))
+                    if (this.isPlayable(position, playerColor) && this.getColor(position)==0)
                     {
                         positionsAvailable.Add(position);
                     }
