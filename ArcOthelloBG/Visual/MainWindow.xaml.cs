@@ -194,14 +194,14 @@ namespace ArcOthelloBG
                 List<Vector2> validMoves = Game.Instance.getPositionsAvailable(this.currentPlayId);
                 foreach (Vector2 CellCoor in validMoves)
                 {
-                    this.btnMatrix[CellCoor.Y, CellCoor.X].Content = "VALID MOVE";
+                    this.btnMatrix[CellCoor.X, CellCoor.Y].Content = "VALID MOVE";
                 }
 
                 for (int i = 0; i < width; i++)
                 {
                     for (int j = 0; j < height; j++)
                     {
-                        var idPlayer = Game.Instance.getColor(new Vector2(j, i));
+                        var idPlayer = Game.Instance.getColor(new Vector2(i, j));
 
                         if (idPlayer == this.blackId)
                         {
@@ -214,7 +214,7 @@ namespace ArcOthelloBG
 
                         if (idPlayer != 0)
                         {
-                            changeCellImage(this.btnMatrix[j, i], imageUri);
+                            changeCellImage(this.btnMatrix[i, j], imageUri);
                         }
                     }
                 }

@@ -144,7 +144,10 @@ namespace ArcOthelloBG.Logic
         /// <returns>move is playable or not</returns>
         public bool isPlayable(Vector2 position, int idToPlay)
         {
-            if (this.lastPlayed == idToPlay || this.getColor(position) != 0 || this.getValidMoves(position, idToPlay).Count == 0)
+            if (this.lastPlayed == idToPlay || 
+                (this.isInBoundaries(position) && this.getColor(position) != 0) || 
+                this.getValidMoves(position, idToPlay).Count == 0
+            )
             {
                 return false;
             }
@@ -217,7 +220,7 @@ namespace ArcOthelloBG.Logic
             {
                 for(int j = 0; j < this.board.GetLength(1); j++)
                 {
-                    var position = new Vector2(j, i);
+                    var position = new Vector2(i, j);
 
                     if (this.isPlayable(position, playerColor))
                     {
@@ -238,7 +241,7 @@ namespace ArcOthelloBG.Logic
         /// <returns>is in the board or not</returns>
         private bool isInBoundaries(Vector2 position)
         {
-            return position.X < this.board.GetLength(1) && position.Y < this.board.GetLength(0)
+            return position.X < this.board.GetLength(0) && position.Y < this.board.GetLength(1)
                 && position.X >= 0 && position.Y >= 0;
         }
 
@@ -261,12 +264,12 @@ namespace ArcOthelloBG.Logic
         /// <returns>Color of the pawns</returns>
         public int getColor(Vector2 position)
         {
-            return this.board[position.Y, position.X];
+            return this.board[position.X, position.Y];
         }
 
         public void putPawn(Vector2 position, int idColor)
         {
-            this.board[position.Y, position.X] = idColor;
+            this.board[position.X, position.Y] = idColor;
         }
 
         // GETTERS AND SETTERS
@@ -292,8 +295,8 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         private void initBoard()
         {
-            int w = this.board.GetLength(1);
-            int h = this.board.GetLength(0);
+            int w = this.board.GetLength(0);
+            int h = this.board.GetLength(1);
 
             for (int i = 0; i < w; i++)
             {
@@ -301,11 +304,11 @@ namespace ArcOthelloBG.Logic
                 {
                     int color = 0;
 
-                    if (i == w / 2 - 1 && j == h / 2 - 1 || i == w / 2 && j == h / 2)
+                    if (i == w / 2 && j == h / 2 || i == w / 2 - 1 && j == h / 2 - 1)
                     {
                         color = this.whiteId;
                     }
-                    else if (i == w / 2 && j == h / 2 - 1 || i == w / 2 - 1 && j == h / 2)
+                    else if (i == w / 2 - 1 && j == h / 2 || i == w / 2  && j == h / 2 - 1)
                     {
                         color = this.blackId;
                     }
