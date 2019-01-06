@@ -144,12 +144,7 @@ namespace ArcOthelloBG.Logic
         /// <returns>move is playable or not</returns>
         public bool isPlayable(Vector2 position, int idToPlay)
         {
-            if (this.lastPlayed == idToPlay)
-            {
-                return false;
-            }
-
-            if (this.getValidMoves(position, idToPlay).Count == 0)
+            if (this.lastPlayed == idToPlay || this.getColor(position) != 0 || this.getValidMoves(position, idToPlay).Count == 0)
             {
                 return false;
             }
@@ -169,7 +164,7 @@ namespace ArcOthelloBG.Logic
 
             foreach (Vector2 move in this.possibleMoves)
             {
-                if (this.isNeighborValid(move, idToPlay) && this.checkLine(position, move, idToPlay))
+                if (this.checkLine(position, move, idToPlay))
                 {
                     Vector2 validMove = new Vector2(move);
                     validMoves.Add(move);
@@ -188,15 +183,23 @@ namespace ArcOthelloBG.Logic
         /// <returns>if there is a pawn of the same color</returns>
         private bool checkLine(Vector2 position, Vector2 direction, int idToPlay)
         {
+            int i = 0;
             do
             {
                 position = position.add(direction);
 
-                if (this.getColor(position) == idToPlay)
+                if(!this.isInBoundaries(position))
+                {
+                    return false;
+                }
+
+                if (this.getColor(position) == idToPlay && i != 0)
                 {
                     return true;
                 }
-            } while (this.getColor(position) == idToPlay && this.isInBoundaries(position));
+
+                i++;
+            } while (this.getColor(position) == idToPlay);
 
             return false;
         }
@@ -206,7 +209,7 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         /// <param name="playerColor">id of the player</param>
         /// <returns>list of position playable</returns>
-        private List<Vector2> getPositionsAvailable(int playerColor)
+        public List<Vector2> getPositionsAvailable(int playerColor)
         {
             var positionsAvailable = new List<Vector2>();
 
@@ -216,7 +219,7 @@ namespace ArcOthelloBG.Logic
                 {
                     var position = new Vector2(j, i);
 
-                    if(this.isPlayable(position, playerColor))
+                    if (this.isPlayable(position, playerColor))
                     {
                         positionsAvailable.Add(position);
                     }
@@ -235,12 +238,13 @@ namespace ArcOthelloBG.Logic
         /// <returns>is in the board or not</returns>
         private bool isInBoundaries(Vector2 position)
         {
-            return position.X < this.board.GetLength(0) && position.Y < this.board.GetLength(1)
+            return position.X < this.board.GetLength(1) && position.Y < this.board.GetLength(0)
                 && position.X >= 0 && position.Y >= 0;
         }
 
         /// <summary>
         /// Check which neighbors allows this move
+        /// TODO USEFUL?
         /// </summary>
         /// <param name="position">position of the neighbors</param>
         /// <param name="isWhite">colors of the pawn played</param>
@@ -288,25 +292,25 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         private void initBoard()
         {
-            int w = this.board.GetLength(0);
-            int h = this.board.GetLength(1);
+            int w = this.board.GetLength(1);
+            int h = this.board.GetLength(0);
 
-            for (int i = 0; i < this.board.GetLength(0); i++)
+            for (int i = 0; i < w; i++)
             {
-                for (int j = 0; j < board.GetLength(1); j++)
+                for (int j = 0; j < h; j++)
                 {
+                    int color = 0;
+
                     if (i == w / 2 - 1 && j == h / 2 - 1 || i == w / 2 && j == h / 2)
                     {
-                        this.board[i, j] = this.whiteId;
+                        color = this.whiteId;
                     }
                     else if (i == w / 2 && j == h / 2 - 1 || i == w / 2 - 1 && j == h / 2)
                     {
-                        this.board[i, j] = this.blackId;
+                        color = this.blackId;
                     }
-                    else
-                    {
-                        this.board[i, j] = 0;
-                    }
+
+                    this.putPawn(new Vector2(i, j), color);
                 }
             }
         }
@@ -323,7 +327,7 @@ namespace ArcOthelloBG.Logic
             {
                 for (int j = -1; j <= 1; j++)
                 {
-                    if (i != 0 && j != 0)
+                    if (i != 0 || j != 0)
                     {
                         this.possibleMoves.Add(new Vector2(i, j));
                     }

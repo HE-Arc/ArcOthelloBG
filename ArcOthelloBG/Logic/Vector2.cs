@@ -17,11 +17,23 @@ namespace ArcOthelloBG.Logic
         /// <summary>
         /// getter for X value
         /// </summary>
-        public int X { get; }
+        public int X
+        {
+            get
+            {
+                return this.x;
+            }
+        }
         /// <summary>
         /// getter for y value
         /// </summary>
-        public int Y { get; }
+        public int Y
+        {
+            get
+            {
+                return this.y;
+            }
+        }
 
         /// <summary>
         /// constructor by value
@@ -55,7 +67,7 @@ namespace ArcOthelloBG.Logic
         /// clone of a vector
         /// </summary>
         /// <returns>cloned vector</returns>
-        public Vector2 Clone()
+        public object Clone()
         {
             return new Vector2(this.x, this.y);
         }
