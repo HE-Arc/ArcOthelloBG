@@ -179,7 +179,7 @@ namespace ArcOthelloBG
             {
                 if (Game.Instance.getColor(CellCoor) == 0)
                 {
-                    this.btnMatrix[CellCoor.Y, CellCoor.X].Background = new SolidColorBrush(Colors.White);
+                    this.btnMatrix[CellCoor.X, CellCoor.Y].Background = new SolidColorBrush(Colors.White);
                 }
             }
 
@@ -191,7 +191,7 @@ namespace ArcOthelloBG
                 if (Game.Instance.getColor(CellCoor) == 0)
                 {
                     this.oldValidMoves.Add(CellCoor);
-                    this.btnMatrix[CellCoor.Y, CellCoor.X].Background = new SolidColorBrush(Colors.LightGreen);
+                    this.btnMatrix[CellCoor.X, CellCoor.Y].Background = new SolidColorBrush(Colors.LightGreen);
                 }
             }
         }
