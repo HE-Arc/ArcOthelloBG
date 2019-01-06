@@ -190,22 +190,25 @@ namespace ArcOthelloBG.Logic
         private bool checkLine(Vector2 position, Vector2 direction, int idToPlay)
         {
             int i = 0;
+            int colorPosition = 0;
             do
             {
                 position = position.add(direction);
-
-                if(!this.isInBoundaries(position))
+                
+                if (!this.isInBoundaries(position))
                 {
                     return false;
                 }
+                colorPosition = this.getColor(position);
 
-                if (this.getColor(position) == idToPlay && i != 0)
+
+                if (colorPosition == idToPlay && i != 0)
                 {
                     return true;
                 }
 
                 i++;
-            } while (this.getColor(position) == idToPlay);
+            } while (colorPosition != idToPlay && colorPosition != 0);
 
             return false;
         }
