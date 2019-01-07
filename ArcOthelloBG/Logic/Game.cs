@@ -112,12 +112,14 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         /// <param name="position">Position to put a pawn</param>
         /// <param name="isWhite">color of the pawn</param>
-        public void play(Vector2 position, int idToPlay)
+        /// <returns>positions that changed</returns>
+        public List<Vector2> play(Vector2 position, int idToPlay)
         {
            
             if (this.isPlayable(position, idToPlay))
             {
                 Vector2 initialPosition = new Vector2(position);
+                List<Vector2> changedPositions = new List<Vector2>();
 
                 var directions = this.getValidMoves(position, idToPlay);
 
@@ -127,16 +129,20 @@ namespace ArcOthelloBG.Logic
                     do
                     {
                         this.putPawn(position, idToPlay);
+                        changedPositions.Add(position);
                         position = position.add(direction);
-                    } while (this.isInBoundaries(position) && this.getColor(position) == idToPlay);
+                    } while (this.isInBoundaries(position) && this.getColor(position) != idToPlay);
                 }
 
                 this.lastPlayed = idToPlay;
+                return changedPositions;
             }
             else
             {
                 throw new ArgumentException("This move isn't possible");
             }
+
+            return new List<Vector2>();
         }
 
         /// <summary>
