@@ -206,6 +206,7 @@ namespace ArcOthelloBG
                 int height = Convert.ToInt16(appSettings["rows"]); ;
                 this.whiteId = Convert.ToInt16(appSettings["whiteId"]);
                 this.blackId = Convert.ToInt16(appSettings["blackId"]);
+                this.currentPlayId = this.blackId;
 
                 this.blackUri = "pack://application:,,,/Visual/bfm.png";
                 this.whiteUri = "pack://application:,,,/Visual/prixGarantie.jpg";
