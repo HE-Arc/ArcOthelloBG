@@ -131,7 +131,7 @@ namespace ArcOthelloBG
             String[] colRowString = senderButton.Name.Split('_');
             int col = Convert.ToInt16(colRowString[1]);
             int row = Convert.ToInt16(colRowString[2]);
-            Vector2 position = new Vector2(row, col);
+            Vector2 position = new Vector2(col, row);
 
             try
             {
