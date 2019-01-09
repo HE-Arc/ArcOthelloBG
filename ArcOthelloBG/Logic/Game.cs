@@ -234,7 +234,7 @@ namespace ArcOthelloBG.Logic
                 {
                     var position = new Vector2(i, j);
 
-                    if (this.isPlayable(position, playerColor) && this.getColor(position)==0)
+                    if (this.isPlayable(position, playerColor) && this.getColor(position) == 0)
                     {
                         positionsAvailable.Add(position);
                     }

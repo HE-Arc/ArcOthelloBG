@@ -133,9 +133,8 @@ namespace ArcOthelloBG
             int row = Convert.ToInt16(colRowString[2]);
             Vector2 position = new Vector2(row, col);
 
-            if (Game.Instance.isPlayable(position, this.currentPlayId))
+            try
             {
-
                 Game.Instance.play(position, this.currentPlayId);
 
                 StackPanel player1StackPanel = this.FindName("Player1") as StackPanel;
@@ -160,7 +159,10 @@ namespace ArcOthelloBG
                 showValidMoves();
                 changeCellImage(senderButton, imageUri);
             }
+            catch(ArgumentException exception)
+            {
 
+            }
         }
 
         private void changeCellImage(Button cell, Uri imageUri)
