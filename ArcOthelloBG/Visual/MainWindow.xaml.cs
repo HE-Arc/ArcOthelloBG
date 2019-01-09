@@ -126,7 +126,7 @@ namespace ArcOthelloBG
         {
             //TO-DO: check game logic
             Button senderButton = (Button)sender;
-            Uri imageUri;
+
 
             String[] colRowString = senderButton.Name.Split('_');
             int col = Convert.ToInt16(colRowString[1]);
@@ -137,24 +137,18 @@ namespace ArcOthelloBG
             {
                 Game.Instance.play(position, this.currentPlayId);
 
-                StackPanel player1StackPanel = this.FindName("Player1") as StackPanel;
-                StackPanel player2StackPanel = this.FindName("Player2") as StackPanel;
-
-
+                Uri imageUri;
                 if (this.currentPlayId == this.whiteId)
                 {
                     imageUri = new Uri(this.whiteUri);
                     this.currentPlayId = this.blackId;
-                    player1StackPanel.Background = new SolidColorBrush(Colors.PaleGreen);
-                    player2StackPanel.Background = new SolidColorBrush(Colors.White);
                 }
                 else
                 {
                     imageUri = new Uri(this.blackUri);
                     this.currentPlayId = this.whiteId;
-                    player1StackPanel.Background = new SolidColorBrush(Colors.White);
-                    player2StackPanel.Background = new SolidColorBrush(Colors.PaleGreen);
                 }
+                this.togglePlayerBorderColors();
 
                 showValidMoves();
                 changeCellImage(senderButton, imageUri);
@@ -162,6 +156,22 @@ namespace ArcOthelloBG
             catch(ArgumentException exception)
             {
 
+            }
+        }
+
+        private void togglePlayerBorderColors()
+        {
+            Border blackPlayerBorder = this.FindName("BlackPlayerBorder") as Border;
+            Border whitePlayerBorder = this.FindName("WhitePlayerBorder") as Border;
+            if (this.currentPlayId == this.blackId)
+            {
+                whitePlayerBorder.BorderBrush = new SolidColorBrush(Colors.White);
+                blackPlayerBorder.BorderBrush = new SolidColorBrush(Colors.LawnGreen);
+            }
+            else
+            {
+                whitePlayerBorder.BorderBrush = new SolidColorBrush(Colors.LawnGreen);
+                blackPlayerBorder.BorderBrush = new SolidColorBrush(Colors.White);
             }
         }
 
@@ -215,8 +225,7 @@ namespace ArcOthelloBG
 
                 this.oldValidMoves = new List<Vector2>();
 
-                StackPanel playerStackPanel = this.FindName("Player1") as StackPanel;//Player who starts : black => player1 = black and player2 = white
-                playerStackPanel.Background = new SolidColorBrush(Colors.PaleGreen);
+                this.togglePlayerBorderColors();
 
                 Game.Instance.init(width, height, this.whiteId, this.blackId);
                 _initBoard(width, height);

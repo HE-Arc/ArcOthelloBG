@@ -11,7 +11,11 @@
     <Window.Resources>
         <Image x:Key="bfm" Source="bfm.png" Height="170" Width="170" />
         <Image x:Key="pg" Source="prixGarantie.jpg" Height="170" Width="170"/>
-        <!-- https://stackoverflow.com/questions/3854317/how-to-remove-default-mouse-over-effect-on-wpf-buttons --> 
+        <Style x:Key="PlayerBorderStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="BorderThickness" Value="3,3,3,3"/>
+        </Style>
+        <!-- https://stackoverflow.com/questions/3854317/how-to-remove-default-mouse-over-effect-on-wpf-buttons -->
         <!-- This style is used for buttons, to remove the WPF default 'animated' mouse over effect -->
         <Style x:Key="MyButtonStyle" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -46,21 +50,24 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Border Grid.Column="0" Name="BlackPlayerBorder" Style="{StaticResource PlayerBorderStyle}">
+            <StackPanel  >
+                <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="bfm.png" />
+                <Label Name="Player1Name" Content="NomJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                <Label Name="Player1Score" Content="ScoreJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                <Label Name="Player1Time" Content="TempsJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
 
-        <StackPanel Grid.Column="0" Height="Auto" Width="Auto" Name="Player1">
-            <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="bfm.png" />
-            <Label Name="Player1Name" Content="NomJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
-            <Label Name="Player1Score" Content="ScoreJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
-            <Label Name="Player1Time" Content="TempsJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
-
-        </StackPanel>
+            </StackPanel>
+        </Border>
         <Grid Name="Board" Grid.Column="1" Margin="20">
         </Grid>
-        <StackPanel Grid.Column="2" Height="Auto" Width="Auto" Name="Player2">
-            <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="prixGarantie.jpg" />
-            <Label Name="Player2Name" Content="NomJoueur2" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
-            <Label Name="Player2Score" Content="ScoreJoueur2" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
-            <Label Name="Player2Time" Content="TempsJoueur2" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
-        </StackPanel>
+        <Border Grid.Column="2" Name="WhitePlayerBorder" Style="{StaticResource PlayerBorderStyle}">
+            <StackPanel Height="Auto" Width="Auto">
+                <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="prixGarantie.jpg" />
+                <Label Name="Player2Name" Content="NomJoueur2" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                <Label Name="Player2Score" Content="ScoreJoueur2" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                <Label Name="Player2Time" Content="TempsJoueur2" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
