@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Configuration;
-using System.Timers;
 
 namespace ArcOthelloBG
 {
@@ -32,9 +31,6 @@ namespace ArcOthelloBG
         private String blackUri;
         private String whiteUri;
         private List<Vector2> oldValidMoves;
-        private Timer timerTime;
-        private int timeSecondBlack;
-        private int timeSecondWhite;
 
 
         private void buildBoard(int colCount, int rowCount)
@@ -135,11 +131,11 @@ namespace ArcOthelloBG
             String[] colRowString = senderButton.Name.Split('_');
             int col = Convert.ToInt16(colRowString[1]);
             int row = Convert.ToInt16(colRowString[2]);
-            Vector2 position = new Vector2(col, row );
+            Vector2 position = new Vector2(col, row);
 
             try
             {
-                List<Vector2> changedPositions=Game.Instance.play(position, this.currentPlayId);
+                List<Vector2> changedPositions = Game.Instance.play(position, this.currentPlayId);
 
                 Uri imageUri;
                 if (this.currentPlayId == this.whiteId)
@@ -156,12 +152,12 @@ namespace ArcOthelloBG
 
                 showValidMoves();
                 changeCellImage(senderButton, imageUri);
-                foreach(Vector2 changedPosition in changedPositions)
+                foreach (Vector2 changedPosition in changedPositions)
                 {
                     changeCellImage(this.btnMatrix[changedPosition.X, changedPosition.Y], imageUri);
                 }
             }
-            catch(ArgumentException exception)
+            catch (ArgumentException exception)
             {
 
             }
@@ -169,7 +165,7 @@ namespace ArcOthelloBG
 
         private void mnuNewGameClick(object sender, EventArgs e)
         {
-            resetBoard(false);
+            resetBoard(buildGUI: false);
         }
 
         private void mnuLoadGameClick(object sender, EventArgs e)
@@ -184,7 +180,12 @@ namespace ArcOthelloBG
 
         private void mnuExitClick(object sender, EventArgs e)
         {
-            System.Windows.Application.Current.Shutdown();
+            Application.Current.Shutdown();
+        }
+
+        private void btnStartClick(object sender, EventArgs e)
+        {
+            resetBoard(buildGUI: true);
         }
 
         private void togglePlayerBorderColors()
@@ -246,8 +247,6 @@ namespace ArcOthelloBG
                 this.whiteId = Convert.ToInt16(appSettings["whiteId"]);
                 this.blackId = Convert.ToInt16(appSettings["blackId"]);
                 this.currentPlayId = this.blackId;
-                this.timeSecondBlack = 0;
-                this.timeSecondWhite = 0;
 
                 this.blackUri = "pack://application:,,,/Visual/bfm.png";
                 this.whiteUri = "pack://application:,,,/Visual/prixGarantie.jpg";
@@ -259,9 +258,26 @@ namespace ArcOthelloBG
                 Game.Instance.init(width, height, this.whiteId, this.blackId);
 
                 if (buildGUI)
+                {
+                    Border blackPlayerBorder = this.FindName("BlackPlayerBorder") as Border;
+                    Border whitePlayerBorder = this.FindName("WhitePlayerBorder") as Border;
+                    BlackPlayerBorder.Opacity = 1;
+                    WhitePlayerBorder.Opacity = 1;
+                    Button startButton= this.FindName("btnStart") as Button;
+                    Grid grid = this.FindName("Board") as Grid;
+                    grid.Children.Remove(startButton);
                     buildBoard(width, height);
-
-                this.setTimer();
+                }
+                else
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        for (int y = 0; y < height; y++)
+                        {
+                            this.btnMatrix[x, y].Background = new SolidColorBrush(Colors.White);
+                        }
+                    }
+                }
 
                 Uri imageUri = null;
 
@@ -296,41 +312,8 @@ namespace ArcOthelloBG
 
         public MainWindow()
         {
-            InitializeComponent();
-            resetBoard(true);
+            InitializeComponent();           
 
-        }
-
-        public void OnTimedEvent(Object source, ElapsedEventArgs e)
-        {
-            if(this.currentPlayId == this.blackId)
-            {
-                this.timeSecondBlack++;
-            }
-            else if(this.currentPlayId == this.whiteId)
-            {
-                this.timeSecondWhite++;
-            }
-        }
-
-        private void setTimer()
-        {
-            this.timerTime = new System.Timers.Timer(1000);
-            // Hook up the Elapsed event for the timer. 
-            this.timerTime.Elapsed += OnTimedEvent;
-            this.timerTime.AutoReset = true;
-            this.timerTime.Enabled = true;
-            this.timerTime.Stop();
-        }
-
-        private void startTimer()
-        {
-            this.timerTime.Start();
-        }
-
-        private void stopTimer()
-        {
-            this.timerTime.Stop();
         }
     }
 }

@@ -14,6 +14,7 @@
         <Style x:Key="PlayerBorderStyle" TargetType="Border">
             <Setter Property="CornerRadius" Value="3"/>
             <Setter Property="BorderThickness" Value="3,3,3,3"/>
+            <Setter Property="Opacity" Value="0.25"/>
         </Style>
         <!-- https://stackoverflow.com/questions/3854317/how-to-remove-default-mouse-over-effect-on-wpf-buttons -->
         <!-- This style is used for buttons, to remove the WPF default 'animated' mouse over effect -->
@@ -51,7 +52,9 @@
                 <MenuItem Header="_Exit"  Click="mnuExitClick"/>
             </MenuItem>
         </Menu>
+        
         <Grid Margin="25">
+            
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="7*" />
@@ -70,6 +73,7 @@
                 </StackPanel>
             </Border>
             <Grid Name="Board" Grid.Column="1" Margin="20">
+                <Button Panel.ZIndex="100" HorizontalAlignment="Center" VerticalAlignment="Center" Content="START" Name="btnStart" Click="btnStartClick"></Button>
             </Grid>
             <Border Grid.Column="2" Name="WhitePlayerBorder" Style="{StaticResource PlayerBorderStyle}">
                 <StackPanel Height="Auto" Width="Auto">
