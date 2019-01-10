@@ -50,7 +50,7 @@ namespace ArcOthelloBG.Logic
         /// constructor by copy
         /// </summary>
         /// <param name="toCopy">vector to Copy</param>
-        public Vector2(Vector2 toCopy) : this(toCopy.x, toCopy.x)
+        public Vector2(Vector2 toCopy) : this(toCopy.x, toCopy.y)
         { }
 
         /// <summary>

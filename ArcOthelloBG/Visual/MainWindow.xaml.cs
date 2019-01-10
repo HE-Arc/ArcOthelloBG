@@ -268,13 +268,13 @@ namespace ArcOthelloBG
 
         }
 
-        private setTimer(Timer timer)
+        private void setTimer(Timer timer)
         {
-            aTimer = new System.Timers.Timer(1000);
-            // Hook up the Elapsed event for the timer. 
-            aTimer.Elapsed += OnTimedEvent;
-            aTimer.AutoReset = true;
-            aTimer.Enabled = true;
+            //aTimer = new System.Timers.Timer(1000);
+            //// Hook up the Elapsed event for the timer. 
+            //aTimer.Elapsed += OnTimedEvent;
+            //aTimer.AutoReset = true;
+            //aTimer.Enabled = true;
         }
     }
 }

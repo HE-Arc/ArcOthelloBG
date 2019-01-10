@@ -115,6 +115,7 @@ namespace ArcOthelloBG.Logic
         /// <returns>positions that changed</returns>
         public List<Vector2> play(Vector2 position, int idToPlay)
         {
+
             if (this.isPlayable(position, idToPlay))
             {
                 Vector2 initialPosition = new Vector2(position);
