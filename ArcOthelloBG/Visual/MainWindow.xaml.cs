@@ -33,7 +33,7 @@ namespace ArcOthelloBG
         private List<Vector2> oldValidMoves;
 
 
-        private void _initBoard(int colCount, int rowCount)
+        private void buildBoard(int colCount, int rowCount)
         {
             Grid grid = this.FindName("Board") as Grid;
             this.btnMatrix = new Button[colCount, rowCount];
@@ -104,7 +104,7 @@ namespace ArcOthelloBG
                         Background = new SolidColorBrush(Colors.White)
                     };
 
-                    btnMatrix[col, row].Click += new RoutedEventHandler(ClickHandler);
+                    btnMatrix[col, row].Click += new RoutedEventHandler(BoardClickHandler);
 
                     btnMatrix[col, row].Style = Resources["MyButtonStyle"] as Style;
 
@@ -122,7 +122,7 @@ namespace ArcOthelloBG
             }
         }
 
-        private void ClickHandler(object sender, EventArgs e)
+        private void BoardClickHandler(object sender, EventArgs e)
         {
             //TO-DO: check game logic
             Button senderButton = (Button)sender;
@@ -161,6 +161,26 @@ namespace ArcOthelloBG
             {
 
             }
+        }
+
+        private void mnuNewGameClick(object sender, EventArgs e)
+        {
+            resetBoard(false);
+        }
+
+        private void mnuLoadGameClick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void mnuSaveGameClick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void mnuExitClick(object sender, EventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
         }
 
         private void togglePlayerBorderColors()
@@ -212,9 +232,8 @@ namespace ArcOthelloBG
             }
         }
 
-        public MainWindow()
+        private void resetBoard(bool buildGUI)
         {
-            InitializeComponent();
             try
             {
                 var appSettings = ConfigurationManager.AppSettings;
@@ -232,7 +251,9 @@ namespace ArcOthelloBG
                 this.togglePlayerBorderColors();
 
                 Game.Instance.init(width, height, this.whiteId, this.blackId);
-                _initBoard(width, height);
+
+                if (buildGUI)
+                    buildBoard(width, height);
 
                 Uri imageUri = null;
 
@@ -263,6 +284,12 @@ namespace ArcOthelloBG
             {
                 Console.WriteLine("Error reading app settings");
             }
+        }
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            resetBoard(true);
 
         }
     }
