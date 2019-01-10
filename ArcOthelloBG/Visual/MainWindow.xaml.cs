@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Configuration;
+using System.Timers;
 
 namespace ArcOthelloBG
 {
@@ -31,6 +32,7 @@ namespace ArcOthelloBG
         private String blackUri;
         private String whiteUri;
         private List<Vector2> oldValidMoves;
+        private Timer timeCounter;
 
 
         private void _initBoard(int colCount, int rowCount)
@@ -131,7 +133,7 @@ namespace ArcOthelloBG
             String[] colRowString = senderButton.Name.Split('_');
             int col = Convert.ToInt16(colRowString[1]);
             int row = Convert.ToInt16(colRowString[2]);
-            Vector2 position = new Vector2(col, row);
+            Vector2 position = new Vector2(col, row );
 
             try
             {
@@ -260,6 +262,15 @@ namespace ArcOthelloBG
                 Console.WriteLine("Error reading app settings");
             }
 
+        }
+
+        private setTimer(Timer timer)
+        {
+            aTimer = new System.Timers.Timer(1000);
+            // Hook up the Elapsed event for the timer. 
+            aTimer.Elapsed += OnTimedEvent;
+            aTimer.AutoReset = true;
+            aTimer.Enabled = true;
         }
     }
 }
