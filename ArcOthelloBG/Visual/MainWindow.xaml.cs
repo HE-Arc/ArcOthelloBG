@@ -32,7 +32,9 @@ namespace ArcOthelloBG
         private String blackUri;
         private String whiteUri;
         private List<Vector2> oldValidMoves;
-        private Timer timeCounter;
+        private Timer timerTime;
+        private int timeSecondBlack;
+        private int timeSecondWhite;
 
 
         private void _initBoard(int colCount, int rowCount)
@@ -225,6 +227,8 @@ namespace ArcOthelloBG
                 this.whiteId = Convert.ToInt16(appSettings["whiteId"]);
                 this.blackId = Convert.ToInt16(appSettings["blackId"]);
                 this.currentPlayId = this.blackId;
+                this.timeSecondBlack = 0;
+                this.timeSecondWhite = 0;
 
                 this.blackUri = "pack://application:,,,/Visual/bfm.png";
                 this.whiteUri = "pack://application:,,,/Visual/prixGarantie.jpg";
@@ -235,6 +239,8 @@ namespace ArcOthelloBG
 
                 Game.Instance.init(width, height, this.whiteId, this.blackId);
                 _initBoard(width, height);
+
+                this.setTimer();
 
                 Uri imageUri = null;
 
@@ -268,13 +274,36 @@ namespace ArcOthelloBG
 
         }
 
-        private void setTimer(Timer timer)
+        public void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
-            //aTimer = new System.Timers.Timer(1000);
-            //// Hook up the Elapsed event for the timer. 
-            //aTimer.Elapsed += OnTimedEvent;
-            //aTimer.AutoReset = true;
-            //aTimer.Enabled = true;
+            if(this.currentPlayId == this.blackId)
+            {
+                this.timeSecondBlack++;
+            }
+            else if(this.currentPlayId == this.whiteId)
+            {
+                this.timeSecondWhite++;
+            }
+        }
+
+        private void setTimer()
+        {
+            this.timerTime = new System.Timers.Timer(1000);
+            // Hook up the Elapsed event for the timer. 
+            this.timerTime.Elapsed += OnTimedEvent;
+            this.timerTime.AutoReset = true;
+            this.timerTime.Enabled = true;
+            this.timerTime.Stop();
+        }
+
+        private void startTimer()
+        {
+            this.timerTime.Start();
+        }
+
+        private void stopTimer()
+        {
+            this.timerTime.Stop();
         }
     }
 }
