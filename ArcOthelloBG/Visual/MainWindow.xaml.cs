@@ -135,7 +135,7 @@ namespace ArcOthelloBG
 
             try
             {
-                Game.Instance.play(position, this.currentPlayId);
+                List<Vector2> changedPositions=Game.Instance.play(position, this.currentPlayId);
 
                 Uri imageUri;
                 if (this.currentPlayId == this.whiteId)
@@ -152,6 +152,10 @@ namespace ArcOthelloBG
 
                 showValidMoves();
                 changeCellImage(senderButton, imageUri);
+                foreach(Vector2 changedPosition in changedPositions)
+                {
+                    changeCellImage(this.btnMatrix[changedPosition.X, changedPosition.Y], imageUri);
+                }
             }
             catch(ArgumentException exception)
             {
