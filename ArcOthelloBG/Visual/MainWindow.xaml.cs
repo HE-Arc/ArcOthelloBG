@@ -253,7 +253,7 @@ namespace ArcOthelloBG
 
             this.oldValidMoves.Clear();
             
-            List<Vector2> validMoves = Game.Instance.getPositionsAvailable(this.currentPlayId);
+            List<Vector2> validMoves = Game.Instance.getPositionsAvailable();
             if (validMoves.Count == 0)
             {
                 Console.WriteLine("AUTO PASS TURN");

@@ -16,11 +16,12 @@ namespace ArcOthelloBG.Logic
         // MEMBERS
         private int[,] board;
         private static Game instance = null;
-        private int lastPlayed;
+        private int playerToPlay;
         private int whiteId;
         private int blackId;
         private List<Vector2> possibleMoves;
-        private bool hasSkipped;
+        private int turn;
+        private Dictionary<int, List<Vector2>> availableMoves;
 
         public event EventHandler<SkipTurnEventArgs> TurnSkipped;
         public event EventHandler<WinEventArgs> Won;
@@ -80,11 +81,11 @@ namespace ArcOthelloBG.Logic
             }
         }
 
-        public int LastPlayed
+        public int PlayToPlay
         {
             get
             {
-                return this.lastPlayed;
+                return this.playerToPlay;
             }    
         }
 
@@ -112,13 +113,43 @@ namespace ArcOthelloBG.Logic
         public void init(int columns, int rows, int whiteId, int blackId)
         {
             this.board = new int[columns, rows];
-            this.lastPlayed = whiteId;
+            this.playerToPlay = whiteId;
             this.whiteId = whiteId;
             this.blackId = blackId;
             this.buildPossibleDirections();
-            this.hasSkipped = false;
 
             this.initBoard();
+
+            this.turn = -1;
+            this.availableMoves = new Dictionary<int, List<Vector2>>();
+            this.nextTurn();
+        }
+
+        private void nextTurn(bool hasSkipped = false)
+        {
+            this.playerToPlay = this.getNextPlayer();
+
+            this.turn++;
+            this.availableMoves.Add(this.turn, this.computePositionsAvailable(this.playerToPlay));
+
+            
+            if(this.availableMoves[this.turn].Count == 0)
+            {
+                if (hasSkipped)
+                {
+                    Won?.Invoke(this, new WinEventArgs(this.getWinner()));
+                    return; 
+                }
+
+                int previousPlayer = this.playerToPlay;
+                this.nextTurn(true);
+                TurnSkipped?.Invoke(this, new SkipTurnEventArgs(previousPlayer));
+            }
+        }
+
+        private int getNextPlayer()
+        {
+            return this.playerToPlay == this.whiteId ? this.blackId : this.whiteId;
         }
 
         /// <summary>
@@ -135,7 +166,7 @@ namespace ArcOthelloBG.Logic
                 var initialPosition = new Vector2(position);
                 var changedPositions = new List<Vector2>();
 
-                var directions = this.getValidMoves(position, idToPlay);
+                var directions = this.getValidDirections(position, idToPlay);
 
                 foreach (var direction in directions)
                 {
@@ -148,56 +179,14 @@ namespace ArcOthelloBG.Logic
                     } while (this.isInBoundaries(position) && this.getColor(position) != idToPlay);
                 }
 
-                // if it has 
-                this.lastPlayed = this.checkSkipAndSkip(idToPlay);
-                
+                this.nextTurn();
+
                 return changedPositions;
             }
             else
             {
                 throw new ArgumentException("This move isn't possible");
             }
-        }
-
-        private int checkSkipAndSkip(int playerPlayedId)
-        {
-            var otherPlayer = this.lastPlayed;
-
-            if(this.checkSkipTurn(otherPlayer))
-            {
-                // if already skipped, a player won
-                if(hasSkipped)
-                {
-                    Won?.Invoke(this, new WinEventArgs(this.getWinner()));
-                }
-                else
-                {
-                    this.SkipTurn(otherPlayer);
-                }
-
-                // check if the other player has played
-                this.checkSkipAndSkip(otherPlayer);
-
-                return otherPlayer;
-            }
-            else
-            {
-                //can play, so do not skip
-                hasSkipped = false;
-                return playerPlayedId;
-            }
-        }
-
-        private void SkipTurn(int playerId)
-        {
-            this.lastPlayed = playerId;
-            this.hasSkipped = true;
-            TurnSkipped?.Invoke(this, new SkipTurnEventArgs(playerId));
-        }
-
-        private bool checkSkipTurn(int idPlayer)
-        {
-            return this.getPositionsAvailable(idPlayer).Count == 0;
         }
 
         private int getWinner()
@@ -213,11 +202,11 @@ namespace ArcOthelloBG.Logic
         /// <returns>move is playable or not</returns>
         public bool isPlayable(Vector2 position, int idToPlay)
         {
-            return !(
-                this.lastPlayed == idToPlay ||
-                (this.isInBoundaries(position) && this.getColor(position) != 0) ||
-                this.getValidMoves(position, idToPlay).Count == 0
-            );
+            return
+                this.playerToPlay != idToPlay &&
+                (this.isInBoundaries(position) && this.getColor(position) == 0)
+                && this.availableMoves[this.turn].Contains(position)
+            ;
 
         }
 
@@ -227,7 +216,7 @@ namespace ArcOthelloBG.Logic
         /// <param name="position">position of the move</param>
         /// <param name="isWhite">color of the pawns</param>
         /// <returns>list of the directions possible</returns>
-        private List<Vector2> getValidMoves(Vector2 position, int idToPlay)
+        private List<Vector2> getValidDirections(Vector2 position, int idToPlay)
         {
             var validMoves = new List<Vector2>();
 
@@ -281,7 +270,7 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         /// <param name="playerColor">id of the player</param>
         /// <returns>list of position playable</returns>
-        public List<Vector2> getPositionsAvailable(int playerColor)
+        public List<Vector2> computePositionsAvailable(int playerColor)
         {
             var positionsAvailable = new List<Vector2>();
 
@@ -291,7 +280,8 @@ namespace ArcOthelloBG.Logic
                 {
                     var position = new Vector2(i, j);
 
-                    if (this.isPlayable(position, playerColor) && this.getColor(position) == 0)
+                    bool isPlayable = this.isPlayable(position, playerColor);
+                    if (isPlayable)
                     {
                         positionsAvailable.Add(position);
                     }
@@ -301,6 +291,10 @@ namespace ArcOthelloBG.Logic
             return positionsAvailable;
         }
 
+        public List<Vector2> getPositionsAvailable()
+        {
+            return this.availableMoves[this.turn];
+        }
 
 
         /// <summary>
@@ -321,7 +315,7 @@ namespace ArcOthelloBG.Logic
         /// <param name="position">position of the neighbors</param>
         /// <param name="isWhite">colors of the pawn played</param>
         /// <returns>neighbor playable or not</returns>
-        public bool isNeighborValid(Vector2 neighborPosition, int idToPlay)
+        private bool isNeighborValid(Vector2 neighborPosition, int idToPlay)
         {
             return this.isInBoundaries(neighborPosition) && this.getColor(neighborPosition) != idToPlay;
         }
@@ -336,7 +330,7 @@ namespace ArcOthelloBG.Logic
             return this.board[position.X, position.Y];
         }
 
-        public void putPawn(Vector2 position, int idColor)
+        private void putPawn(Vector2 position, int idColor)
         {
             this.board[position.X, position.Y] = idColor;
         }

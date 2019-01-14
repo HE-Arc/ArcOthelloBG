@@ -11,13 +11,13 @@ namespace ArcOthelloBG.Logic
     /// </summary>
     class Vector2 : ICloneable
     {
-        private short x;
-        private short y;
+        private int x;
+        private int y;
 
         /// <summary>
         /// getter for X value
         /// </summary>
-        public short X
+        public int X
         {
             get
             {
@@ -27,7 +27,7 @@ namespace ArcOthelloBG.Logic
         /// <summary>
         /// getter for y value
         /// </summary>
-        public short Y
+        public int Y
         {
             get
             {
@@ -40,23 +40,11 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         /// <param name="x">x value</param>
         /// <param name="y">y value</param>
-        public Vector2(short x, short y)
+        public Vector2(int x, int y)
         {
             this.x = x;
             this.y = y;
         }
-
-        /// <summary>
-        /// constructor by value
-        /// </summary>
-        /// <param name="x">x value</param>
-        /// <param name="y">y value</param>
-        public Vector2(int x, int y)
-        {
-            this.x = (short)x;
-            this.y = (short)y;
-        }
-
         /// <summary>
         /// constructor by copy
         /// </summary>
@@ -71,7 +59,7 @@ namespace ArcOthelloBG.Logic
         /// <returns>result of the sum</returns>
         public Vector2 add(Vector2 vToAdd)
         {
-            return new Vector2((short)(this.x + vToAdd.x), (short)(this.y + vToAdd.y));
+            return new Vector2(this.x + vToAdd.x, this.y + vToAdd.y);
         }
 
         /// <summary>
@@ -83,9 +71,9 @@ namespace ArcOthelloBG.Logic
             return new Vector2(this.x, this.y);
         }
 
-        public Tuple<short, short> toTupleshortshort()
+        public Tuple<int, int> toTuplesintint()
         {
-            return new Tuple<short, short>(this.x, this.y);
+            return new Tuple<int, int>(this.x, this.y);
         }
     }
 }
