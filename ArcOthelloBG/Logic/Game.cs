@@ -132,7 +132,6 @@ namespace ArcOthelloBG.Logic
             this.turn++;
             this.availableMoves.Add(this.turn, this.computePositionsAvailable(this.playerToPlay));
 
-            
             if(this.availableMoves[this.turn].Count == 0)
             {
                 if (hasSkipped)
@@ -160,7 +159,6 @@ namespace ArcOthelloBG.Logic
         /// <returns>positions that changed</returns>
         public List<Vector2> play(Vector2 position, int idToPlay)
         {
-
             if (this.isPlayable(position, idToPlay))
             {
                 var initialPosition = new Vector2(position);
@@ -203,9 +201,9 @@ namespace ArcOthelloBG.Logic
         public bool isPlayable(Vector2 position, int idToPlay)
         {
             return
-                this.playerToPlay != idToPlay &&
+                this.playerToPlay == idToPlay &&
                 (this.isInBoundaries(position) && this.getColor(position) == 0)
-                && this.availableMoves[this.turn].Contains(position)
+                && this.getValidDirections(position, idToPlay).Count > 0
             ;
 
         }
@@ -281,6 +279,7 @@ namespace ArcOthelloBG.Logic
                     var position = new Vector2(i, j);
 
                     bool isPlayable = this.isPlayable(position, playerColor);
+
                     if (isPlayable)
                     {
                         positionsAvailable.Add(position);
