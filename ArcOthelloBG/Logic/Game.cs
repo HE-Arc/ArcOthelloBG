@@ -171,10 +171,11 @@ namespace ArcOthelloBG.Logic
                 // if already skipped, a player won
                 if(hasSkipped)
                 {
-                    Won(this, new WinEventArgs(this.getWinner());
+                    Won(this, new WinEventArgs(this.getWinner()));
                 }
                 else
                 {
+                    TurnSkipped(this, new SkipTurnEventArgs(this.lastPlayed));
                     hasSkipped = true;
                 }
             }
