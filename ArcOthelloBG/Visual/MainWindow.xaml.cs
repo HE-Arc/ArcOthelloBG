@@ -14,13 +14,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Configuration;
+using System.Timers;
+using System.ComponentModel;
 
 namespace ArcOthelloBG
 {
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window//, INotifyPropertyChanged
     {
 
         //TO-DO: ADAPT TO GAME LOGIC
@@ -31,8 +33,32 @@ namespace ArcOthelloBG
         private Uri blackUri;
         private Uri whiteUri;
         private List<Vector2> oldValidMoves;
+        private int timeSecondBlack;
+        private int timeSecondWhite;
+        private Timer timerTime;
+
         private SolidColorBrush whiteBrush;
         private SolidColorBrush greenBrush;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string TimeWhite
+        {
+            get
+            {
+                TimeSpan result = TimeSpan.FromSeconds(this.timeSecondWhite);
+                return result.ToString("mm':'ss");
+            }
+        }
+
+        public string TimeBlack
+        {
+            get
+            {
+                TimeSpan result = TimeSpan.FromSeconds(this.timeSecondBlack);
+                return result.ToString("mm':'ss");
+            }
+        }
 
 
         private void buildBoard(int colCount, int rowCount)
@@ -261,6 +287,9 @@ namespace ArcOthelloBG
 
                 Game.Instance.init(width, height, this.whiteId, this.blackId);
 
+                this.setTimer();
+                this.startTimer();
+
                 if (buildGUI)
                 {
                     Border blackPlayerBorder = this.FindName("BlackPlayerBorder") as Border;
@@ -312,9 +341,10 @@ namespace ArcOthelloBG
             {
                 Console.WriteLine("Error reading app settings");
             }
+
         }
 
-        private void passTurn()
+         private void passTurn()
         {
 
             if (this.currentPlayId == this.whiteId)
@@ -330,6 +360,40 @@ namespace ArcOthelloBG
             showValidMoves();
         }
 
+        public void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            if(this.currentPlayId == this.blackId)
+            {
+                this.timeSecondBlack++;
+                //RaisePropertyChange("Test1");
+            }
+            else if(this.currentPlayId == this.whiteId)
+            {
+                this.timeSecondWhite++;
+            }
+        }
+
+        private void setTimer()
+        {
+            this.timerTime = new System.Timers.Timer(1000);
+            // Hook up the Elapsed event for the timer. 
+            this.timerTime.Elapsed += OnTimedEvent;
+            this.timerTime.AutoReset = true;
+            this.timerTime.Enabled = true;
+            //this.timerTime.Stop();
+        }
+
+        private void startTimer()
+        {
+            this.timerTime.Start();
+        }
+
+        private void stopTimer()
+        {
+            this.timerTime.Stop();
+        }
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -340,6 +404,14 @@ namespace ArcOthelloBG
 
             this.oldValidMoves = new List<Vector2>();
 
+        }
+
+        public void RaisePropertyChanged(string propertyName)
+        {
+            if(PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }
