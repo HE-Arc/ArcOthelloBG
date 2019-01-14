@@ -22,8 +22,12 @@ namespace ArcOthelloBG.Logic
         private List<Vector2> possibleMoves;
         private bool hasSkipped;
 
+<<<<<<< HEAD
+        //public event EventHandler<SkipTurnEventArgs> Overdrawn;
+=======
         public event EventHandler<SkipTurnEventArgs> TurnSkipped;
         public event EventHandler<WinEventArgs> Won;
+>>>>>>> 6e0b25eea4ab79c1945d983a23c7186cf21832e1
 
 
         // METHODS
