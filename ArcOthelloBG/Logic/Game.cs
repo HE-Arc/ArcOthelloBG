@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArcOthelloBG.EventHandling;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace ArcOthelloBG.Logic
         private int blackId;
         private List<Vector2> possibleMoves;
 
-        public event EventHandler<SkipTurnEventArgs> Overdrawn;
+        public event EventHandler<SkipTurnEventArgs> TurnSkipped;
 
 
         // METHODS
@@ -151,7 +152,7 @@ namespace ArcOthelloBG.Logic
                 }
                 else
                 {
-
+                    this.SkipTurn(this.lastPlayed);
                 }
                 
 
@@ -163,6 +164,11 @@ namespace ArcOthelloBG.Logic
             }
         }
 
+        private void SkipTurn(int playerId)
+        {
+            this.lastPlayed = playerId;
+            TurnSkipped(this, new SkipTurnEventArgs(playerId));
+        }
 
         private bool checkSkipTurn(int idPlayer)
         {
