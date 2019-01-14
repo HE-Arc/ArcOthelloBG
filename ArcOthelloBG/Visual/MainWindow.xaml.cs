@@ -15,13 +15,14 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Configuration;
 using System.Timers;
+using System.ComponentModel;
 
 namespace ArcOthelloBG
 {
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window//, INotifyPropertyChanged
     {
 
         //TO-DO: ADAPT TO GAME LOGIC
@@ -35,6 +36,26 @@ namespace ArcOthelloBG
         private Timer timerTime;
         private int timeSecondBlack;
         private int timeSecondWhite;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string TimeWhite
+        {
+            get
+            {
+                TimeSpan result = TimeSpan.FromSeconds(this.timeSecondWhite);
+                return result.ToString("mm':'ss");
+            }
+        }
+
+        public string TimeBlack
+        {
+            get
+            {
+                TimeSpan result = TimeSpan.FromSeconds(this.timeSecondBlack);
+                return result.ToString("mm':'ss");
+            }
+        }
 
 
         private void _initBoard(int colCount, int rowCount)
@@ -241,6 +262,7 @@ namespace ArcOthelloBG
                 _initBoard(width, height);
 
                 this.setTimer();
+                this.startTimer();
 
                 Uri imageUri = null;
 
@@ -279,6 +301,7 @@ namespace ArcOthelloBG
             if(this.currentPlayId == this.blackId)
             {
                 this.timeSecondBlack++;
+                //RaisePropertyChange("Test1");
             }
             else if(this.currentPlayId == this.whiteId)
             {
@@ -293,7 +316,7 @@ namespace ArcOthelloBG
             this.timerTime.Elapsed += OnTimedEvent;
             this.timerTime.AutoReset = true;
             this.timerTime.Enabled = true;
-            this.timerTime.Stop();
+            //this.timerTime.Stop();
         }
 
         private void startTimer()
@@ -304,6 +327,14 @@ namespace ArcOthelloBG
         private void stopTimer()
         {
             this.timerTime.Stop();
+        }
+
+        public void RaisePropertyChanged(string propertyName)
+        {
+            if(PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

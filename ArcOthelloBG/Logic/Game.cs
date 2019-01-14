@@ -20,6 +20,8 @@ namespace ArcOthelloBG.Logic
         private int blackId;
         private List<Vector2> possibleMoves;
 
+        public event EventHandler<SkipTurnEventArgs> Overdrawn;
+
 
         // METHODS
 
@@ -73,6 +75,14 @@ namespace ArcOthelloBG.Logic
 
                 return score;
             }
+        }
+
+        public int LastPlayed
+        {
+            get
+            {
+                return this.lastPlayed;
+            }    
         }
 
         /// <summary>
@@ -134,13 +144,29 @@ namespace ArcOthelloBG.Logic
                     } while (this.isInBoundaries(position) && this.getColor(position) != idToPlay);
                 }
 
-                this.lastPlayed = idToPlay;
+                // if it has 
+                if (!this.checkSkipTurn(this.lastPlayed))
+                {
+                    this.lastPlayed = idToPlay;
+                }
+                else
+                {
+
+                }
+                
+
                 return changedPositions;
             }
             else
             {
                 throw new ArgumentException("This move isn't possible");
             }
+        }
+
+
+        private bool checkSkipTurn(int idPlayer)
+        {
+            return this.getPositionsAvailable(idPlayer).Count == 0;
         }
 
         /// <summary>
@@ -168,7 +194,7 @@ namespace ArcOthelloBG.Logic
         /// <param name="position">position of the move</param>
         /// <param name="isWhite">color of the pawns</param>
         /// <returns>list of the directions possible</returns>
-        public List<Vector2> getValidMoves(Vector2 position, int idToPlay)
+        private List<Vector2> getValidMoves(Vector2 position, int idToPlay)
         {
             var validMoves = new List<Vector2>();
 
