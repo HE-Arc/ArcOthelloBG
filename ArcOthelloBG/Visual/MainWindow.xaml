@@ -42,26 +42,6 @@
             </Setter>
         </Style>
     </Window.Resources>
-<<<<<<< HEAD
-    <Grid Margin="25">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="7*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Border Grid.Column="0" Name="BlackPlayerBorder" Style="{StaticResource PlayerBorderStyle}">
-            <StackPanel  >
-                <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="bfm.png" />
-                <Label Name="Player1Name" Content="NomJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
-                <Label Name="Player1Score" Content="ScoreJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
-                <Label Name="Player1Time" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
-            </StackPanel>
-        </Border>
-        <Grid Name="Board" Grid.Column="1" Margin="20">
-=======
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
@@ -103,7 +83,6 @@
                     <Label Name="Player2Time" Content="TempsJoueur2" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
                 </StackPanel>
             </Border>
->>>>>>> 4a519c7265dddcee0f6dfb3177c51173f964c000
         </Grid>
     </DockPanel>
 
