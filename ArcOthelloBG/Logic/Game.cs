@@ -20,7 +20,7 @@ namespace ArcOthelloBG.Logic
         private int blackId;
         private List<Vector2> possibleMoves;
 
-        public event EventHandler<SkipTurnEventArgs> Overdrawn;
+        //public event EventHandler<SkipTurnEventArgs> Overdrawn;
 
 
         // METHODS
