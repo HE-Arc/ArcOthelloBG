@@ -149,7 +149,7 @@ namespace ArcOthelloBG.Logic
                 }
 
                 // if it has 
-                this.checkSkipAndSkip(idToPlay);
+                this.lastPlayed = this.checkSkipAndSkip(idToPlay);
                 
                 return changedPositions;
             }
@@ -159,15 +159,12 @@ namespace ArcOthelloBG.Logic
             }
         }
 
-        private void checkSkipAndSkip(int playerPlayedId)
+        private int checkSkipAndSkip(int playerPlayedId)
         {
             var otherPlayer = this.lastPlayed;
 
             if(this.checkSkipTurn(otherPlayer))
             {
-                // check if the other player has played
-                this.checkSkipAndSkip(otherPlayer);
-
                 // if already skipped, a player won
                 if(hasSkipped)
                 {
@@ -175,21 +172,26 @@ namespace ArcOthelloBG.Logic
                 }
                 else
                 {
-                    TurnSkipped(this, new SkipTurnEventArgs(this.lastPlayed));
-                    hasSkipped = true;
+                    this.SkipTurn(otherPlayer);
                 }
+
+                // check if the other player has played
+                this.checkSkipAndSkip(otherPlayer);
+
+                return otherPlayer;
             }
             else
             {
                 //can play, so do not skip
-                this.lastPlayed = playerPlayedId;
                 hasSkipped = false;
+                return playerPlayedId;
             }
         }
 
         private void SkipTurn(int playerId)
         {
             this.lastPlayed = playerId;
+            this.hasSkipped = true;
             TurnSkipped(this, new SkipTurnEventArgs(playerId));
         }
 
