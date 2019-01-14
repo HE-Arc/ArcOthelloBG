@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArcOthelloBG.EventHandling;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -19,8 +20,14 @@ namespace ArcOthelloBG.Logic
         private int whiteId;
         private int blackId;
         private List<Vector2> possibleMoves;
+        private bool hasSkipped;
 
+<<<<<<< HEAD
         //public event EventHandler<SkipTurnEventArgs> Overdrawn;
+=======
+        public event EventHandler<SkipTurnEventArgs> TurnSkipped;
+        public event EventHandler<WinEventArgs> Won;
+>>>>>>> 6e0b25eea4ab79c1945d983a23c7186cf21832e1
 
 
         // METHODS
@@ -113,6 +120,7 @@ namespace ArcOthelloBG.Logic
             this.whiteId = whiteId;
             this.blackId = blackId;
             this.buildPossibleDirections();
+            this.hasSkipped = false;
 
             this.initBoard();
         }
@@ -128,12 +136,12 @@ namespace ArcOthelloBG.Logic
 
             if (this.isPlayable(position, idToPlay))
             {
-                Vector2 initialPosition = new Vector2(position);
-                List<Vector2> changedPositions = new List<Vector2>();
+                var initialPosition = new Vector2(position);
+                var changedPositions = new List<Vector2>();
 
                 var directions = this.getValidMoves(position, idToPlay);
 
-                foreach (Vector2 direction in directions)
+                foreach (var direction in directions)
                 {
                     position = initialPosition;
                     do
@@ -145,16 +153,8 @@ namespace ArcOthelloBG.Logic
                 }
 
                 // if it has 
-                if (!this.checkSkipTurn(this.lastPlayed))
-                {
-                    this.lastPlayed = idToPlay;
-                }
-                else
-                {
-
-                }
+                this.checkSkipAndSkip(idToPlay);
                 
-
                 return changedPositions;
             }
             else
@@ -163,10 +163,48 @@ namespace ArcOthelloBG.Logic
             }
         }
 
+        private void checkSkipAndSkip(int playerPlayedId)
+        {
+            var otherPlayer = this.lastPlayed;
+
+            if(this.checkSkipTurn(otherPlayer))
+            {
+                // check if the other player has played
+                this.checkSkipAndSkip(otherPlayer);
+
+                // if already skipped, a player won
+                if(hasSkipped)
+                {
+                    Won(this, new WinEventArgs(this.getWinner()));
+                }
+                else
+                {
+                    TurnSkipped(this, new SkipTurnEventArgs(this.lastPlayed));
+                    hasSkipped = true;
+                }
+            }
+            else
+            {
+                //can play, so do not skip
+                this.lastPlayed = playerPlayedId;
+                hasSkipped = false;
+            }
+        }
+
+        private void SkipTurn(int playerId)
+        {
+            this.lastPlayed = playerId;
+            TurnSkipped(this, new SkipTurnEventArgs(playerId));
+        }
 
         private bool checkSkipTurn(int idPlayer)
         {
             return this.getPositionsAvailable(idPlayer).Count == 0;
+        }
+
+        private int getWinner()
+        {
+            return 0;
         }
 
         /// <summary>
@@ -177,15 +215,12 @@ namespace ArcOthelloBG.Logic
         /// <returns>move is playable or not</returns>
         public bool isPlayable(Vector2 position, int idToPlay)
         {
-            if (this.lastPlayed == idToPlay || 
-                (this.isInBoundaries(position) && this.getColor(position) != 0) || 
+            return !(
+                this.lastPlayed == idToPlay ||
+                (this.isInBoundaries(position) && this.getColor(position) != 0) ||
                 this.getValidMoves(position, idToPlay).Count == 0
-            )
-            {
-                return false;
-            }
+            );
 
-            return true;
         }
 
         /// <summary>
