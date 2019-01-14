@@ -168,7 +168,7 @@ namespace ArcOthelloBG.Logic
                 // if already skipped, a player won
                 if(hasSkipped)
                 {
-                    Won(this, new WinEventArgs(this.getWinner()));
+                    Won?.Invoke(this, new WinEventArgs(this.getWinner()));
                 }
                 else
                 {
@@ -192,7 +192,7 @@ namespace ArcOthelloBG.Logic
         {
             this.lastPlayed = playerId;
             this.hasSkipped = true;
-            TurnSkipped(this, new SkipTurnEventArgs(playerId));
+            TurnSkipped?.Invoke(this, new SkipTurnEventArgs(playerId));
         }
 
         private bool checkSkipTurn(int idPlayer)
