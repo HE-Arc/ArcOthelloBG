@@ -33,9 +33,9 @@ namespace ArcOthelloBG
         private String blackUri;
         private String whiteUri;
         private List<Vector2> oldValidMoves;
-        private Timer timerTime;
         private int timeSecondBlack;
         private int timeSecondWhite;
+        private Timer timerTime;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -58,7 +58,7 @@ namespace ArcOthelloBG
         }
 
 
-        private void _initBoard(int colCount, int rowCount)
+        private void buildBoard(int colCount, int rowCount)
         {
             Grid grid = this.FindName("Board") as Grid;
             this.btnMatrix = new Button[colCount, rowCount];
@@ -129,7 +129,7 @@ namespace ArcOthelloBG
                         Background = new SolidColorBrush(Colors.White)
                     };
 
-                    btnMatrix[col, row].Click += new RoutedEventHandler(ClickHandler);
+                    btnMatrix[col, row].Click += new RoutedEventHandler(BoardClickHandler);
 
                     btnMatrix[col, row].Style = Resources["MyButtonStyle"] as Style;
 
@@ -147,7 +147,7 @@ namespace ArcOthelloBG
             }
         }
 
-        private void ClickHandler(object sender, EventArgs e)
+        private void BoardClickHandler(object sender, EventArgs e)
         {
             //TO-DO: check game logic
             Button senderButton = (Button)sender;
@@ -156,11 +156,11 @@ namespace ArcOthelloBG
             String[] colRowString = senderButton.Name.Split('_');
             int col = Convert.ToInt16(colRowString[1]);
             int row = Convert.ToInt16(colRowString[2]);
-            Vector2 position = new Vector2(col, row );
+            Vector2 position = new Vector2(col, row);
 
             try
             {
-                List<Vector2> changedPositions=Game.Instance.play(position, this.currentPlayId);
+                List<Vector2> changedPositions = Game.Instance.play(position, this.currentPlayId);
 
                 Uri imageUri;
                 if (this.currentPlayId == this.whiteId)
@@ -177,15 +177,40 @@ namespace ArcOthelloBG
 
                 showValidMoves();
                 changeCellImage(senderButton, imageUri);
-                foreach(Vector2 changedPosition in changedPositions)
+                foreach (Vector2 changedPosition in changedPositions)
                 {
                     changeCellImage(this.btnMatrix[changedPosition.X, changedPosition.Y], imageUri);
                 }
             }
-            catch(ArgumentException exception)
+            catch (ArgumentException exception)
             {
 
             }
+        }
+
+        private void mnuNewGameClick(object sender, EventArgs e)
+        {
+            resetBoard(buildGUI: false);
+        }
+
+        private void mnuLoadGameClick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void mnuSaveGameClick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void mnuExitClick(object sender, EventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void btnStartClick(object sender, EventArgs e)
+        {
+            resetBoard(buildGUI: true);
         }
 
         private void togglePlayerBorderColors()
@@ -237,9 +262,8 @@ namespace ArcOthelloBG
             }
         }
 
-        public MainWindow()
+        private void resetBoard(bool buildGUI)
         {
-            InitializeComponent();
             try
             {
                 var appSettings = ConfigurationManager.AppSettings;
@@ -248,8 +272,6 @@ namespace ArcOthelloBG
                 this.whiteId = Convert.ToInt16(appSettings["whiteId"]);
                 this.blackId = Convert.ToInt16(appSettings["blackId"]);
                 this.currentPlayId = this.blackId;
-                this.timeSecondBlack = 0;
-                this.timeSecondWhite = 0;
 
                 this.blackUri = "pack://application:,,,/Visual/bfm.png";
                 this.whiteUri = "pack://application:,,,/Visual/prixGarantie.jpg";
@@ -259,10 +281,31 @@ namespace ArcOthelloBG
                 this.togglePlayerBorderColors();
 
                 Game.Instance.init(width, height, this.whiteId, this.blackId);
-                _initBoard(width, height);
 
                 this.setTimer();
                 this.startTimer();
+
+                if (buildGUI)
+                {
+                    Border blackPlayerBorder = this.FindName("BlackPlayerBorder") as Border;
+                    Border whitePlayerBorder = this.FindName("WhitePlayerBorder") as Border;
+                    BlackPlayerBorder.Opacity = 1;
+                    WhitePlayerBorder.Opacity = 1;
+                    Button startButton= this.FindName("btnStart") as Button;
+                    Grid grid = this.FindName("Board") as Grid;
+                    grid.Children.Remove(startButton);
+                    buildBoard(width, height);
+                }
+                else
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        for (int y = 0; y < height; y++)
+                        {
+                            this.btnMatrix[x, y].Background = new SolidColorBrush(Colors.White);
+                        }
+                    }
+                }
 
                 Uri imageUri = null;
 
@@ -327,6 +370,13 @@ namespace ArcOthelloBG
         private void stopTimer()
         {
             this.timerTime.Stop();
+        }
+
+
+        public MainWindow()
+        {
+            InitializeComponent();           
+
         }
 
         public void RaisePropertyChanged(string propertyName)
