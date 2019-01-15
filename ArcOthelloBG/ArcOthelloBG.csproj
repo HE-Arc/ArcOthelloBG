@@ -85,6 +85,7 @@
     </Compile>
     <Compile Include="EventHandling\SkipTurnEventArgs.cs" />
     <Compile Include="EventHandling\WinEventArgs.cs" />
+    <Compile Include="Logic\BoardState.cs" />
     <Compile Include="Logic\Game.cs" />
     <Compile Include="Logic\Playable.cs" />
     <Compile Include="Logic\Vector2.cs" />
