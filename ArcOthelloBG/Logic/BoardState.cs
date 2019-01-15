@@ -32,11 +32,12 @@ namespace ArcOthelloBG.Logic
 
         public BoardState(int[,] board, int playerId, List<Vector2> possibleDirections)
         {
-            this.board = board;
+            this.board = (int[,])board.Clone(); ;
             this.playerId = playerId;
             this.availablePositions = new List<Vector2>();
             this.listAvailableDirectionsForPosition = new Dictionary<Vector2, List<Vector2>>();
             this.possibleDirections = possibleDirections;
+            this.computeAvailablePositions();
         }
 
         private void computeAvailablePositions()
@@ -55,14 +56,21 @@ namespace ArcOthelloBG.Logic
             }
         }
 
-        public bool isPlayableWithCompute(Vector2 position)
+        private bool isPlayableWithCompute(Vector2 position)
         {
             this.computeValidDirection(position);
 
-            return
-                (this.isInBoundaries(position) && this.getColor(position) == 0) // TODO CHANGE 0
-                && this.ListAvailableDirectionsForPosition[position].Count > 0
+            return this.isPlayable(position);
+        }
+
+        public bool isPlayable(Vector2 position)
+        {
+            return 
+                (this.isInBoundaries(position) && this.getColor(position) == 0)
+                && this.listAvailableDirectionsForPosition.Keys.Contains(position)
+                && this.listAvailableDirectionsForPosition[position].Count > 0
             ;
+            
         }
 
         private List<Vector2> computeValidDirection(Vector2 position)
