@@ -21,7 +21,6 @@ namespace ArcOthelloBG.Logic
         private int blackId;
         private List<Vector2> possibleMoves;
         private int turn;
-        private Dictionary<int, List<Vector2>> availableMoves;
         private int emptyId;
         private BoardState boardState;
 
@@ -125,7 +124,6 @@ namespace ArcOthelloBG.Logic
             this.initBoard();
 
             this.turn = -1;
-            this.availableMoves = new Dictionary<int, List<Vector2>>();
             this.nextTurn();
         }
 
@@ -135,7 +133,6 @@ namespace ArcOthelloBG.Logic
 
             this.turn++;
             this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleMoves);
-            //this.availableMoves.Add(this.turn, this.computePositionsAvailable(this.playerToPlay));
 
             if(this.getPositionsAvailable().Count == 0)
             {
