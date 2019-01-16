@@ -89,7 +89,7 @@ namespace ArcOthelloBG.Logic
 
         public override int GetHashCode()
         {
-            return this.x.GetHashCode() + this.y.GetHashCode();
+            return $"{this.x}{this.y}".GetHashCode();
         }
 
         public Tuple<int, int> toTuplesintint()

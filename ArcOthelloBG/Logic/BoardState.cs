@@ -110,7 +110,7 @@ namespace ArcOthelloBG.Logic
 
             return false;
         }
-
+            
         public int getColor(Vector2 position)
         {
             return this.board[position.X, position.Y];
