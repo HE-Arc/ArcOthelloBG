@@ -40,7 +40,7 @@ namespace ArcOthelloBG
         private SolidColorBrush whiteBrush;
         private SolidColorBrush greenBrush;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged ;
 
         public string TimeWhite
         {
@@ -152,9 +152,7 @@ namespace ArcOthelloBG
 
         private void BoardClickHandler(object sender, EventArgs e)
         {
-            //TO-DO: check game logic
             Button senderButton = (Button)sender;
-
 
             String[] colRowString = senderButton.Name.Split('_');
             int col = Convert.ToInt16(colRowString[1]);
@@ -185,7 +183,7 @@ namespace ArcOthelloBG
             }
             catch (ArgumentException exception)
             {
-
+                Console.WriteLine(exception);
             }
         }
 
@@ -359,7 +357,7 @@ namespace ArcOthelloBG
             if (this.currentPlayId == this.blackId)
             {
                 this.timeSecondBlack++;
-                //RaisePropertyChange("Test1");
+                RaisePropertyChanged("TimeBlack");
             }
             else if (this.currentPlayId == this.whiteId)
             {
@@ -403,10 +401,7 @@ namespace ArcOthelloBG
 
         public void RaisePropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
