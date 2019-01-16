@@ -84,7 +84,7 @@ namespace ArcOthelloBG.Logic
             }
            
 
-            return toCompare.x == this.x && toCompare.Y == this.y;
+            return toCompare.x == this.x && toCompare.y == this.y;
         }
 
         public override int GetHashCode()
