@@ -22,7 +22,7 @@ namespace ArcOthelloBG
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window//, INotifyPropertyChanged
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
 
         //TO-DO: ADAPT TO GAME LOGIC
@@ -362,6 +362,7 @@ namespace ArcOthelloBG
             else if (this.currentPlayId == this.whiteId)
             {
                 this.timeSecondWhite++;
+                RaisePropertyChanged("TimeWhite");
             }
         }
 
@@ -394,6 +395,7 @@ namespace ArcOthelloBG
             this.blackUri = new Uri("pack://application:,,,/Visual/bfm.png");
             this.whiteUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
             DataContext = this;
+
 
             this.oldValidMoves = new List<Vector2>();
 
