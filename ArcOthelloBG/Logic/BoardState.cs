@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ArcOthelloBG.Logic
 {
+    [Serializable]
     class BoardState
     {
         private int[,] board;
@@ -65,12 +66,17 @@ namespace ArcOthelloBG.Logic
 
         public bool isPlayable(Vector2 position)
         {
-            return 
-                (this.isInBoundaries(position) && this.getColor(position) == 0)
-                && this.listAvailableDirectionsForPosition.Keys.Contains(position)
-                && this.listAvailableDirectionsForPosition[position].Count > 0
-            ;
-            
+            try
+            {
+                return
+                    (this.isInBoundaries(position) && this.getColor(position) == 0)
+                    && this.listAvailableDirectionsForPosition[position].Count > 0
+                ;
+            }
+            catch(KeyNotFoundException)
+            {
+                return false;
+            }            
         }
 
         private List<Vector2> computeValidDirection(Vector2 position)
