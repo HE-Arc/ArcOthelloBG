@@ -88,7 +88,7 @@ namespace ArcOthelloBG.Logic
             get
             {
                 return this.playerToPlay;
-            }    
+            }
         }
 
         /// <summary>
@@ -105,6 +105,15 @@ namespace ArcOthelloBG.Logic
 
                 return board;
             }
+        }
+
+        public BoardState BoardState
+        {
+            get 
+            {
+                return this.boardState; 
+            }
+
         }
 
         /// <summary>
