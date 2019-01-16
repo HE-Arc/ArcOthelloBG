@@ -66,17 +66,7 @@ namespace ArcOthelloBG.Logic
 
         public bool isPlayable(Vector2 position)
         {
-            try
-            {
-                return
-                    (this.isInBoundaries(position) && this.getColor(position) == 0)
-                    && this.listAvailableDirectionsForPosition[position].Count > 0
-                ;
-            }
-            catch(KeyNotFoundException)
-            {
-                return false;
-            }            
+            return this.isInBoundaries(position) && this.getColor(position) == 0 && this.listAvailableDirectionsForPosition.ContainsKey(position);        
         }
 
         private List<Vector2> computeValidDirection(Vector2 position)
