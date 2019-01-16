@@ -71,6 +71,27 @@ namespace ArcOthelloBG.Logic
             return new Vector2(this.x, this.y);
         }
 
+        public override bool Equals(object obj)
+        {
+            Vector2 toCompare = null;
+            try
+            {
+                toCompare = obj as Vector2;
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
+           
+
+            return toCompare.x == this.x && toCompare.Y == this.y;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.x.GetHashCode() + this.y.GetHashCode();
+        }
+
         public Tuple<int, int> toTuplesintint()
         {
             return new Tuple<int, int>(this.x, this.y);

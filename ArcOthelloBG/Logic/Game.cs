@@ -213,7 +213,6 @@ namespace ArcOthelloBG.Logic
         public bool isPlayable(Vector2 position, int idToPlay)
         {
             return this.playerToPlay == idToPlay && this.boardState.isPlayable(position);
-
         }
 
         public List<Vector2> getPositionsAvailable()
