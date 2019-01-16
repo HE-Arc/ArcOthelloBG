@@ -21,11 +21,11 @@ namespace ArcOthelloBG.Logic
         private int blackId;
         private List<Vector2> possibleMoves;
         private int turn;
-        private Dictionary<int, List<Vector2>> availableMoves;
+        private int emptyId;
+        private BoardState boardState;
 
         public event EventHandler<SkipTurnEventArgs> TurnSkipped;
         public event EventHandler<WinEventArgs> Won;
-
 
         // METHODS
 
@@ -33,7 +33,9 @@ namespace ArcOthelloBG.Logic
         /// singleton constructor, so private
         /// </summary>
         private Game()
-        { }
+        {
+            this.boardState = null;
+        }
 
         /// <summary>
         /// property for the white score, only getter, and it's a computed value
@@ -86,7 +88,7 @@ namespace ArcOthelloBG.Logic
             get
             {
                 return this.playerToPlay;
-            }    
+            }
         }
 
         /// <summary>
@@ -105,6 +107,15 @@ namespace ArcOthelloBG.Logic
             }
         }
 
+        public BoardState BoardState
+        {
+            get 
+            {
+                return this.boardState; 
+            }
+
+        }
+
         /// <summary>
         /// Init the grid
         /// </summary>
@@ -116,12 +127,12 @@ namespace ArcOthelloBG.Logic
             this.playerToPlay = whiteId;
             this.whiteId = whiteId;
             this.blackId = blackId;
+            this.emptyId = 0;
             this.buildPossibleDirections();
 
             this.initBoard();
 
             this.turn = -1;
-            this.availableMoves = new Dictionary<int, List<Vector2>>();
             this.nextTurn();
         }
 
@@ -130,9 +141,9 @@ namespace ArcOthelloBG.Logic
             this.playerToPlay = this.getNextPlayer();
 
             this.turn++;
-            this.availableMoves.Add(this.turn, this.computePositionsAvailable(this.playerToPlay));
+            this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleMoves);
 
-            if(this.availableMoves[this.turn].Count == 0)
+            if(this.getPositionsAvailable().Count == 0)
             {
                 if (hasSkipped)
                 {
@@ -164,7 +175,7 @@ namespace ArcOthelloBG.Logic
                 var initialPosition = new Vector2(position);
                 var changedPositions = new List<Vector2>();
 
-                var directions = this.getValidDirections(position, idToPlay);
+                var directions = this.boardState.getValidDirections(position);
 
                 foreach (var direction in directions)
                 {
@@ -174,7 +185,7 @@ namespace ArcOthelloBG.Logic
                         this.putPawn(position, idToPlay);
                         changedPositions.Add(position);
                         position = position.add(direction);
-                    } while (this.isInBoundaries(position) && this.getColor(position) != idToPlay);
+                    } while (this.boardState.isInBoundaries(position) && this.getColor(position) != idToPlay);
                 }
 
                 this.nextTurn();
@@ -185,6 +196,7 @@ namespace ArcOthelloBG.Logic
             {
                 throw new ArgumentException("This move isn't possible");
             }
+
         }
 
         private int getWinner()
@@ -200,123 +212,13 @@ namespace ArcOthelloBG.Logic
         /// <returns>move is playable or not</returns>
         public bool isPlayable(Vector2 position, int idToPlay)
         {
-            return
-                this.playerToPlay == idToPlay &&
-                (this.isInBoundaries(position) && this.getColor(position) == 0)
-                && this.getValidDirections(position, idToPlay).Count > 0
-            ;
+            return this.playerToPlay == idToPlay && this.boardState.isPlayable(position);
 
-        }
-
-        /// <summary>
-        /// Get the directions which make the move position
-        /// </summary>
-        /// <param name="position">position of the move</param>
-        /// <param name="isWhite">color of the pawns</param>
-        /// <returns>list of the directions possible</returns>
-        private List<Vector2> getValidDirections(Vector2 position, int idToPlay)
-        {
-            var validMoves = new List<Vector2>();
-
-            foreach (Vector2 move in this.possibleMoves)
-            {
-                if (this.checkLine(position, move, idToPlay))
-                {
-                    Vector2 validMove = new Vector2(move);
-                    validMoves.Add(move);
-                }
-            }
-
-            return validMoves;
-        }
-
-        /// <summary>
-        /// check there is another pawn of the same color on the same line
-        /// </summary>
-        /// <param name="position">position to start from</param>
-        /// <param name="direction">direction to go</param>
-        /// <param name="idToPlay">color of the pawn</param>
-        /// <returns>if there is a pawn of the same color</returns>
-        private bool checkLine(Vector2 position, Vector2 direction, int idToPlay)
-        {
-            int i = 0;
-            int colorPosition = 0;
-            do
-            {
-                position = position.add(direction);
-                
-                if (!this.isInBoundaries(position))
-                {
-                    return false;
-                }
-                colorPosition = this.getColor(position);
-
-
-                if (colorPosition == idToPlay && i != 0)
-                {
-                    return true;
-                }
-
-                i++;
-            } while (colorPosition != idToPlay && colorPosition != 0);
-
-            return false;
-        }
-
-        /// <summary>
-        /// Get all the move a player can do
-        /// </summary>
-        /// <param name="playerColor">id of the player</param>
-        /// <returns>list of position playable</returns>
-        public List<Vector2> computePositionsAvailable(int playerColor)
-        {
-            var positionsAvailable = new List<Vector2>();
-
-            for(int i = 0; i < this.board.GetLength(0); i++)
-            {
-                for(int j = 0; j < this.board.GetLength(1); j++)
-                {
-                    var position = new Vector2(i, j);
-
-                    bool isPlayable = this.isPlayable(position, playerColor);
-
-                    if (isPlayable)
-                    {
-                        positionsAvailable.Add(position);
-                    }
-                }
-            }
-
-            return positionsAvailable;
         }
 
         public List<Vector2> getPositionsAvailable()
         {
-            return this.availableMoves[this.turn];
-        }
-
-
-        /// <summary>
-        /// check a position is in the board
-        /// </summary>
-        /// <param name="position">position to check</param>
-        /// <returns>is in the board or not</returns>
-        private bool isInBoundaries(Vector2 position)
-        {
-            return position.X < this.board.GetLength(0) && position.Y < this.board.GetLength(1)
-                && position.X >= 0 && position.Y >= 0;
-        }
-
-        /// <summary>
-        /// Check which neighbors allows this move
-        /// TODO USEFUL?
-        /// </summary>
-        /// <param name="position">position of the neighbors</param>
-        /// <param name="isWhite">colors of the pawn played</param>
-        /// <returns>neighbor playable or not</returns>
-        private bool isNeighborValid(Vector2 neighborPosition, int idToPlay)
-        {
-            return this.isInBoundaries(neighborPosition) && this.getColor(neighborPosition) != idToPlay;
+            return this.boardState.AvailablePositions;
         }
 
         /// <summary>
@@ -364,7 +266,7 @@ namespace ArcOthelloBG.Logic
             {
                 for (int j = 0; j < h; j++)
                 {
-                    int color = 0;
+                    int color = this.emptyId;
 
                     if (i == w / 2 && j == h / 2 || i == w / 2 - 1 && j == h / 2 - 1)
                     {
