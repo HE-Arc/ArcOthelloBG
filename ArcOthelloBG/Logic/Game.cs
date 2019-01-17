@@ -99,13 +99,13 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         /// <param name="width">width of the grid</param>
         /// <param name="height">height of the grid</param>
-        public void init(int columns, int rows, int whiteId, int blackId)
+        public void init(int columns, int rows, int whiteId, int blackId, int emptyId)
         {
             this.board = new int[columns, rows];
             this.playerToPlay = whiteId;
             this.whiteId = whiteId;
             this.blackId = blackId;
-            this.emptyId = 0;
+            this.emptyId = emptyId;
             this.buildPossibleDirections();
             this.blackScore = 0;
             this.whiteScore = 0;
@@ -121,7 +121,7 @@ namespace ArcOthelloBG.Logic
             this.playerToPlay = this.getNextPlayer();
 
             this.turn++;
-            this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleMoves);
+            this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleMoves, this.emptyId);
 
             if(this.getPositionsAvailable().Count == 0)
             {

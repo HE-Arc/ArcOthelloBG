@@ -227,12 +227,12 @@ namespace ArcOthelloBG
 
         private void mnuLoadGameClick(object sender, EventArgs e)
         {
-
+            Console.WriteLine("Loading");
         }
 
         private void mnuSaveGameClick(object sender, EventArgs e)
         {
-
+            Console.WriteLine("Save game");
         }
 
         private void mnuExitClick(object sender, EventArgs e)
