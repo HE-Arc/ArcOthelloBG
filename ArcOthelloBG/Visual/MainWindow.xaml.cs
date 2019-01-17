@@ -22,7 +22,7 @@ namespace ArcOthelloBG
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window//, INotifyPropertyChanged
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
 
         //TO-DO: ADAPT TO GAME LOGIC
@@ -57,6 +57,36 @@ namespace ArcOthelloBG
             {
                 TimeSpan result = TimeSpan.FromSeconds(this.timeSecondBlack);
                 return result.ToString("mm':'ss");
+            }
+        }
+
+        public int BlackScore
+        {
+            get
+            {
+                try
+                {
+                    return Game.Instance.BlackScore;
+                }
+                catch (NullReferenceException e) //first time, if board is not init
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public int WhiteScore
+        {
+            get
+            {
+                try
+                {
+                    return Game.Instance.WhiteScore;
+                }
+                catch (NullReferenceException e) //first time, if board is not init
+                {
+                    return 0;
+                }
             }
         }
 
@@ -122,25 +152,19 @@ namespace ArcOthelloBG
 
                 for (int row = 0; row < rowCount; row++)
                 {
-                    //TO-DO: THE BUTTON IS TEMPORARY, WE SHOULD REPLACE IT WITH A MORE APPROPRIATE/CUSTOM WIDGET FOR A BOARD ELEMENT
 
                     btnMatrix[col, row] = new Button()
                     {
 
                         Name = Convert.ToString("_" + col + "_" + row), //because of XAML name restrictions, it must start with a "_"
                         Content = letter + (row + 1).ToString(),
-                        Background =this.whiteBrush
+                        Background = this.whiteBrush
                     };
 
                     btnMatrix[col, row].Click += new RoutedEventHandler(BoardClickHandler);
 
                     btnMatrix[col, row].Style = Resources["MyButtonStyle"] as Style;
 
-                    //btnMatrix[col, row].MouseEnter += new MouseEventHandler((sender, e) =>
-                    //{
-                    //    Button senderButton = (Button)sender;
-                    //    senderButton.BorderBrush = new SolidColorBrush(Colors.Red);
-                    //});
 
                     Grid.SetColumn(btnMatrix[col, row], col + 1);
                     Grid.SetRow(btnMatrix[col, row], row + 1);
@@ -152,9 +176,7 @@ namespace ArcOthelloBG
 
         private void BoardClickHandler(object sender, EventArgs e)
         {
-            //TO-DO: check game logic
             Button senderButton = (Button)sender;
-
 
             String[] colRowString = senderButton.Name.Split('_');
             int col = Convert.ToInt16(colRowString[1]);
@@ -168,7 +190,7 @@ namespace ArcOthelloBG
                 Uri imageUri;
                 if (this.currentPlayId == this.whiteId)
                 {
-                    imageUri =this.whiteUri;
+                    imageUri = this.whiteUri;
                 }
                 else
                 {
@@ -181,11 +203,20 @@ namespace ArcOthelloBG
                     changeCellImage(this.btnMatrix[changedPosition.X, changedPosition.Y], imageUri);
                 }
 
+                if (this.currentPlayId == this.whiteId || this.currentPlayId == this.blackId && changedPositions.Count > 0)
+                {
+                    RaisePropertyChanged("WhiteScore");
+                }
+                if (this.currentPlayId == this.blackId || this.currentPlayId == this.whiteId && changedPositions.Count > 0)
+                {
+                    RaisePropertyChanged("BlackScore");
+                }
+
                 this.passTurn();
             }
             catch (ArgumentException exception)
             {
-
+                Console.WriteLine(exception);
             }
         }
 
@@ -252,24 +283,18 @@ namespace ArcOthelloBG
             }
 
             this.oldValidMoves.Clear();
-            
+
             List<Vector2> validMoves = Game.Instance.getPositionsAvailable();
-            if (validMoves.Count == 0)
+
+            foreach (Vector2 CellCoor in validMoves)
             {
-                Console.WriteLine("AUTO PASS TURN");
-                this.passTurn();
-            }
-            else
-            {
-                foreach (Vector2 CellCoor in validMoves)
+                if (Game.Instance.getColor(CellCoor) == 0)
                 {
-                    if (Game.Instance.getColor(CellCoor) == 0)
-                    {
-                        this.oldValidMoves.Add(CellCoor);
-                        this.btnMatrix[CellCoor.X, CellCoor.Y].Background = this.greenBrush;
-                    }
+                    this.oldValidMoves.Add(CellCoor);
+                    this.btnMatrix[CellCoor.X, CellCoor.Y].Background = this.greenBrush;
                 }
             }
+
         }
 
         private void resetBoard(bool buildGUI)
@@ -322,7 +347,7 @@ namespace ArcOthelloBG
 
                         if (idPlayer == this.blackId)
                         {
-                            imageUri =this.blackUri;
+                            imageUri = this.blackUri;
                         }
                         else if (idPlayer == this.whiteId)
                         {
@@ -336,6 +361,10 @@ namespace ArcOthelloBG
                     }
                 }
                 this.showValidMoves();
+
+                RaisePropertyChanged("BlackScore");
+
+                RaisePropertyChanged("WhiteScore");
             }
             catch (ConfigurationErrorsException)
             {
@@ -344,7 +373,7 @@ namespace ArcOthelloBG
 
         }
 
-         private void passTurn()
+        private void passTurn()
         {
 
             if (this.currentPlayId == this.whiteId)
@@ -362,14 +391,15 @@ namespace ArcOthelloBG
 
         public void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
-            if(this.currentPlayId == this.blackId)
+            if (this.currentPlayId == this.blackId)
             {
                 this.timeSecondBlack++;
-                //RaisePropertyChange("Test1");
+                RaisePropertyChanged("TimeBlack");
             }
-            else if(this.currentPlayId == this.whiteId)
+            else if (this.currentPlayId == this.whiteId)
             {
                 this.timeSecondWhite++;
+                RaisePropertyChanged("TimeWhite");
             }
         }
 
@@ -401,6 +431,8 @@ namespace ArcOthelloBG
             this.greenBrush = new SolidColorBrush(Colors.LightGreen);
             this.blackUri = new Uri("pack://application:,,,/Visual/bfm.png");
             this.whiteUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
+            DataContext = this;
+
 
             this.oldValidMoves = new List<Vector2>();
 
@@ -408,10 +440,7 @@ namespace ArcOthelloBG
 
         public void RaisePropertyChanged(string propertyName)
         {
-            if(PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
