@@ -45,7 +45,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_New game"  Click="mnuNewGameClick"/>
+                <MenuItem Header="_Reset game" Name="mnuResetGame"  Click="mnuResetGameClick" IsEnabled="False"/>
                 <MenuItem Header="_Load game"  Click="mnuLoadGameClick"/>
                 <MenuItem Header="_Save game"  Click="mnuSaveGameClick"/>
                 <Separator />
