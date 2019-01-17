@@ -19,5 +19,15 @@ namespace ArcOthelloBG
             formatter.Serialize(stream, state);
             stream.Close();
         }
+
+        public static BoardState LoadStateFromFile(string filename)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+            BoardState state = (BoardState)formatter.Deserialize(stream);
+            stream.Close();
+
+            return state;
+        }
     }
 }
