@@ -237,7 +237,7 @@ namespace ArcOthelloBG
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Otello files (*.otl)|*.otl";
-            saveFileDialog1.RestoreDirectory = true;
+            saveFileDialog.RestoreDirectory = true;
 
             if (saveFileDialog.ShowDialog() == true)
             {
