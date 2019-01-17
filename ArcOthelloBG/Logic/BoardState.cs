@@ -77,7 +77,11 @@ namespace ArcOthelloBG.Logic
             {
                 if (this.checkLine(position, move))
                 {
-                    this.ListAvailableDirectionsForPosition.Add(position, new List<Vector2>());
+                    if(!this.listAvailableDirectionsForPosition.ContainsKey(position))
+                    {
+                        this.ListAvailableDirectionsForPosition.Add(position, new List<Vector2>());
+                    }
+                    
                     this.ListAvailableDirectionsForPosition[position].Add(move);
                 }
             }
