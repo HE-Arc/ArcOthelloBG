@@ -236,12 +236,13 @@ namespace ArcOthelloBG
         private void mnuSaveGameClick(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Otello files (*.otl)|*.otl";
+            saveFileDialog1.RestoreDirectory = true;
 
             if (saveFileDialog.ShowDialog() == true)
             {
                 BoardFileManager.SaveToFile(saveFileDialog.FileName, Game.Instance.BoardState);
             }
-                
 
             Console.WriteLine("Game saved");
         }
