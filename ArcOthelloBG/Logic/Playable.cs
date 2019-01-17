@@ -15,13 +15,14 @@ namespace ArcOthelloBG.Logic
         private int columns;
         private int whiteId;
         private int blackId;
+        private int emptyId;
 
 
         public Playable()
         {
             this.game = Game.Instance;
             this.readSettings();
-            this.game.init(this.rows, this.columns, this.whiteId, this.blackId);
+            this.game.init(this.rows, this.columns, this.whiteId, this.blackId,this.emptyId);
         }
 
         int IPlayable.IPlayable.GetBlackScore()
@@ -89,10 +90,16 @@ namespace ArcOthelloBG.Logic
                 this.columns = Convert.ToInt32(appSettings["columns"]);
                 this.whiteId = Convert.ToInt32(appSettings["whiteId"]);
                 this.blackId = Convert.ToInt32(appSettings["blackId"]);
+                this.emptyId = Convert.ToInt32(appSettings["emptyId"]);
             }
             catch (ConfigurationErrorsException)
             {
                 Console.WriteLine("Error reading app settings");
+                this.columns = 9;
+                this.rows = 7;
+                this.whiteId = 2;
+                this.blackId = 1;
+                this.emptyId = -1;
             }
         }
     }

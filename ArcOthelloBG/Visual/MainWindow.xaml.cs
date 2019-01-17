@@ -305,7 +305,7 @@ namespace ArcOthelloBG
 
             this.togglePlayerBorderColors();
 
-            Game.Instance.init(this.width, this.height, this.whiteId, this.blackId);
+            Game.Instance.init(this.width, this.height, this.whiteId, this.blackId,this.emptyId);
 
             
             
