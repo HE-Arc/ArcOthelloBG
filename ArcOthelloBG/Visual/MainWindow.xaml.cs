@@ -40,7 +40,7 @@ namespace ArcOthelloBG
         private SolidColorBrush whiteBrush;
         private SolidColorBrush greenBrush;
 
-        public event PropertyChangedEventHandler PropertyChanged ;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public string TimeWhite
         {
@@ -57,6 +57,36 @@ namespace ArcOthelloBG
             {
                 TimeSpan result = TimeSpan.FromSeconds(this.timeSecondBlack);
                 return result.ToString("mm':'ss");
+            }
+        }
+
+        public int BlackScore
+        {
+            get
+            {
+                try
+                {
+                    return Game.Instance.BlackScore;
+                }
+                catch (NullReferenceException e) //first time, if board is not init
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public int WhiteScore
+        {
+            get
+            {
+                try
+                {
+                    return Game.Instance.WhiteScore;
+                }
+                catch (NullReferenceException e) //first time, if board is not init
+                {
+                    return 0;
+                }
             }
         }
 
@@ -122,7 +152,6 @@ namespace ArcOthelloBG
 
                 for (int row = 0; row < rowCount; row++)
                 {
-                    //TO-DO: THE BUTTON IS TEMPORARY, WE SHOULD REPLACE IT WITH A MORE APPROPRIATE/CUSTOM WIDGET FOR A BOARD ELEMENT
 
                     btnMatrix[col, row] = new Button()
                     {
@@ -136,11 +165,6 @@ namespace ArcOthelloBG
 
                     btnMatrix[col, row].Style = Resources["MyButtonStyle"] as Style;
 
-                    //btnMatrix[col, row].MouseEnter += new MouseEventHandler((sender, e) =>
-                    //{
-                    //    Button senderButton = (Button)sender;
-                    //    senderButton.BorderBrush = new SolidColorBrush(Colors.Red);
-                    //});
 
                     Grid.SetColumn(btnMatrix[col, row], col + 1);
                     Grid.SetRow(btnMatrix[col, row], row + 1);
@@ -177,6 +201,15 @@ namespace ArcOthelloBG
                 foreach (Vector2 changedPosition in changedPositions)
                 {
                     changeCellImage(this.btnMatrix[changedPosition.X, changedPosition.Y], imageUri);
+                }
+
+                if (this.currentPlayId == this.whiteId || this.currentPlayId == this.blackId && changedPositions.Count > 0)
+                {
+                    RaisePropertyChanged("WhiteScore");
+                }
+                if (this.currentPlayId == this.blackId || this.currentPlayId == this.whiteId && changedPositions.Count > 0)
+                {
+                    RaisePropertyChanged("BlackScore");
                 }
 
                 this.passTurn();
@@ -328,6 +361,10 @@ namespace ArcOthelloBG
                     }
                 }
                 this.showValidMoves();
+
+                RaisePropertyChanged("BlackScore");
+
+                RaisePropertyChanged("WhiteScore");
             }
             catch (ConfigurationErrorsException)
             {

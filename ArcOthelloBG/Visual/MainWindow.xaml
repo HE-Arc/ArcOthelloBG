@@ -66,8 +66,8 @@
             <Border Grid.Column="0" Name="BlackPlayerBorder" Style="{StaticResource PlayerBorderStyle}">
                 <StackPanel  >
                     <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="bfm.png" />
-                    <Label Name="Player1Name" Content="NomJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
-                    <Label Name="Player1Score" Content="ScoreJoueur1" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                    <Label Name="Player1Name" Content="Chevalier du comté de la BFM" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                    <Label Name="Player1Score" Content="{Binding BlackScore}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
                     <Label Name="Player1Time" Content="{Binding TimeBlack}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
 
                 </StackPanel>
@@ -78,8 +78,8 @@
             <Border Grid.Column="2" Name="WhitePlayerBorder" Style="{StaticResource PlayerBorderStyle}">
                 <StackPanel Height="Auto" Width="Auto">
                     <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="prixGarantie.jpg" />
-                    <Label Name="Player2Name" Content="NomJoueur2" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
-                    <Label Name="Player2Score" Content="ScoreJoueur2" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                    <Label Name="Player2Name" Content="Paysan du village de la coopérative" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                    <Label Name="Player2Score" Content="{Binding WhiteScore}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
                     <Label Name="Player2Time" Content="{Binding TimeWhite}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
                 </StackPanel>
             </Border>
