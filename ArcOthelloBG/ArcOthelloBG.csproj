@@ -83,6 +83,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BoardFileManager.cs" />
     <Compile Include="EventHandling\SkipTurnEventArgs.cs" />
     <Compile Include="EventHandling\WinEventArgs.cs" />
     <Compile Include="Logic\BoardState.cs" />

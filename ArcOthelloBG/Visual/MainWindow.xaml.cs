@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Configuration;
 using System.Timers;
 using System.ComponentModel;
+using Microsoft.Win32;
 
 namespace ArcOthelloBG
 {
@@ -236,7 +237,16 @@ namespace ArcOthelloBG
 
         private void SaveBoard(object sender, EventArgs e)
         {
-            Console.WriteLine("Save game");
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Otello files (*.otl)|*.otl";
+            saveFileDialog1.RestoreDirectory = true;
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                BoardFileManager.SaveToFile(saveFileDialog.FileName, Game.Instance.BoardState);
+            }
+
+            Console.WriteLine("Game saved");
         }
 
         private void UndoBoard(object sender, EventArgs e)
