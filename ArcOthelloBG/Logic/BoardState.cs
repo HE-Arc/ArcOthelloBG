@@ -51,6 +51,9 @@ namespace ArcOthelloBG.Logic
             get { return this.blackScore; }
         }
 
+        public int WhiteTime { get; set; }
+        public int BlackTime { get; set; }
+
         public BoardState(int[,] board, int playerId, List<Vector2> possibleDirections, int emptyId, int whiteScore, int blackScore)
         {
             this.board = (int[,])board.Clone();
