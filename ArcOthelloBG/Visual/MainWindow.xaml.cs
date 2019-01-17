@@ -222,7 +222,7 @@ namespace ArcOthelloBG
             }
         }
 
-        private void mnuNewGameClick(object sender, EventArgs e)
+        private void mnuResetGameClick(object sender, EventArgs e)
         {
             resetBoard(buildGUI: false);
         }
@@ -305,10 +305,10 @@ namespace ArcOthelloBG
 
             this.togglePlayerBorderColors();
 
-            Game.Instance.init(this.width, this.height, this.whiteId, this.blackId,this.emptyId);
+            Game.Instance.init(this.width, this.height, this.whiteId, this.blackId, this.emptyId);
 
-            
-            
+
+
 
             if (buildGUI)
             {
@@ -317,6 +317,8 @@ namespace ArcOthelloBG
                 Border whitePlayerBorder = this.FindName("WhitePlayerBorder") as Border;
                 BlackPlayerBorder.Opacity = 1;
                 WhitePlayerBorder.Opacity = 1;
+                MenuItem mnuResetgame = this.FindName("mnuResetGame") as MenuItem;
+                mnuResetgame.IsEnabled = true;
                 Button startButton = this.FindName("btnStart") as Button;
                 Grid grid = this.FindName("Board") as Grid;
                 grid.Children.Remove(startButton);
@@ -332,7 +334,7 @@ namespace ArcOthelloBG
                     }
                 }
             }
-            
+
             Uri imageUri = null;
 
             for (int i = 0; i < this.width; i++)
@@ -398,13 +400,13 @@ namespace ArcOthelloBG
 
         private void setTimer()
         {
-            
+
             this.timerTime = new System.Timers.Timer(1000);
             // Hook up the Elapsed event for the timer. 
             this.timerTime.Elapsed += OnTimedEvent;
             this.timerTime.AutoReset = true;
             this.timerTime.Enabled = true;
-            
+
         }
 
         private void startTimer()
