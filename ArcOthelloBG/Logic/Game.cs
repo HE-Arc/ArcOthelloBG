@@ -136,6 +136,12 @@ namespace ArcOthelloBG.Logic
         public void loadState(BoardState state)
         {
             this.board = (int[,])state.Board.Clone();
+            this.emptyId = state.EmptyId;
+            this.whiteScore = state.WhiteScore;
+            this.blackScore = state.BlackScore;
+            this.playerToPlay = state.PlayerId;
+            this.boardState = state;
+
         }
 
         /// <summary>
@@ -218,7 +224,7 @@ namespace ArcOthelloBG.Logic
             this.playerToPlay = this.getNextPlayer();
 
             this.turn++;
-            this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleMoves, this.emptyId);
+            this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleMoves, this.emptyId, this.whiteScore, this.blackScore);
 
             if(this.getPositionsAvailable().Count == 0)
             {

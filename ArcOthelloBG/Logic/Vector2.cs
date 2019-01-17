@@ -9,6 +9,7 @@ namespace ArcOthelloBG.Logic
     /// <summary>
     /// class for a vector 2 of short
     /// </summary>
+    [Serializable]
     class Vector2 : ICloneable
     {
         private int x;

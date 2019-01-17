@@ -13,8 +13,11 @@ namespace ArcOthelloBG.Logic
         private List<Vector2> availablePositions;
         private int playerId;
         private int emptyId;
+        private int whiteScore;
+        private int blackScore;
         private Dictionary<Vector2, List<Vector2>> listAvailableDirectionsForPosition;
         private List<Vector2> possibleDirections;
+
 
         public int[,] Board
         {
@@ -24,7 +27,8 @@ namespace ArcOthelloBG.Logic
         {
             get { return this.availablePositions; }
         }
-        public int PlayerId {
+        public int PlayerId
+        {
             get { return this.playerId; }
         }
         public Dictionary<Vector2, List<Vector2>> ListAvailableDirectionsForPosition
@@ -32,11 +36,28 @@ namespace ArcOthelloBG.Logic
             get { return this.listAvailableDirectionsForPosition; }
         }
 
-        public BoardState(int[,] board, int playerId, List<Vector2> possibleDirections, int emptyId)
+        public int EmptyId
+        {
+            get { return this.emptyId;  }
+        }
+
+        public int WhiteScore
+        {
+            get { return this.whiteScore; }
+        }
+
+        public int BlackScore
+        {
+            get { return this.blackScore; }
+        }
+
+        public BoardState(int[,] board, int playerId, List<Vector2> possibleDirections, int emptyId, int whiteScore, int blackScore)
         {
             this.board = (int[,])board.Clone();
             this.playerId = playerId;
             this.emptyId = emptyId;
+            this.whiteScore = whiteScore;
+            this.blackScore = blackScore;
             this.availablePositions = new List<Vector2>();
             this.listAvailableDirectionsForPosition = new Dictionary<Vector2, List<Vector2>>();
             this.possibleDirections = possibleDirections;

@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Configuration;
 using System.Timers;
 using System.ComponentModel;
+using Microsoft.Win32;
 
 namespace ArcOthelloBG
 {
@@ -234,7 +235,15 @@ namespace ArcOthelloBG
 
         private void mnuSaveGameClick(object sender, EventArgs e)
         {
-            Console.WriteLine("Save game");
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                BoardFileManager.SaveToFile(saveFileDialog.FileName, Game.Instance.BoardState);
+            }
+                
+
+            Console.WriteLine("Game saved");
         }
 
         private void mnuExitClick(object sender, EventArgs e)
