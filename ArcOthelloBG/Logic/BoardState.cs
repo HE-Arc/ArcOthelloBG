@@ -12,6 +12,7 @@ namespace ArcOthelloBG.Logic
         private int[,] board;
         private List<Vector2> availablePositions;
         private int playerId;
+        private int emptyId;
         private Dictionary<Vector2, List<Vector2>> listAvailableDirectionsForPosition;
         private List<Vector2> possibleDirections;
 
@@ -31,10 +32,11 @@ namespace ArcOthelloBG.Logic
             get { return this.listAvailableDirectionsForPosition; }
         }
 
-        public BoardState(int[,] board, int playerId, List<Vector2> possibleDirections)
+        public BoardState(int[,] board, int playerId, List<Vector2> possibleDirections, int emptyId)
         {
             this.board = (int[,])board.Clone(); ;
             this.playerId = playerId;
+            this.emptyId = emptyId;
             this.availablePositions = new List<Vector2>();
             this.listAvailableDirectionsForPosition = new Dictionary<Vector2, List<Vector2>>();
             this.possibleDirections = possibleDirections;
@@ -66,7 +68,7 @@ namespace ArcOthelloBG.Logic
 
         public bool isPlayable(Vector2 position)
         {
-            return this.isInBoundaries(position) && this.getColor(position) == 0 && this.listAvailableDirectionsForPosition.ContainsKey(position);        
+            return this.isInBoundaries(position) && this.getColor(position) == this.emptyId && this.listAvailableDirectionsForPosition.ContainsKey(position);        
         }
 
         private List<Vector2> computeValidDirection(Vector2 position)
@@ -92,7 +94,8 @@ namespace ArcOthelloBG.Logic
         private bool checkLine(Vector2 position, Vector2 direction)
         {
             int i = 0;
-            int colorPosition = 0;
+            int colorPosition = this.emptyId;
+
             do
             {
                 position = position.add(direction);

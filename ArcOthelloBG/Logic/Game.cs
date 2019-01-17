@@ -46,19 +46,7 @@ namespace ArcOthelloBG.Logic
         {
             get
             {
-                int score = 0;
-                for (int i = 0; i < board.GetLength(0); i++)
-                {
-                    for (int j = 0; j < board.GetLength(1); j++)
-                    {
-                        if (board[i, j] == this.whiteId)
-                        {
-                            score++;
-                        }
-                    }
-                }
-
-                return score;
+                return this.whiteScore;
             }
         }
 
@@ -69,19 +57,7 @@ namespace ArcOthelloBG.Logic
         {
             get
             {
-                int score = 0;
-                for (int i = 0; i < board.GetLength(0); i++)
-                {
-                    for (int j = 0; j < board.GetLength(1); j++)
-                    {
-                        if (board[i, j] == this.blackId)
-                        {
-                            score++;
-                        }
-                    }
-                }
-
-                return score;
+                return this.blackScore;
             }
         }
 
@@ -123,13 +99,13 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         /// <param name="width">width of the grid</param>
         /// <param name="height">height of the grid</param>
-        public void init(int columns, int rows, int whiteId, int blackId)
+        public void init(int columns, int rows, int whiteId, int blackId, int emptyId)
         {
             this.board = new int[columns, rows];
             this.playerToPlay = whiteId;
             this.whiteId = whiteId;
             this.blackId = blackId;
-            this.emptyId = 0;
+            this.emptyId = emptyId;
             this.buildPossibleDirections();
             this.blackScore = 0;
             this.whiteScore = 0;
@@ -145,7 +121,7 @@ namespace ArcOthelloBG.Logic
             this.playerToPlay = this.getNextPlayer();
 
             this.turn++;
-            this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleMoves);
+            this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleMoves, this.emptyId);
 
             if(this.getPositionsAvailable().Count == 0)
             {
@@ -194,6 +170,17 @@ namespace ArcOthelloBG.Logic
 
                 this.nextTurn();
 
+                int lostPoint = changedPositions.Count - 1;
+
+                if (idToPlay == this.whiteId)
+                {
+                    this.blackScore -= lostPoint;
+                }
+                else
+                {
+                    this.whiteScore -= lostPoint;
+                }
+
                 return changedPositions;
             }
             else
@@ -205,7 +192,7 @@ namespace ArcOthelloBG.Logic
 
         private int getWinner()
         {
-            return 0;
+            return this.whiteScore > this.blackScore ? this.whiteScore : this.blackScore;
         }
 
         /// <summary>
@@ -237,6 +224,7 @@ namespace ArcOthelloBG.Logic
         private void putPawn(Vector2 position, int idColor)
         {
             this.board[position.X, position.Y] = idColor;
+            this.incrementScore(idColor);
         }
 
         // GETTERS AND SETTERS
@@ -302,6 +290,18 @@ namespace ArcOthelloBG.Logic
                         this.possibleMoves.Add(new Vector2(i, j));
                     }
                 }
+            }
+        }
+
+        private void incrementScore(int playerId)
+        {
+            if (playerId == this.whiteId)
+            {
+                this.whiteScore++;
+            }
+            else if(playerId == this.blackId)
+            {
+                this.blackScore++;
             }
         }
     }
