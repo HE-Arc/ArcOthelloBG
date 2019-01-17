@@ -250,7 +250,7 @@ namespace ArcOthelloBG.Logic
         private void putPawn(Vector2 position, int idColor)
         {
             this.board[position.X, position.Y] = idColor;
-            //this.incrementScore(idColor);
+            this.incrementScore(idColor);
         }
 
 
