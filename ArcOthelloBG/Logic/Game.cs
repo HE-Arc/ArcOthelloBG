@@ -29,7 +29,23 @@ namespace ArcOthelloBG.Logic
         public event EventHandler<SkipTurnEventArgs> TurnSkipped;
         public event EventHandler<WinEventArgs> Won;
 
-        // METHODS
+        // GETTERS AND SETTERS
+
+        /// <summary>
+        /// Getters for the singleton instance
+        /// </summary>
+        public static Game Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new Game();
+                }
+
+                return instance;
+            }
+        }
 
         /// <summary>
         /// singleton constructor, so private
@@ -116,30 +132,10 @@ namespace ArcOthelloBG.Logic
             this.nextTurn();
         }
 
-        private void nextTurn(bool hasSkipped = false)
+
+        public void loadState(BoardState state)
         {
-            this.playerToPlay = this.getNextPlayer();
-
-            this.turn++;
-            this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleMoves, this.emptyId);
-
-            if(this.getPositionsAvailable().Count == 0)
-            {
-                if (hasSkipped)
-                {
-                    Won?.Invoke(this, new WinEventArgs(this.getWinner()));
-                    return; 
-                }
-
-                int previousPlayer = this.playerToPlay;
-                this.nextTurn(true);
-                TurnSkipped?.Invoke(this, new SkipTurnEventArgs(previousPlayer));
-            }
-        }
-
-        private int getNextPlayer()
-        {
-            return this.playerToPlay == this.whiteId ? this.blackId : this.whiteId;
+            this.board = (int[,])state.Board.Clone();
         }
 
         /// <summary>
@@ -190,11 +186,6 @@ namespace ArcOthelloBG.Logic
 
         }
 
-        private int getWinner()
-        {
-            return this.whiteScore > this.blackScore ? this.whiteScore : this.blackScore;
-        }
-
         /// <summary>
         /// Check if a move is possible
         /// </summary>
@@ -221,29 +212,48 @@ namespace ArcOthelloBG.Logic
             return this.board[position.X, position.Y];
         }
 
+
+        private void nextTurn(bool hasSkipped = false)
+        {
+            this.playerToPlay = this.getNextPlayer();
+
+            this.turn++;
+            this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleMoves, this.emptyId);
+
+            if(this.getPositionsAvailable().Count == 0)
+            {
+                if (hasSkipped)
+                {
+                    Won?.Invoke(this, new WinEventArgs(this.getWinner()));
+                    return; 
+                }
+
+                int previousPlayer = this.playerToPlay;
+                this.nextTurn(true);
+                TurnSkipped?.Invoke(this, new SkipTurnEventArgs(previousPlayer));
+            }
+        }
+
+        private int getNextPlayer()
+        {
+            return this.playerToPlay == this.whiteId ? this.blackId : this.whiteId;
+        }
+
+        
+
+        private int getWinner()
+        {
+            return this.whiteScore > this.blackScore ? this.whiteScore : this.blackScore;
+        }
+
+
         private void putPawn(Vector2 position, int idColor)
         {
             this.board[position.X, position.Y] = idColor;
-            this.incrementScore(idColor);
+            //this.incrementScore(idColor);
         }
 
-        // GETTERS AND SETTERS
 
-        /// <summary>
-        /// Getters for the singleton instance
-        /// </summary>
-        public static Game Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new Game();
-                }
-
-                return instance;
-            }
-        }
 
         /// <summary>
         /// init the board with the right numbers
@@ -304,5 +314,6 @@ namespace ArcOthelloBG.Logic
                 this.blackScore++;
             }
         }
+
     }
 }
