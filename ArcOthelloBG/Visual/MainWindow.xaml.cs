@@ -222,19 +222,31 @@ namespace ArcOthelloBG
             }
         }
 
-        private void mnuResetGameClick(object sender, EventArgs e)
+        private void ResetBoard(object sender, EventArgs e)
         {
-            resetBoard(buildGUI: false);
-        }
+            MenuItem mnuResetgame = this.FindName("mnuResetGame") as MenuItem;
+            if(mnuResetgame.IsEnabled)
+                resetBoard(buildGUI: false);
+        }   
 
-        private void mnuLoadGameClick(object sender, EventArgs e)
+        private void LoadBoard(object sender, EventArgs e)
         {
             Console.WriteLine("Loading");
         }
 
-        private void mnuSaveGameClick(object sender, EventArgs e)
+        private void SaveBoard(object sender, EventArgs e)
         {
             Console.WriteLine("Save game");
+        }
+
+        private void UndoBoard(object sender, EventArgs e)
+        {
+            Console.WriteLine("Undo");
+        }
+
+        private void RedoBoard(object sender, EventArgs e)
+        {
+            Console.WriteLine("Redo");
         }
 
         private void mnuExitClick(object sender, EventArgs e)
@@ -298,6 +310,7 @@ namespace ArcOthelloBG
             }
 
         }
+
 
         private void resetBoard(bool buildGUI)
         {

@@ -8,6 +8,20 @@
         Title="MainWindow" Height="600" Width="800"
         MinWidth="800"
         MinHeight="600">
+    <Window.InputBindings>
+        <KeyBinding Gesture="Ctrl+S" Command="SaveAs"/>
+        <KeyBinding Gesture="Ctrl+O" Command="Open"/>
+        <KeyBinding Gesture="Ctrl+N" Command="New"/>
+        <KeyBinding Gesture="Ctrl+Z" Command="Undo"/>
+        <KeyBinding Gesture="Ctrl+Y" Command="Redo"/>
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="SaveAs" Executed="SaveBoard"/>
+        <CommandBinding Command="Open" Executed="LoadBoard"/>
+        <CommandBinding Command="New" Executed="ResetBoard"/>
+        <CommandBinding Command="Undo" Executed="UndoBoard"/>
+        <CommandBinding Command="Redo" Executed="RedoBoard"/>
+    </Window.CommandBindings>
     <Window.Resources>
         <Image x:Key="bfm" Source="bfm.png" Height="170" Width="170" />
         <Image x:Key="pg" Source="prixGarantie.jpg" Height="170" Width="170"/>
@@ -45,11 +59,15 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Reset game" Name="mnuResetGame"  Click="mnuResetGameClick" IsEnabled="False"/>
-                <MenuItem Header="_Load game"  Click="mnuLoadGameClick"/>
-                <MenuItem Header="_Save game"  Click="mnuSaveGameClick"/>
+                <MenuItem Header="_Reset game" Name="mnuResetGame" Command="New" IsEnabled="False"/>
+                <MenuItem Header="_Load game"  Command="Open"/>
+                <MenuItem Header="_Save game"  Command="Save"/>
                 <Separator />
-                <MenuItem Header="_Exit"  Click="mnuExitClick"/>
+                <MenuItem Header="_Exit"  Click="mnuExitClick" InputGestureText="Alt+F4"/>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo"  Command="Undo"/>
+                <MenuItem Header="_Redo"  Command="Redo"/>
             </MenuItem>
         </Menu>
         
