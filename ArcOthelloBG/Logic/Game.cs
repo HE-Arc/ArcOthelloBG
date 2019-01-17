@@ -23,6 +23,8 @@ namespace ArcOthelloBG.Logic
         private int turn;
         private int emptyId;
         private BoardState boardState;
+        private int blackScore;
+        private int whiteScore;
 
         public event EventHandler<SkipTurnEventArgs> TurnSkipped;
         public event EventHandler<WinEventArgs> Won;
@@ -129,6 +131,8 @@ namespace ArcOthelloBG.Logic
             this.blackId = blackId;
             this.emptyId = 0;
             this.buildPossibleDirections();
+            this.blackScore = 0;
+            this.whiteScore = 0;
 
             this.initBoard();
 
