@@ -34,7 +34,7 @@ namespace ArcOthelloBG.Logic
 
         public BoardState(int[,] board, int playerId, List<Vector2> possibleDirections, int emptyId)
         {
-            this.board = (int[,])board.Clone(); ;
+            this.board = (int[,])board.Clone();
             this.playerId = playerId;
             this.emptyId = emptyId;
             this.availablePositions = new List<Vector2>();
@@ -113,7 +113,7 @@ namespace ArcOthelloBG.Logic
                 }
 
                 i++;
-            } while (colorPosition != this.playerId && colorPosition != 0);
+            } while (colorPosition != this.playerId && colorPosition != this.emptyId);
 
             return false;
         }
