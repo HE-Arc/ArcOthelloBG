@@ -249,7 +249,7 @@ namespace ArcOthelloBG.Logic
 
         private int getWinner()
         {
-            return this.whiteScore > this.blackScore ? this.whiteScore : this.blackScore;
+            return this.whiteScore > this.blackScore ? this.whiteId : this.blackId;
         }
 
 

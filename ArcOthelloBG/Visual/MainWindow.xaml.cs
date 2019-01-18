@@ -40,16 +40,22 @@ namespace ArcOthelloBG
         private Timer timerTime;
 
         private SolidColorBrush whiteBrush;
+        private SolidColorBrush goldBrush;
         private SolidColorBrush greenBrush;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool skipTurn;
+        private bool gameWon;
+        private bool guiBuilded;
+        private int winnerId;
 
         public string TimeWhite
         {
             get
             {
                 TimeSpan result = TimeSpan.FromSeconds(this.timeSecondWhite);
-                return result.ToString("mm':'ss");
+                return $"Time: {result.ToString("mm':'ss")}";
             }
         }
 
@@ -58,36 +64,36 @@ namespace ArcOthelloBG
             get
             {
                 TimeSpan result = TimeSpan.FromSeconds(this.timeSecondBlack);
-                return result.ToString("mm':'ss");
+                return $"Time: {result.ToString("mm':'ss")}";
             }
         }
 
-        public int BlackScore
+        public String BlackScore
         {
             get
             {
                 try
                 {
-                    return Game.Instance.BlackScore;
+                    return $"Score :{Game.Instance.BlackScore.ToString()}";
                 }
                 catch (NullReferenceException e) //first time, if board is not init
                 {
-                    return 0;
+                    return "Score: 0";
                 }
             }
         }
 
-        public int WhiteScore
+        public String WhiteScore
         {
             get
             {
                 try
                 {
-                    return Game.Instance.WhiteScore;
+                    return $"Score :{Game.Instance.WhiteScore.ToString()}";
                 }
                 catch (NullReferenceException e) //first time, if board is not init
                 {
-                    return 0;
+                    return "Score: 0";
                 }
             }
         }
@@ -104,7 +110,7 @@ namespace ArcOthelloBG
             //The first column (row labels) should be smaller
             grid.ColumnDefinitions.Add(new ColumnDefinition()
             {
-                Width = new GridLength(20, GridUnitType.Pixel) //TO-DO: find dynamic solution
+                Width = new GridLength(20, GridUnitType.Pixel)
             });
 
             for (int col = 0; col < colCount; col++)
@@ -213,7 +219,11 @@ namespace ArcOthelloBG
                     RaisePropertyChanged("BlackScore");
                 }
 
-                this.passTurn();
+                if (this.gameWon)
+                    this.WinGame();
+                else
+                    this.passTurn();
+
             }
             catch (ArgumentException exception)
             {
@@ -224,13 +234,13 @@ namespace ArcOthelloBG
         private void ResetBoard(object sender, EventArgs e)
         {
             MenuItem mnuResetgame = this.FindName("mnuResetGame") as MenuItem;
-            if(mnuResetgame.IsEnabled)
-                resetBoard(buildGUI: false);
-        }   
+            if (mnuResetgame.IsEnabled)
+                resetBoard();
+        }
 
         private void LoadBoard(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
 
             openFileDialog.Filter = "Otello files (*.otl)|*.otl";
             openFileDialog.RestoreDirectory = true;
@@ -243,7 +253,7 @@ namespace ArcOthelloBG
 
         private void SaveBoard(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
             saveFileDialog.Filter = "Otello files (*.otl)|*.otl";
             saveFileDialog.RestoreDirectory = true;
 
@@ -276,7 +286,7 @@ namespace ArcOthelloBG
 
         private void btnStartClick(object sender, EventArgs e)
         {
-            resetBoard(buildGUI: true);
+            resetBoard();
         }
 
         private void togglePlayerBorderColors()
@@ -332,7 +342,7 @@ namespace ArcOthelloBG
         }
 
 
-        private void resetBoard(bool buildGUI)
+        private void resetBoard()
         {
             this.currentPlayId = this.blackId;
 
@@ -342,20 +352,24 @@ namespace ArcOthelloBG
 
 
 
-
-            if (buildGUI)
+            if (!guiBuilded)
             {
+                guiBuilded = true;
                 this.setTimer();
                 Border blackPlayerBorder = this.FindName("BlackPlayerBorder") as Border;
                 Border whitePlayerBorder = this.FindName("WhitePlayerBorder") as Border;
                 BlackPlayerBorder.Opacity = 1;
                 WhitePlayerBorder.Opacity = 1;
-                MenuItem mnuResetgame = this.FindName("mnuResetGame") as MenuItem;
-                mnuResetgame.IsEnabled = true;
+                MenuItem mnuResetGame = this.FindName("mnuResetGame") as MenuItem;
+                mnuResetGame.IsEnabled = true;
+                MenuItem mnuSaveGamethis = this.FindName("mnuSaveGame") as MenuItem;
+                mnuSaveGame.IsEnabled = true;
                 Button startButton = this.FindName("btnStart") as Button;
-                Grid grid = this.FindName("Board") as Grid;
-                grid.Children.Remove(startButton);
+                startButton.Visibility = Visibility.Hidden;
+                TextBlock lblWon = this.FindName("lblWon") as TextBlock;
+                lblWon.Visibility = Visibility.Hidden;
                 buildBoard(this.width, this.height);
+
             }
             else
             {
@@ -415,6 +429,11 @@ namespace ArcOthelloBG
 
             this.togglePlayerBorderColors();
             showValidMoves();
+            if (this.skipTurn)
+            {
+                this.skipTurn = false;
+                this.passTurn();
+            }
         }
 
         public void OnTimedEvent(Object source, ElapsedEventArgs e)
@@ -463,6 +482,7 @@ namespace ArcOthelloBG
             InitializeComponent();
             this.whiteBrush = new SolidColorBrush(Colors.White);
             this.greenBrush = new SolidColorBrush(Colors.LightGreen);
+            this.goldBrush = new SolidColorBrush(Colors.Gold);
             this.blackUri = new Uri("pack://application:,,,/Visual/bfm.png");
             this.whiteUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
             DataContext = this;
@@ -488,7 +508,89 @@ namespace ArcOthelloBG
             }
 
             this.oldValidMoves = new List<Vector2>();
+            this.skipTurn = false;
+            Game.Instance.TurnSkipped += Game_TurnSkipped;
+            Game.Instance.Won += Game_Won;
+            this.guiBuilded = false;
+            this.gameWon = false;
+        }
 
+        private void Game_Won(object sender, EventHandling.WinEventArgs e)
+        {
+            this.gameWon = true;
+            this.winnerId = e.PlayerId;
+        }
+
+        private void WinGame()
+        {
+            this.stopTimer();
+            this.gameWon = false;
+            MenuItem mnuResetgame = this.FindName("mnuResetGame") as MenuItem;
+            mnuResetgame.IsEnabled = false;
+            Button startButton = this.FindName("btnStart") as Button;
+            startButton.Visibility = Visibility.Visible;
+
+            TextBlock lblWon = this.FindName("lblWon") as TextBlock;
+            lblWon.Visibility = Visibility.Visible;
+
+            int whiteScore = Game.Instance.WhiteScore;
+            int blackScore = Game.Instance.BlackScore;
+
+            int winnerScore = whiteScore > blackScore ? whiteScore : blackScore;
+
+            String winnerString = "";
+            if (this.winnerId == this.whiteId)
+                winnerString = "prix garantie";
+            else if (this.winnerId == this.blackId)
+                winnerString = "BFM";
+
+            lblWon.Text = $"The {winnerString} was elected the best beer in the world with {winnerScore} points";
+            this.guiBuilded = false;
+            Grid grid = this.FindName("Board") as Grid;
+            List<UIElement> childrenToRemove = new List<UIElement>();
+            foreach (UIElement child in grid.Children)
+            {
+                if (child is StackPanel)
+                {
+
+                }
+                else
+                {
+                    childrenToRemove.Add(child);
+                }
+            }
+
+            foreach (UIElement child in childrenToRemove)
+            {
+                grid.Children.Remove(child);
+            }
+
+            grid.RowDefinitions.Clear();
+            grid.ColumnDefinitions.Clear();
+
+            MenuItem mnuSaveGamethis = this.FindName("mnuSaveGame") as MenuItem;
+            mnuSaveGame.IsEnabled = false;
+
+            Border blackPlayerBorder = this.FindName("BlackPlayerBorder") as Border;
+            Border whitePlayerBorder = this.FindName("WhitePlayerBorder") as Border;
+
+            if (this.winnerId == this.whiteId)
+            {
+                BlackPlayerBorder.Opacity = 0.25;
+                WhitePlayerBorder.BorderBrush = this.goldBrush;
+                BlackPlayerBorder.BorderBrush = this.whiteBrush;
+            }
+            else if (this.winnerId == this.blackId)
+            {
+                WhitePlayerBorder.Opacity = 0.25;
+                BlackPlayerBorder.BorderBrush = this.goldBrush;
+                WhitePlayerBorder.BorderBrush = this.whiteBrush;
+            }
+        }
+
+        private void Game_TurnSkipped(object sender, EventHandling.SkipTurnEventArgs e)
+        {
+            this.skipTurn = true;
         }
 
         public void RaisePropertyChanged(string propertyName)
