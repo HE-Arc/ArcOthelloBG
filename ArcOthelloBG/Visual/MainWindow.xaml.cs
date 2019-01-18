@@ -230,12 +230,33 @@ namespace ArcOthelloBG
 
         private void LoadBoard(object sender, EventArgs e)
         {
-            Console.WriteLine("Loading");
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.Filter = "Otello files (*.otl)|*.otl";
+            openFileDialog.RestoreDirectory = true;
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                Game.Instance.loadState(BoardFileManager.LoadStateFromFile(openFileDialog.FileName));
+            }
         }
 
         private void SaveBoard(object sender, EventArgs e)
         {
-            Console.WriteLine("Save game");
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Otello files (*.otl)|*.otl";
+            saveFileDialog.RestoreDirectory = true;
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                BoardState state = Game.Instance.BoardState;
+                state.BlackTime = this.timeSecondBlack;
+                state.WhiteTime = this.timeSecondWhite;
+
+                BoardFileManager.SaveToFile(saveFileDialog.FileName, Game.Instance.BoardState);
+            }
+
+            Console.WriteLine("Game saved");
         }
 
         private void UndoBoard(object sender, EventArgs e)
