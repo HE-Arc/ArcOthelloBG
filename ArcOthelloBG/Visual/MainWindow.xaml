@@ -61,7 +61,7 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_Reset game" Name="mnuResetGame" Command="New" IsEnabled="False"/>
                 <MenuItem Header="_Load game"  Command="Open"/>
-                <MenuItem Header="_Save game"  Command="Save"/>
+                <MenuItem Header="_Save game" Name="mnuSaveGame"  Command="Save"/>
                 <Separator />
                 <MenuItem Header="_Exit"  Click="mnuExitClick" InputGestureText="Alt+F4"/>
             </MenuItem>
@@ -84,7 +84,7 @@
             <Border Grid.Column="0" Name="BlackPlayerBorder" Style="{StaticResource PlayerBorderStyle}">
                 <StackPanel  >
                     <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="bfm.png" />
-                    <Label Name="Player1Name" Content="Chevalier du comté de la BFM" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                    <Label Name="Player1Name"  Content="Chevalier du comté de la BFM" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" />
                     <Label Name="Player1Score" Content="{Binding BlackScore}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
                     <Label Name="Player1Time" Content="{Binding TimeBlack}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
 
@@ -96,7 +96,7 @@
             <Border Grid.Column="2" Name="WhitePlayerBorder" Style="{StaticResource PlayerBorderStyle}">
                 <StackPanel Height="Auto" Width="Auto">
                     <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="prixGarantie.jpg" />
-                    <Label Name="Player2Name" Content="Paysan du village de la coopérative" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                    <Label Name="Player2Name" Content="Paysan du village de la coopérative" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" />
                     <Label Name="Player2Score" Content="{Binding WhiteScore}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
                     <Label Name="Player2Time" Content="{Binding TimeWhite}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" />
                 </StackPanel>
