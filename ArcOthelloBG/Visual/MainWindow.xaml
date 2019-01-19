@@ -26,8 +26,8 @@
         <Image x:Key="bfm" Source="bfm.png" Height="170" Width="170" />
         <Image x:Key="pg" Source="prixGarantie.jpg" Height="170" Width="170"/>
         <Style x:Key="PlayerBorderStyle" TargetType="Border">
-            <Setter Property="CornerRadius" Value="3"/>
-            <Setter Property="BorderThickness" Value="3,3,3,3"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="BorderThickness" Value="5,5,5,5"/>
             <Setter Property="Opacity" Value="0.25"/>
         </Style>
         <!-- https://stackoverflow.com/questions/3854317/how-to-remove-default-mouse-over-effect-on-wpf-buttons -->
@@ -81,7 +81,7 @@
             </Grid.RowDefinitions>
             <Border Grid.Column="0" Name="BlackPlayerBorder" Style="{StaticResource PlayerBorderStyle}">
                 <StackPanel  >
-                    <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="bfm.png" />
+                    <Image Name="LogoBFM" Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="bfm.png" />
                     <Label Name="Player1Name"  Content="Chevalier du comté&#10;des franches montagnes" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" />
                     <Label Name="Player1Score" Content="{Binding BlackScore}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="15" />
                     <Label Name="Player1Time" Content="{Binding TimeBlack}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="15" />
@@ -90,13 +90,13 @@
             </Border>
             <Grid Name="Board" Grid.Column="1" Margin="20">
                 <StackPanel>
-                    <TextBlock Name="lblWon" Text="The prix garantie was elected as the best beer in the world with 99 points"  TextWrapping="WrapWithOverflow" Foreground="White" Background="Black" Panel.ZIndex="100" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Margin="0" Padding="15,15,15,12" Visibility="Hidden"/>
-                    <Button Style="{StaticResource MyButtonStyle}" Foreground="White" Background="Black" Panel.ZIndex="100" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Start game" Name="btnStart" Click="btnStartClick" Width="100" Height="35"></Button>
+                    <TextBlock Name="lblWon" Text="The prix garantie was elected as the best beer in the world with 99 points"  TextWrapping="WrapWithOverflow"  Panel.ZIndex="100" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Margin="0" Padding="15,15,15,12" Visibility="Hidden"/>
+                    <Button Style="{StaticResource MyButtonStyle}" Background="White" Panel.ZIndex="100" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Start game" Name="btnStart" Click="btnStartClick" Width="100" Height="35"></Button>
                 </StackPanel>
             </Grid>
             <Border Grid.Column="2" Name="WhitePlayerBorder" Style="{StaticResource PlayerBorderStyle}">
                 <StackPanel Height="Auto" Width="Auto">
-                    <Image Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="prixGarantie.jpg" />
+                    <Image Name="LogoPrixG" Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="prixGarantie.jpg" />
                     <Label Name="Player2Name" Content="Paysan du village&#10;de la coopérative" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" />
                     <Label Name="Player2Score" Content="{Binding WhiteScore}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="15" />
                     <Label Name="Player2Time" Content="{Binding TimeWhite}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="15" />

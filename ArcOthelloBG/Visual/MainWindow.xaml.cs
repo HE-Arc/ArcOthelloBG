@@ -216,11 +216,21 @@ namespace ArcOthelloBG
                 if (this.currentPlayId == this.whiteId || this.currentPlayId == this.blackId && changedPositions.Count > 0)
                 {
                     RaisePropertyChanged("WhiteScore");
+                    double opacityPrixG = 1.0 - (double)Game.Instance.BlackScore / (double)(width * height);
+                    Image logoPrixG = this.FindName("LogoPrixG") as Image;
+                    logoPrixG.Opacity = opacityPrixG;
                 }
                 if (this.currentPlayId == this.blackId || this.currentPlayId == this.whiteId && changedPositions.Count > 0)
                 {
                     RaisePropertyChanged("BlackScore");
+                    double opacityBFM = 1.0 - (double)Game.Instance.WhiteScore / (double)(width * height);
+                    Image logoBFM = this.FindName("LogoBFM") as Image;
+                    logoBFM.Opacity = opacityBFM;
                 }
+
+                
+                
+
 
                 if (this.gameWon)
                     this.WinGame();
@@ -400,6 +410,12 @@ namespace ArcOthelloBG
             this.togglePlayerBorderColors();
 
             Game.Instance.Init(this.width, this.height, this.whiteId, this.blackId, this.emptyId);
+
+            Image logoBFM = this.FindName("LogoBFM") as Image;
+            logoBFM.Opacity = 1.0;
+
+            Image logoPrixG = this.FindName("LogoPrixG") as Image;
+            logoPrixG.Opacity = 1.0;
 
             if (!guiBuilded)
             {
@@ -615,18 +631,24 @@ namespace ArcOthelloBG
 
             Border blackPlayerBorder = this.FindName("BlackPlayerBorder") as Border;
             Border whitePlayerBorder = this.FindName("WhitePlayerBorder") as Border;
+            
 
+            
             if (this.winnerId == this.whiteId)
             {
                 BlackPlayerBorder.Opacity = 0.25;
                 WhitePlayerBorder.BorderBrush = this.goldBrush;
                 BlackPlayerBorder.BorderBrush = this.whiteBrush;
+                Image logoPrixG = this.FindName("LogoPrixG") as Image;
+                logoPrixG.Opacity = 1.0;
             }
             else if (this.winnerId == this.blackId)
             {
                 WhitePlayerBorder.Opacity = 0.25;
                 BlackPlayerBorder.BorderBrush = this.goldBrush;
                 WhitePlayerBorder.BorderBrush = this.whiteBrush;
+                Image logoBFM = this.FindName("LogoBFM") as Image;
+                logoBFM.Opacity = 1.0;
             }
         }
 
