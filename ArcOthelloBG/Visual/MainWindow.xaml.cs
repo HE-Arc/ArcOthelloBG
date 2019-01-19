@@ -362,7 +362,7 @@ namespace ArcOthelloBG
                 WhitePlayerBorder.Opacity = 1;
                 MenuItem mnuResetGame = this.FindName("mnuResetGame") as MenuItem;
                 mnuResetGame.IsEnabled = true;
-                MenuItem mnuSaveGamethis = this.FindName("mnuSaveGame") as MenuItem;
+                MenuItem mnuSaveGame = this.FindName("mnuSaveGame") as MenuItem;
                 mnuSaveGame.IsEnabled = true;
                 Button startButton = this.FindName("btnStart") as Button;
                 startButton.Visibility = Visibility.Hidden;
@@ -568,7 +568,7 @@ namespace ArcOthelloBG
             grid.RowDefinitions.Clear();
             grid.ColumnDefinitions.Clear();
 
-            MenuItem mnuSaveGamethis = this.FindName("mnuSaveGame") as MenuItem;
+            MenuItem mnuSaveGame = this.FindName("mnuSaveGame") as MenuItem;
             mnuSaveGame.IsEnabled = false;
 
             Border blackPlayerBorder = this.FindName("BlackPlayerBorder") as Border;
