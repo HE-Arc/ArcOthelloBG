@@ -115,25 +115,28 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         /// <param name="width">width of the grid</param>
         /// <param name="height">height of the grid</param>
-        public void init(int columns, int rows, int whiteId, int blackId, int emptyId)
+        public void Init(int columns, int rows, int whiteId, int blackId, int emptyId)
         {
             this.board = new int[columns, rows];
             this.playerToPlay = whiteId;
             this.whiteId = whiteId;
             this.blackId = blackId;
             this.emptyId = emptyId;
-            this.buildPossibleDirections();
+            this.BuildPossibleDirections();
             this.blackScore = 0;
             this.whiteScore = 0;
 
-            this.initBoard();
+            this.InitBoard();
 
             this.turn = -1;
-            this.nextTurn();
+            this.NextTurn();
         }
 
-
-        public void loadState(BoardState state)
+        /// <summary>
+        /// load a board state and changes to match it
+        /// </summary>
+        /// <param name="state">state to use</param>
+        public void LoadState(BoardState state)
         {
             this.board = (int[,])state.Board.Clone();
             this.emptyId = state.EmptyId;
@@ -150,9 +153,9 @@ namespace ArcOthelloBG.Logic
         /// <param name="position">Position to put a pawn</param>
         /// <param name="isWhite">color of the pawn</param>
         /// <returns>positions that changed</returns>
-        public List<Vector2> play(Vector2 position, int idToPlay)
+        public List<Vector2> Play(Vector2 position, int idToPlay)
         {
-            if (this.isPlayable(position, idToPlay))
+            if (this.IsPlayable(position, idToPlay))
             {
                 var initialPosition = new Vector2(position);
                 var changedPositions = new List<Vector2>();
@@ -164,24 +167,13 @@ namespace ArcOthelloBG.Logic
                     position = initialPosition;
                     do
                     {
-                        this.putPawn(position, idToPlay);
+                        this.PutPawn(position, idToPlay);
                         changedPositions.Add(position);
                         position = position.add(direction);
-                    } while (this.boardState.isInBoundaries(position) && this.getColor(position) != idToPlay);
+                    } while (this.boardState.isInBoundaries(position) && this.GetColor(position) != idToPlay);
                 }
 
-                this.nextTurn();
-
-                int lostPoint = changedPositions.Count - 1;
-
-                if (idToPlay == this.whiteId)
-                {
-                    this.blackScore -= lostPoint;
-                }
-                else
-                {
-                    this.whiteScore -= lostPoint;
-                }
+                this.NextTurn();
 
                 return changedPositions;
             }
@@ -198,12 +190,16 @@ namespace ArcOthelloBG.Logic
         /// <param name="position">Position to put a pawn</param>
         /// <param name="isWhite">Color of the pawn</param>
         /// <returns>move is playable or not</returns>
-        public bool isPlayable(Vector2 position, int idToPlay)
+        public bool IsPlayable(Vector2 position, int idToPlay)
         {
             return this.playerToPlay == idToPlay && this.boardState.isPlayable(position);
         }
 
-        public List<Vector2> getPositionsAvailable()
+        /// <summary>
+        /// get a list of positions where a player can play
+        /// </summary>
+        /// <returns>list of position</returns>
+        public List<Vector2> GetPositionsAvailable()
         {
             return this.boardState.AvailablePositions;
         }
@@ -213,50 +209,64 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         /// <param name="position">position of the pawns</param>
         /// <returns>Color of the pawns</returns>
-        public int getColor(Vector2 position)
+        public int GetColor(Vector2 position)
         {
             return this.board[position.X, position.Y];
         }
 
-
-        private void nextTurn(bool hasSkipped = false)
+        /// <summary>
+        /// handle the changes for changing turn
+        /// </summary>
+        /// <param name="hasSkipped">if the transition was because the turn skipped, useful for detecing the end of the game</param>
+        private void NextTurn(bool hasSkipped = false)
         {
-            this.playerToPlay = this.getNextPlayer();
+            this.playerToPlay = this.GetNextPlayer();
 
             this.turn++;
             this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleMoves, this.emptyId, this.whiteScore, this.blackScore);
 
-            if(this.getPositionsAvailable().Count == 0)
+            if(this.GetPositionsAvailable().Count == 0)
             {
                 if (hasSkipped)
                 {
-                    Won?.Invoke(this, new WinEventArgs(this.getWinner()));
+                    Won?.Invoke(this, new WinEventArgs(this.GetWinner()));
                     return; 
                 }
 
                 int previousPlayer = this.playerToPlay;
-                this.nextTurn(true);
+                this.NextTurn(true);
                 TurnSkipped?.Invoke(this, new SkipTurnEventArgs(previousPlayer));
             }
         }
 
-        private int getNextPlayer()
+        /// <summary>
+        /// Get the next player to play
+        /// </summary>
+        /// <returns>id of the player</returns>
+        private int GetNextPlayer()
         {
             return this.playerToPlay == this.whiteId ? this.blackId : this.whiteId;
         }
 
         
-
-        private int getWinner()
+        /// <summary>
+        /// get the winner of the game
+        /// </summary>
+        /// <returns>id of the winner</returns>
+        private int GetWinner()
         {
             return this.whiteScore > this.blackScore ? this.whiteId : this.blackId;
         }
 
-
-        private void putPawn(Vector2 position, int idColor)
+        /// <summary>
+        /// put a pawn at a position and handle score channges
+        /// </summary>
+        /// <param name="position">position of the pawn</param>
+        /// <param name="idColor">color of the pawn</param>
+        private void PutPawn(Vector2 position, int idColor)
         {
+            this.IncrementScore(idColor, position);
             this.board[position.X, position.Y] = idColor;
-            this.incrementScore(idColor);
         }
 
 
@@ -264,7 +274,7 @@ namespace ArcOthelloBG.Logic
         /// <summary>
         /// init the board with the right numbers
         /// </summary>
-        private void initBoard()
+        private void InitBoard()
         {
             int w = this.board.GetLength(0);
             int h = this.board.GetLength(1);
@@ -284,7 +294,7 @@ namespace ArcOthelloBG.Logic
                         color = this.blackId;
                     }
 
-                    this.putPawn(new Vector2(i, j), color);
+                    this.PutPawn(new Vector2(i, j), color);
                 }
             }
         }
@@ -292,7 +302,7 @@ namespace ArcOthelloBG.Logic
         /// <summary>
         /// build the list of Direction possible to play
         /// </summary>
-        private void buildPossibleDirections()
+        private void BuildPossibleDirections()
         {
             this.possibleMoves = new List<Vector2>();
 
@@ -309,15 +319,30 @@ namespace ArcOthelloBG.Logic
             }
         }
 
-        private void incrementScore(int playerId)
+        /// <summary>
+        /// Increment the score of a player
+        /// </summary>
+        /// <param name="playerId">player to add a point</param>
+        /// <param name="position">position, to check if the position had another pawn already</param>
+        private void IncrementScore(int playerId, Vector2 position)
         {
             if (playerId == this.whiteId)
             {
                 this.whiteScore++;
+
+                if(this.GetColor(position) == this.blackId)
+                {
+                    this.blackScore--;
+                }
             }
             else if(playerId == this.blackId)
             {
                 this.blackScore++;
+
+                if (this.GetColor(position) == this.whiteId)
+                {
+                    this.whiteScore--;
+                }
             }
         }
 

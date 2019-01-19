@@ -22,7 +22,7 @@ namespace ArcOthelloBG.Logic
         {
             this.game = Game.Instance;
             this.readSettings();
-            this.game.init(this.rows, this.columns, this.whiteId, this.blackId,this.emptyId);
+            this.game.Init(this.rows, this.columns, this.whiteId, this.blackId,this.emptyId);
         }
 
         int IPlayable.IPlayable.GetBlackScore()
@@ -52,14 +52,14 @@ namespace ArcOthelloBG.Logic
 
         bool IPlayable.IPlayable.IsPlayable(int column, int line, bool isWhite)
         {
-            return this.game.isPlayable(new Vector2(column, line), this.getIdFromBool(isWhite));
+            return this.game.IsPlayable(new Vector2(column, line), this.getIdFromBool(isWhite));
         }
 
         bool IPlayable.IPlayable.PlayMove(int column, int line, bool isWhite)
         {
             try
             {
-                this.game.play(new Vector2(column, line), this.getIdFromBool(isWhite));
+                this.game.Play(new Vector2(column, line), this.getIdFromBool(isWhite));
                 return true;
             }
             catch(ArgumentException)

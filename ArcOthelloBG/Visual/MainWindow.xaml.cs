@@ -192,7 +192,7 @@ namespace ArcOthelloBG
 
             try
             {
-                List<Vector2> changedPositions = Game.Instance.play(position, this.currentPlayId);
+                List<Vector2> changedPositions = Game.Instance.Play(position, this.currentPlayId);
 
                 Uri imageUri;
                 if (this.currentPlayId == this.whiteId)
@@ -248,7 +248,7 @@ namespace ArcOthelloBG
             if (openFileDialog.ShowDialog() == true)
             {
                 this.resetBoard();
-                Game.Instance.loadState(BoardFileManager.LoadStateFromFile(openFileDialog.FileName));
+                Game.Instance.LoadState(BoardFileManager.LoadStateFromFile(openFileDialog.FileName));
                 this.getBoardStateAndRefreshGUI();
             }
         }
@@ -322,7 +322,7 @@ namespace ArcOthelloBG
 
             foreach (Vector2 CellCoor in this.oldValidMoves)
             {
-                if (Game.Instance.getColor(CellCoor) == this.emptyId)
+                if (Game.Instance.GetColor(CellCoor) == this.emptyId)
                 {
                     this.btnMatrix[CellCoor.X, CellCoor.Y].Background = this.whiteBrush;
                 }
@@ -330,11 +330,11 @@ namespace ArcOthelloBG
 
             this.oldValidMoves.Clear();
 
-            List<Vector2> validMoves = Game.Instance.getPositionsAvailable();
+            List<Vector2> validMoves = Game.Instance.GetPositionsAvailable();
 
             foreach (Vector2 CellCoor in validMoves)
             {
-                if (Game.Instance.getColor(CellCoor) == this.emptyId)
+                if (Game.Instance.GetColor(CellCoor) == this.emptyId)
                 {
                     this.oldValidMoves.Add(CellCoor);
                     this.btnMatrix[CellCoor.X, CellCoor.Y].Background = this.greenBrush;
@@ -350,7 +350,7 @@ namespace ArcOthelloBG
 
             this.togglePlayerBorderColors();
 
-            Game.Instance.init(this.width, this.height, this.whiteId, this.blackId, this.emptyId);
+            Game.Instance.Init(this.width, this.height, this.whiteId, this.blackId, this.emptyId);
 
 
 
@@ -390,7 +390,7 @@ namespace ArcOthelloBG
             {
                 for (int j = 0; j < this.height; j++)
                 {
-                    var idPlayer = Game.Instance.getColor(new Vector2(i, j));
+                    var idPlayer = Game.Instance.GetColor(new Vector2(i, j));
 
                     if (idPlayer == this.blackId)
                     {

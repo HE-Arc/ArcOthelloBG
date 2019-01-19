@@ -83,14 +83,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BoardFileManager.cs" />
+    <Compile Include="Tools\BoardFileManager.cs" />
     <Compile Include="EventHandling\SkipTurnEventArgs.cs" />
     <Compile Include="EventHandling\WinEventArgs.cs" />
     <Compile Include="Logic\BoardState.cs" />
     <Compile Include="Logic\Game.cs" />
     <Compile Include="Logic\Playable.cs" />
     <Compile Include="Logic\Vector2.cs" />
-    <Compile Include="UndoRedo.cs" />
+    <Compile Include="Tools\UndoRedo.cs" />
     <Compile Include="Visual\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
