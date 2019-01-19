@@ -74,7 +74,7 @@ namespace ArcOthelloBG
             {
                 try
                 {
-                    return $"Score :{Game.Instance.BlackScore.ToString()}";
+                    return $"Score: {Game.Instance.BlackScore.ToString()}";
                 }
                 catch (NullReferenceException e) //first time, if board is not init
                 {
@@ -89,7 +89,7 @@ namespace ArcOthelloBG
             {
                 try
                 {
-                    return $"Score :{Game.Instance.WhiteScore.ToString()}";
+                    return $"Score: {Game.Instance.WhiteScore.ToString()}";
                 }
                 catch (NullReferenceException e) //first time, if board is not init
                 {
@@ -248,6 +248,7 @@ namespace ArcOthelloBG
             if (openFileDialog.ShowDialog() == true)
             {
                 Game.Instance.loadState(BoardFileManager.LoadStateFromFile(openFileDialog.FileName));
+                this.getBoardStateAndRefreshGUI();
             }
         }
 
@@ -586,6 +587,35 @@ namespace ArcOthelloBG
                 BlackPlayerBorder.BorderBrush = this.goldBrush;
                 WhitePlayerBorder.BorderBrush = this.whiteBrush;
             }
+        }
+
+        private void getBoardStateAndRefreshGUI()
+        {
+            int[,] Board = Game.Instance.BoardState.Board;
+            for (int i = 0; i < this.width; i++)
+            {
+                for (int j = 0; j < this.height; j++)
+                {
+                    if (Board[i, j] == this.whiteId)
+                        this.changeCellImage(btnMatrix[i, j], this.whiteUri);
+                    else if (Board[i, j] == this.blackId)
+                        this.changeCellImage(btnMatrix[i, j], this.blackUri);
+                    else
+                        btnMatrix[i, j].Background = this.whiteBrush;
+                }
+            }
+            showValidMoves();
+            RaisePropertyChanged("WhiteScore");
+            RaisePropertyChanged("BlackScore");
+            this.timeSecondBlack = Game.Instance.BoardState.BlackTime;
+            this.timeSecondWhite = Game.Instance.BoardState.WhiteTime;
+            RaisePropertyChanged("TimeBlack");
+            RaisePropertyChanged("TimeWhite");
+
+            this.currentPlayId = Game.Instance.PlayToPlay;
+
+            this.togglePlayerBorderColors();
+
         }
 
         private void Game_TurnSkipped(object sender, EventHandling.SkipTurnEventArgs e)
