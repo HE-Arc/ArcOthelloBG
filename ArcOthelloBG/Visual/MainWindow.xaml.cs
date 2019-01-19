@@ -247,6 +247,7 @@ namespace ArcOthelloBG
 
             if (openFileDialog.ShowDialog() == true)
             {
+                this.resetBoard();
                 Game.Instance.loadState(BoardFileManager.LoadStateFromFile(openFileDialog.FileName));
                 this.getBoardStateAndRefreshGUI();
             }
@@ -600,8 +601,6 @@ namespace ArcOthelloBG
                         this.changeCellImage(btnMatrix[i, j], this.whiteUri);
                     else if (Board[i, j] == this.blackId)
                         this.changeCellImage(btnMatrix[i, j], this.blackUri);
-                    else
-                        btnMatrix[i, j].Background = this.whiteBrush;
                 }
             }
             showValidMoves();
