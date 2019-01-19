@@ -72,6 +72,11 @@ namespace ArcOthelloBG.Logic
             return new Vector2(this.x, this.y);
         }
 
+        /// <summary>
+        /// a vector is equals when x and y are the same
+        /// </summary>
+        /// <param name="obj">obj to compare</param>
+        /// <returns>equals or not</returns>
         public override bool Equals(object obj)
         {
             Vector2 toCompare = null;
@@ -88,11 +93,19 @@ namespace ArcOthelloBG.Logic
             return toCompare.x == this.x && toCompare.y == this.y;
         }
 
+        /// <summary>
+        /// hashcode of a vector, add the x ans y in a string and get the hashcode
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return $"{this.x}{this.y}".GetHashCode();
         }
 
+        /// <summary>
+        /// Transform a vector2 to a Tuples of int int
+        /// </summary>
+        /// <returns></returns>
         public Tuple<int, int> toTuplesintint()
         {
             return new Tuple<int, int>(this.x, this.y);

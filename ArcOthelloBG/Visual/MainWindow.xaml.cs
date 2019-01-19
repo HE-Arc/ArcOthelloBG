@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Configuration;
 using System.Timers;
 using System.ComponentModel;
+using ArcOthelloBG.Exceptions;
 
 namespace ArcOthelloBG
 {
@@ -38,6 +39,7 @@ namespace ArcOthelloBG
         private int timeSecondBlack;
         private int timeSecondWhite;
         private Timer timerTime;
+        private UndoRedo undoRedo;
 
         private SolidColorBrush whiteBrush;
         private SolidColorBrush goldBrush;
@@ -192,6 +194,7 @@ namespace ArcOthelloBG
 
             try
             {
+                this.undoRedo.DoAction(Game.Instance.BoardState);
                 List<Vector2> changedPositions = Game.Instance.Play(position, this.currentPlayId);
 
                 Uri imageUri;
@@ -227,6 +230,7 @@ namespace ArcOthelloBG
             }
             catch (ArgumentException exception)
             {
+                this.undoRedo.Undo(Game.Instance.BoardState);
                 Console.WriteLine(exception);
             }
         }
@@ -238,6 +242,12 @@ namespace ArcOthelloBG
                 resetBoard();
         }
 
+
+        /// <summary>
+        /// action when open menu clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LoadBoard(object sender, EventArgs e)
         {
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
@@ -253,6 +263,11 @@ namespace ArcOthelloBG
             }
         }
 
+        /// <summary>
+        /// action when saved menu clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveBoard(object sender, EventArgs e)
         {
             Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
@@ -271,14 +286,34 @@ namespace ArcOthelloBG
             Console.WriteLine("Game saved");
         }
 
+        /// <summary>
+        /// action when redo menu clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UndoBoard(object sender, EventArgs e)
         {
-            Console.WriteLine("Undo");
+            try
+            {
+                Game.Instance.LoadState(this.undoRedo.Undo(Game.Instance.BoardState));
+                this.getBoardStateAndRefreshGUI();
+            }
+            catch(StackEmptyException) { }
         }
 
+        /// <summary>
+        /// action when redo menu clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RedoBoard(object sender, EventArgs e)
         {
-            Console.WriteLine("Redo");
+            try
+            {
+                Game.Instance.LoadState(this.undoRedo.Redo(Game.Instance.BoardState));
+                this.getBoardStateAndRefreshGUI();
+            }
+            catch (StackEmptyException) { }
         }
 
         private void mnuExitClick(object sender, EventArgs e)
@@ -329,7 +364,6 @@ namespace ArcOthelloBG
             }
 
             this.oldValidMoves.Clear();
-
             List<Vector2> validMoves = Game.Instance.GetPositionsAvailable();
 
             foreach (Vector2 CellCoor in validMoves)
@@ -347,12 +381,9 @@ namespace ArcOthelloBG
         private void resetBoard()
         {
             this.currentPlayId = this.blackId;
-
             this.togglePlayerBorderColors();
 
             Game.Instance.Init(this.width, this.height, this.whiteId, this.blackId, this.emptyId);
-
-
 
             if (!guiBuilded)
             {
@@ -411,15 +442,11 @@ namespace ArcOthelloBG
             this.startTimer();
 
             RaisePropertyChanged("BlackScore");
-
             RaisePropertyChanged("WhiteScore");
-
-
         }
 
         private void passTurn()
         {
-
             if (this.currentPlayId == this.whiteId)
             {
                 this.currentPlayId = this.blackId;
@@ -488,6 +515,7 @@ namespace ArcOthelloBG
             this.blackUri = new Uri("pack://application:,,,/Visual/bfm.png");
             this.whiteUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
             DataContext = this;
+            this.undoRedo = new UndoRedo();
 
             try
             {
@@ -552,11 +580,7 @@ namespace ArcOthelloBG
             List<UIElement> childrenToRemove = new List<UIElement>();
             foreach (UIElement child in grid.Children)
             {
-                if (child is StackPanel)
-                {
-
-                }
-                else
+                if (!(child is StackPanel))
                 {
                     childrenToRemove.Add(child);
                 }
