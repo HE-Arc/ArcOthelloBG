@@ -42,7 +42,7 @@ namespace ArcOthelloBG.Logic
 
         string IPlayable.IPlayable.GetName()
         {
-            throw new NotImplementedException();
+            return "ArcOthelloBG";
         }
 
         Tuple<int, int> IPlayable.IPlayable.GetNextMove(int[,] game, int level, bool whiteTurn)
