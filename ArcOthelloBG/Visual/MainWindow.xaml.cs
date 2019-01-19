@@ -194,7 +194,7 @@ namespace ArcOthelloBG
 
             try
             {
-                this.undoRedo.DoAction(Game.Instance.BoardState);
+                this.undoRedo.DoAction(this.GetBoardState());
                 List<Vector2> changedPositions = Game.Instance.Play(position, this.currentPlayId);
 
                 Uri imageUri;
@@ -230,16 +230,34 @@ namespace ArcOthelloBG
             }
             catch (ArgumentException exception)
             {
-                this.undoRedo.Undo(Game.Instance.BoardState);
+                this.undoRedo.Undo(this.GetBoardState());
                 Console.WriteLine(exception);
             }
         }
 
+        /// <summary>
+        /// menu reset clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ResetBoard(object sender, EventArgs e)
         {
             MenuItem mnuResetgame = this.FindName("mnuResetGame") as MenuItem;
             if (mnuResetgame.IsEnabled)
                 resetBoard();
+        }
+
+        /// <summary>
+        /// get the board state
+        /// </summary>
+        /// <returns>state</returns>
+        private BoardState GetBoardState()
+        {
+            BoardState state = Game.Instance.BoardState;
+            state.BlackTime = this.timeSecondBlack;
+            state.WhiteTime = this.timeSecondWhite;
+
+            return state;
         }
 
 
@@ -276,11 +294,9 @@ namespace ArcOthelloBG
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                BoardState state = Game.Instance.BoardState;
-                state.BlackTime = this.timeSecondBlack;
-                state.WhiteTime = this.timeSecondWhite;
+                BoardState state = this.GetBoardState();
 
-                BoardFileManager.SaveToFile(saveFileDialog.FileName, Game.Instance.BoardState);
+                BoardFileManager.SaveToFile(saveFileDialog.FileName, this.GetBoardState());
             }
 
             Console.WriteLine("Game saved");
@@ -295,7 +311,7 @@ namespace ArcOthelloBG
         {
             try
             {
-                Game.Instance.LoadState(this.undoRedo.Undo(Game.Instance.BoardState));
+                Game.Instance.LoadState(this.undoRedo.Undo(this.GetBoardState()));
                 this.getBoardStateAndRefreshGUI();
             }
             catch(StackEmptyException) { }
@@ -310,7 +326,7 @@ namespace ArcOthelloBG
         {
             try
             {
-                Game.Instance.LoadState(this.undoRedo.Redo(Game.Instance.BoardState));
+                Game.Instance.LoadState(this.undoRedo.Redo(this.GetBoardState()));
                 this.getBoardStateAndRefreshGUI();
             }
             catch (StackEmptyException) { }
@@ -616,7 +632,8 @@ namespace ArcOthelloBG
 
         private void getBoardStateAndRefreshGUI()
         {
-            int[,] Board = Game.Instance.BoardState.Board;
+            BoardState state = this.GetBoardState();
+            int[,] Board = state.Board;
             for (int i = 0; i < this.width; i++)
             {
                 for (int j = 0; j < this.height; j++)
@@ -631,8 +648,8 @@ namespace ArcOthelloBG
             showValidMoves();
             RaisePropertyChanged("WhiteScore");
             RaisePropertyChanged("BlackScore");
-            this.timeSecondBlack = Game.Instance.BoardState.BlackTime;
-            this.timeSecondWhite = Game.Instance.BoardState.WhiteTime;
+            this.timeSecondBlack = state.BlackTime;
+            this.timeSecondWhite = state.WhiteTime;
             RaisePropertyChanged("TimeBlack");
             RaisePropertyChanged("TimeWhite");
 

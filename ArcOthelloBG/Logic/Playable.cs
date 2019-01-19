@@ -8,6 +8,9 @@ using System.Configuration;
 
 namespace ArcOthelloBG.Logic
 {
+    /// <summary>
+    /// Implementation of the IPlayable
+    /// </summary>
     class Playable : IPlayable.IPlayable
     {
         Game game;
@@ -17,7 +20,9 @@ namespace ArcOthelloBG.Logic
         private int blackId;
         private int emptyId;
 
-
+        /// <summary>
+        /// constructor
+        /// </summary>
         public Playable()
         {
             this.game = Game.Instance;
@@ -25,36 +30,73 @@ namespace ArcOthelloBG.Logic
             this.game.Init(this.rows, this.columns, this.whiteId, this.blackId,this.emptyId);
         }
 
+        /// <summary>
+        /// get the black score
+        /// </summary>
+        /// <returns>score</returns>
         int IPlayable.IPlayable.GetBlackScore()
         {
            return game.BlackScore;
         }
   
+        /// <summary>
+        /// get the white score
+        /// </summary>
+        /// <returns>score</returns>
         int IPlayable.IPlayable.GetWhiteScore()
         {
             return game.WhiteScore;
         }
 
+        /// <summary>
+        /// get the board
+        /// </summary>
+        /// <returns></returns>
         int[,] IPlayable.IPlayable.GetBoard()
         {
             return game.Board;
         }
 
+        /// <summary>
+        /// get the name of the game
+        /// </summary>
+        /// <returns></returns>
         string IPlayable.IPlayable.GetName()
         {
             return "ArcOthelloBG";
         }
 
+        /// <summary>
+        /// Get the next moves
+        /// </summary>
+        /// <param name="game">board</param>
+        /// <param name="level">level</param>
+        /// <param name="whiteTurn">is it white turn or black</param>
+        /// <returns></returns>
         Tuple<int, int> IPlayable.IPlayable.GetNextMove(int[,] game, int level, bool whiteTurn)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// if a move is playable
+        /// </summary>
+        /// <param name="column">x coordinate of the move</param>
+        /// <param name="line">y coordinate of the move</param>
+        /// <param name="isWhite">is white or black</param>
+        /// <returns></returns>
         bool IPlayable.IPlayable.IsPlayable(int column, int line, bool isWhite)
         {
             return this.game.IsPlayable(new Vector2(column, line), this.getIdFromBool(isWhite));
         }
 
+        /// <summary>
+        /// Play a move at the position given
+        /// </summary>
+        /// <param name="column">nb of the column</param>
+        /// <param name="line">nb of the line</param>
+        /// <param name="isWhite">is white or black</param>
+        /// <returns></returns>
         bool IPlayable.IPlayable.PlayMove(int column, int line, bool isWhite)
         {
             try
