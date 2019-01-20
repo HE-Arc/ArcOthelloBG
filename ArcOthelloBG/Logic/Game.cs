@@ -326,7 +326,7 @@ namespace ArcOthelloBG.Logic
         /// <param name="position">position, to check if the position had another pawn already</param>
         private void IncrementScore(int playerId, Vector2 position)
         {
-            if (playerId == this.whiteId)
+            if (playerId == this.whiteId && this.GetColor(position) != this.whiteId)
             {
                 this.whiteScore++;
 
@@ -335,7 +335,7 @@ namespace ArcOthelloBG.Logic
                     this.blackScore--;
                 }
             }
-            else if(playerId == this.blackId)
+            else if(playerId == this.blackId && this.GetColor(position) != this.blackId)
             {
                 this.blackScore++;
 
