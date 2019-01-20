@@ -19,7 +19,7 @@ namespace ArcOthelloBG.Logic
         private int playerToPlay;
         private int whiteId;
         private int blackId;
-        private List<Vector2> possibleMoves;
+        private List<Vector2> possibleDirections;
         private int turn;
         private int emptyId;
         private BoardState boardState;
@@ -144,7 +144,6 @@ namespace ArcOthelloBG.Logic
             this.blackScore = state.BlackScore;
             this.playerToPlay = state.PlayerId;
             this.boardState = state;
-
         }
 
         /// <summary>
@@ -223,7 +222,7 @@ namespace ArcOthelloBG.Logic
             this.playerToPlay = this.GetNextPlayer();
 
             this.turn++;
-            this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleMoves, this.emptyId, this.whiteScore, this.blackScore);
+            this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleDirections, this.emptyId, this.whiteScore, this.blackScore);
 
             if(this.GetPositionsAvailable().Count == 0)
             {
@@ -304,7 +303,7 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         private void BuildPossibleDirections()
         {
-            this.possibleMoves = new List<Vector2>();
+            this.possibleDirections = new List<Vector2>();
 
             //list is always the same, see if we can make it elsewhere
             for (int i = -1; i <= 1; i++)
@@ -313,7 +312,7 @@ namespace ArcOthelloBG.Logic
                 {
                     if (i != 0 || j != 0)
                     {
-                        this.possibleMoves.Add(new Vector2(i, j));
+                        this.possibleDirections.Add(new Vector2(i, j));
                     }
                 }
             }

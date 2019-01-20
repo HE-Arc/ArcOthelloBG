@@ -47,14 +47,49 @@ namespace ArcOthelloBG
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private bool skipTurn;
-        private bool gameWon;
         private bool guiBuilded;
         private int winnerId;
 
         private const string BLACK_NAME = "BFM";
         private const string WHITE_NAME = "Prix Garantie";
         private const string EXTENSION = "Otello files (*.otl)|*.otl";
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            this.whiteBrush = new SolidColorBrush(Colors.White);
+            this.greenBrush = new SolidColorBrush(Colors.LightGreen);
+            this.goldBrush = new SolidColorBrush(Colors.Gold);
+            this.blackUri = new Uri("pack://application:,,,/Visual/bfm.png");
+            this.whiteUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
+            DataContext = this;
+            this.undoRedo = new UndoRedo();
+
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                this.width = Convert.ToInt16(appSettings["columns"]);
+                this.height = Convert.ToInt16(appSettings["rows"]);
+                this.whiteId = Convert.ToInt16(appSettings["whiteId"]);
+                this.blackId = Convert.ToInt16(appSettings["blackId"]);
+                this.emptyId = Convert.ToInt16(appSettings["emptyId"]);
+
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error reading app settings");
+                this.width = 9;
+                this.height = 7;
+                this.whiteId = 2;
+                this.blackId = 1;
+                this.emptyId = -1;
+            }
+
+            this.oldValidMoves = new List<Vector2>();
+            Game.Instance.TurnSkipped += Game_TurnSkipped;
+            Game.Instance.Won += Game_Won;
+            this.guiBuilded = false;
+        }
 
         public string TimeWhite
         {
@@ -235,11 +270,10 @@ namespace ArcOthelloBG
                     logoBFM.Opacity = opacityBFM;
                 }
 
-                if (this.gameWon)
-                    this.WinGame();
-                else
-                    this.passTurn();
+                this.currentPlayId = Game.Instance.PlayerToPlay;
 
+                this.togglePlayerBorderColors();
+                this.showValidMoves();
             }
             catch (ArgumentException exception)
             {
@@ -481,33 +515,6 @@ namespace ArcOthelloBG
             RaisePropertyChanged("WhiteScore");
         }
 
-        private void passTurn()
-        {
-            this.currentPlayId = Game.Instance.PlayerToPlay;
-
-            this.togglePlayerBorderColors();
-            this.showValidMoves();
-
-            if (this.skipTurn)
-            {
-                this.skipTurn = false;
-
-                TextBlock lblSkipped = this.FindName("lblSkipped") as TextBlock;
-                lblSkipped.Visibility = Visibility.Visible;
-
-                string winnerString = "";
-
-                if (this.currentPlayId == this.whiteId)
-                    winnerString = BLACK_NAME;
-                else if (this.currentPlayId == this.blackId)
-                    winnerString = WHITE_NAME;
-
-                lblSkipped.Text = $"{winnerString} had no move available and skipped his turn";
-
-                this.passTurn();
-            }
-        }
-
         public void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
             if (this.currentPlayId == this.blackId)
@@ -557,56 +564,16 @@ namespace ArcOthelloBG
             this.timerTime.Stop();
         }
 
-
-        public MainWindow()
-        {
-            InitializeComponent();
-            this.whiteBrush = new SolidColorBrush(Colors.White);
-            this.greenBrush = new SolidColorBrush(Colors.LightGreen);
-            this.goldBrush = new SolidColorBrush(Colors.Gold);
-            this.blackUri = new Uri("pack://application:,,,/Visual/bfm.png");
-            this.whiteUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
-            DataContext = this;
-            this.undoRedo = new UndoRedo();
-
-            try
-            {
-                var appSettings = ConfigurationManager.AppSettings;
-                this.width = Convert.ToInt16(appSettings["columns"]);
-                this.height = Convert.ToInt16(appSettings["rows"]);
-                this.whiteId = Convert.ToInt16(appSettings["whiteId"]);
-                this.blackId = Convert.ToInt16(appSettings["blackId"]);
-                this.emptyId = Convert.ToInt16(appSettings["emptyId"]);
-
-            }
-            catch (ConfigurationErrorsException)
-            {
-                Console.WriteLine("Error reading app settings");
-                this.width = 9;
-                this.height = 7;
-                this.whiteId = 2;
-                this.blackId = 1;
-                this.emptyId = -1;
-            }
-
-            this.oldValidMoves = new List<Vector2>();
-            this.skipTurn = false;
-            Game.Instance.TurnSkipped += Game_TurnSkipped;
-            Game.Instance.Won += Game_Won;
-            this.guiBuilded = false;
-            this.gameWon = false;
-        }
-
         private void Game_Won(object sender, EventHandling.WinEventArgs e)
-        {
-            this.gameWon = true;
+        { 
             this.winnerId = e.PlayerId;
+
+            this.WinGame();
         }
 
         private void WinGame()
         {
             this.StopTimer();
-            this.gameWon = false;
             MenuItem mnuResetgame = this.FindName("mnuResetGame") as MenuItem;
             mnuResetgame.IsEnabled = false;
             Button startButton = this.FindName("btnStart") as Button;
@@ -614,6 +581,9 @@ namespace ArcOthelloBG
 
             TextBlock lblWon = this.FindName("lblWon") as TextBlock;
             lblWon.Visibility = Visibility.Visible;
+
+            TextBlock lblSkipped = this.FindName("lblSkipped") as TextBlock;
+            lblSkipped.Visibility = Visibility.Hidden;
 
             int whiteScore = Game.Instance.WhiteScore;
             int blackScore = Game.Instance.BlackScore;
@@ -703,7 +673,17 @@ namespace ArcOthelloBG
 
         private void Game_TurnSkipped(object sender, EventHandling.SkipTurnEventArgs e)
         {
-            this.skipTurn = true;
+            TextBlock lblSkipped = this.FindName("lblSkipped") as TextBlock;
+            lblSkipped.Visibility = Visibility.Visible;
+
+            string player = "";
+
+            if (this.currentPlayId == this.whiteId)
+                player = BLACK_NAME;
+            else if (this.currentPlayId == this.blackId)
+                player = WHITE_NAME;
+
+            lblSkipped.Text = $"{player} had no move available and skipped his turn";
         }
 
         public void RaisePropertyChanged(string propertyName)
