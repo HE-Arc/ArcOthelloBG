@@ -585,6 +585,8 @@ namespace ArcOthelloBG
         private void WinGame()
         {
             this.StopTimer();
+            RaisePropertyChanged("WhiteScore");
+            RaisePropertyChanged("BlackScore");
             MenuItem mnuResetgame = this.FindName("mnuResetGame") as MenuItem;
             mnuResetgame.IsEnabled = false;
             Button startButton = this.FindName("btnStart") as Button;
