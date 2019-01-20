@@ -52,6 +52,10 @@ namespace ArcOthelloBG
         private bool guiBuilded;
         private int winnerId;
 
+        private const string BLACK_NAME = "BFM";
+        private const string WHITE_NAME = "Prix Garantie";
+        private const string EXTENSION = "Otello files (*.otl)|*.otl";
+
         public string TimeWhite
         {
             get
@@ -187,6 +191,9 @@ namespace ArcOthelloBG
         {
             Button senderButton = (Button)sender;
 
+            TextBlock lblSkipped = this.FindName("lblSkipped") as TextBlock;
+            lblSkipped.Visibility = Visibility.Hidden;
+
             String[] colRowString = senderButton.Name.Split('_');
             int col = Convert.ToInt16(colRowString[1]);
             int row = Convert.ToInt16(colRowString[2]);
@@ -276,7 +283,7 @@ namespace ArcOthelloBG
         {
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
 
-            openFileDialog.Filter = "Otello files (*.otl)|*.otl";
+            openFileDialog.Filter = EXTENSION;
             openFileDialog.RestoreDirectory = true;
 
             if (openFileDialog.ShowDialog() == true)
@@ -295,7 +302,7 @@ namespace ArcOthelloBG
         private void SaveBoard(object sender, EventArgs e)
         {
             Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
-            saveFileDialog.Filter = "Otello files (*.otl)|*.otl";
+            saveFileDialog.Filter = EXTENSION;
             saveFileDialog.RestoreDirectory = true;
 
             if (saveFileDialog.ShowDialog() == true)
@@ -429,7 +436,7 @@ namespace ArcOthelloBG
                 TextBlock lblWon = this.FindName("lblWon") as TextBlock;
                 lblWon.Visibility = Visibility.Collapsed;
                 TextBlock lblSkipped = this.FindName("lblSkipped") as TextBlock;
-                //lblSkipped.Visibility = Visibility.Hidden;
+                lblSkipped.Visibility = Visibility.Hidden;
                 buildBoard(this.width, this.height);
 
             }
@@ -479,10 +486,24 @@ namespace ArcOthelloBG
             this.currentPlayId = Game.Instance.PlayerToPlay;
 
             this.togglePlayerBorderColors();
-            showValidMoves();
+            this.showValidMoves();
+
             if (this.skipTurn)
             {
                 this.skipTurn = false;
+
+                TextBlock lblSkipped = this.FindName("lblSkipped") as TextBlock;
+                lblSkipped.Visibility = Visibility.Visible;
+
+                string winnerString = "";
+
+                if (this.currentPlayId == this.whiteId)
+                    winnerString = BLACK_NAME;
+                else if (this.currentPlayId == this.blackId)
+                    winnerString = WHITE_NAME;
+
+                lblSkipped.Text = $"{winnerString} had no move available and skipped his turn";
+
                 this.passTurn();
             }
         }
@@ -601,9 +622,9 @@ namespace ArcOthelloBG
 
             String winnerString = "";
             if (this.winnerId == this.whiteId)
-                winnerString = "prix garantie";
+                winnerString = WHITE_NAME;
             else if (this.winnerId == this.blackId)
-                winnerString = "BFM";
+                winnerString = BLACK_NAME;
 
             lblWon.Text = $"The {winnerString} was elected the best beer in the world with {winnerScore} points";
             this.guiBuilded = false;
