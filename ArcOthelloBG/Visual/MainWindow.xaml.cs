@@ -45,6 +45,8 @@ namespace ArcOthelloBG
         private SolidColorBrush goldBrush;
         private SolidColorBrush greenBrush;
 
+        private bool hasWon;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private bool guiBuilded;
@@ -64,6 +66,7 @@ namespace ArcOthelloBG
             this.whiteUri = new Uri("pack://application:,,,/Visual/prixGarantie.jpg");
             DataContext = this;
             this.undoRedo = new UndoRedo();
+            this.hasWon = false;
 
             try
             {
@@ -238,6 +241,11 @@ namespace ArcOthelloBG
             {
                 this.undoRedo.DoAction(this.GetBoardState());
                 List<Vector2> changedPositions = Game.Instance.Play(position, this.currentPlayId);
+
+                if(this.hasWon)
+                {
+                    return;
+                }
 
                 Uri imageUri;
                 if (this.currentPlayId == this.whiteId)
@@ -444,6 +452,7 @@ namespace ArcOthelloBG
         private void resetBoard()
         {
             Game.Instance.Init(this.width, this.height, this.whiteId, this.blackId, this.emptyId);
+            this.hasWon = false;
             this.currentPlayId = Game.Instance.PlayerToPlay;
             this.togglePlayerBorderColors();
 
@@ -568,6 +577,8 @@ namespace ArcOthelloBG
         { 
             this.winnerId = e.PlayerId;
 
+            this.hasWon = true;
+
             this.WinGame();
         }
 
@@ -673,17 +684,20 @@ namespace ArcOthelloBG
 
         private void Game_TurnSkipped(object sender, EventHandling.SkipTurnEventArgs e)
         {
-            TextBlock lblSkipped = this.FindName("lblSkipped") as TextBlock;
-            lblSkipped.Visibility = Visibility.Visible;
+            if(!this.hasWon)
+            {
+                TextBlock lblSkipped = this.FindName("lblSkipped") as TextBlock;
+                lblSkipped.Visibility = Visibility.Visible;
 
-            string player = "";
+                string player = "";
 
-            if (this.currentPlayId == this.whiteId)
-                player = BLACK_NAME;
-            else if (this.currentPlayId == this.blackId)
-                player = WHITE_NAME;
+                if (this.currentPlayId == this.whiteId)
+                    player = BLACK_NAME;
+                else if (this.currentPlayId == this.blackId)
+                    player = WHITE_NAME;
 
-            lblSkipped.Text = $"{player} had no move available and skipped his turn";
+                lblSkipped.Text = $"{player} had no move available and skipped his turn";
+            }
         }
 
         public void RaisePropertyChanged(string propertyName)
