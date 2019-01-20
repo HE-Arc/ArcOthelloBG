@@ -77,7 +77,7 @@ namespace ArcOthelloBG.Logic
             }
         }
 
-        public int PlayToPlay
+        public int PlayerToPlay
         {
             get
             {

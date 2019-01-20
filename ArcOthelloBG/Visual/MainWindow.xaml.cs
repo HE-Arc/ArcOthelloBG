@@ -228,10 +228,6 @@ namespace ArcOthelloBG
                     logoBFM.Opacity = opacityBFM;
                 }
 
-                
-                
-
-
                 if (this.gameWon)
                     this.WinGame();
                 else
@@ -406,10 +402,9 @@ namespace ArcOthelloBG
 
         private void resetBoard()
         {
-            this.currentPlayId = this.blackId;
-            this.togglePlayerBorderColors();
-
             Game.Instance.Init(this.width, this.height, this.whiteId, this.blackId, this.emptyId);
+            this.currentPlayId = Game.Instance.PlayerToPlay;
+            this.togglePlayerBorderColors();
 
             Image logoBFM = this.FindName("LogoBFM") as Image;
             logoBFM.Opacity = 1.0;
@@ -420,7 +415,7 @@ namespace ArcOthelloBG
             if (!guiBuilded)
             {
                 guiBuilded = true;
-                this.setTimer();
+                this.SetTimer();
                 Border blackPlayerBorder = this.FindName("BlackPlayerBorder") as Border;
                 Border whitePlayerBorder = this.FindName("WhitePlayerBorder") as Border;
                 BlackPlayerBorder.Opacity = 1;
@@ -430,9 +425,11 @@ namespace ArcOthelloBG
                 MenuItem mnuSaveGame = this.FindName("mnuSaveGame") as MenuItem;
                 mnuSaveGame.IsEnabled = true;
                 Button startButton = this.FindName("btnStart") as Button;
-                startButton.Visibility = Visibility.Hidden;
+                startButton.Visibility = Visibility.Collapsed;
                 TextBlock lblWon = this.FindName("lblWon") as TextBlock;
-                lblWon.Visibility = Visibility.Hidden;
+                lblWon.Visibility = Visibility.Collapsed;
+                TextBlock lblSkipped = this.FindName("lblSkipped") as TextBlock;
+                //lblSkipped.Visibility = Visibility.Hidden;
                 buildBoard(this.width, this.height);
 
             }
@@ -471,7 +468,7 @@ namespace ArcOthelloBG
                 }
             }
             this.showValidMoves();
-            this.startTimer();
+            this.StartTimer();
 
             RaisePropertyChanged("BlackScore");
             RaisePropertyChanged("WhiteScore");
@@ -479,14 +476,7 @@ namespace ArcOthelloBG
 
         private void passTurn()
         {
-            if (this.currentPlayId == this.whiteId)
-            {
-                this.currentPlayId = this.blackId;
-            }
-            else if (this.currentPlayId == this.blackId)
-            {
-                this.currentPlayId = this.whiteId;
-            }
+            this.currentPlayId = Game.Instance.PlayerToPlay;
 
             this.togglePlayerBorderColors();
             showValidMoves();
@@ -511,7 +501,10 @@ namespace ArcOthelloBG
             }
         }
 
-        private void setTimer()
+        /// <summary>
+        /// Set the timer that counts the time of each player
+        /// </summary>
+        private void SetTimer()
         {
 
             this.timerTime = new System.Timers.Timer(1000);
@@ -522,7 +515,10 @@ namespace ArcOthelloBG
 
         }
 
-        private void startTimer()
+        /// <summary>
+        /// start the timer that counts the time of each player
+        /// </summary>
+        private void StartTimer()
         {
             this.timerTime.Stop();
             this.timeSecondBlack = 0;
@@ -532,7 +528,10 @@ namespace ArcOthelloBG
             RaisePropertyChanged("TimeWhite");
         }
 
-        private void stopTimer()
+        /// <summary>
+        /// Stop the timer that counts the time of each player
+        /// </summary>
+        private void StopTimer()
         {
             this.timerTime.Stop();
         }
@@ -585,7 +584,7 @@ namespace ArcOthelloBG
 
         private void WinGame()
         {
-            this.stopTimer();
+            this.StopTimer();
             this.gameWon = false;
             MenuItem mnuResetgame = this.FindName("mnuResetGame") as MenuItem;
             mnuResetgame.IsEnabled = false;
@@ -675,7 +674,7 @@ namespace ArcOthelloBG
             RaisePropertyChanged("TimeBlack");
             RaisePropertyChanged("TimeWhite");
 
-            this.currentPlayId = Game.Instance.PlayToPlay;
+            this.currentPlayId = Game.Instance.PlayerToPlay;
 
             this.togglePlayerBorderColors();
 

@@ -70,7 +70,6 @@
         </Menu>
         
         <Grid Margin="25">
-            
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="7*" />
@@ -80,20 +79,20 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Border Grid.Column="0" Name="BlackPlayerBorder" Style="{StaticResource PlayerBorderStyle}">
-                <StackPanel  >
+                <StackPanel>
                     <Image Name="LogoBFM" Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="bfm.png" />
                     <Label Name="Player1Name"  Content="Chevalier du comté&#10;des franches montagnes" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" />
                     <Label Name="Player1Score" Content="{Binding BlackScore}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="15" />
                     <Label Name="Player1Time" Content="{Binding TimeBlack}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="15" />
-
                 </StackPanel>
             </Border>
-            <Grid Name="Board" Grid.Column="1" Margin="20">
-                <StackPanel>
-                    <TextBlock Name="lblWon" Text="The prix garantie was elected as the best beer in the world with 99 points"  TextWrapping="WrapWithOverflow"  Panel.ZIndex="100" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Margin="0" Padding="15,15,15,12" Visibility="Hidden"/>
-                    <Button Style="{StaticResource MyButtonStyle}" Background="White" Panel.ZIndex="100" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Start game" Name="btnStart" Click="btnStartClick" Width="100" Height="35"></Button>
-                </StackPanel>
-            </Grid>
+            <DockPanel Grid.Column="1">
+                <TextBlock DockPanel.Dock="Top" Name="lblSkipped" Text="The prix garantie had no move available"  TextWrapping="WrapWithOverflow"  Panel.ZIndex="100" HorizontalAlignment="Center" FontSize="20" Margin="0" Padding="15,15,15,12" VerticalAlignment="Top" Visibility="Collapsed"/>
+                <TextBlock DockPanel.Dock="Top" Name="lblWon" Text="The prix garantie was elected as the best beer in the world with 99 points"  TextWrapping="WrapWithOverflow"  Panel.ZIndex="100" HorizontalAlignment="Center" FontSize="20" Margin="0" Padding="15,15,15,12" Visibility="Collapsed" VerticalAlignment="Top" />
+                <Button DockPanel.Dock="Top" Style="{StaticResource MyButtonStyle}" Background="White" Panel.ZIndex="100" Content="Start game" Name="btnStart" Click="btnStartClick" Width="100" Height="35" Margin="0,20,0,0"/>
+
+                <Grid Name="Board" Margin="20,0"/>
+            </DockPanel>
             <Border Grid.Column="2" Name="WhitePlayerBorder" Style="{StaticResource PlayerBorderStyle}">
                 <StackPanel Height="Auto" Width="Auto">
                     <Image Name="LogoPrixG" Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="prixGarantie.jpg" />
