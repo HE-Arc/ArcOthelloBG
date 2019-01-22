@@ -61,7 +61,7 @@
                 <MenuItem Header="_Load game"  Command="Open"/>
                 <MenuItem Header="_Save game" Name="mnuSaveGame" IsEnabled="False" InputGestureText="Ctrl+S" Command="SaveAs"/>
                 <Separator />
-                <MenuItem Header="_Exit"  Click="mnuExitClick" InputGestureText="Alt+F4"/>
+                <MenuItem Header="_Exit"  Click="MnuExitClick" InputGestureText="Alt+F4"/>
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Header="_Undo"  Command="Undo"/>
@@ -89,7 +89,7 @@
             <DockPanel Grid.Column="1">
                 <TextBlock DockPanel.Dock="Top" Name="lblSkipped" Text="The prix garantie had no move available"  TextWrapping="WrapWithOverflow"  Panel.ZIndex="100" HorizontalAlignment="Center" FontSize="20" Margin="0" Padding="15,15,15,12" VerticalAlignment="Top" Visibility="Collapsed"/>
                 <TextBlock DockPanel.Dock="Top" Name="lblWon" Text="The prix garantie was elected as the best beer in the world with 99 points"  TextWrapping="WrapWithOverflow"  Panel.ZIndex="100" HorizontalAlignment="Center" FontSize="20" Margin="0" Padding="15,15,15,12" Visibility="Hidden" VerticalAlignment="Top" />
-                <Button DockPanel.Dock="Top" Style="{StaticResource MyButtonStyle}" Background="White" Panel.ZIndex="100" Content="Start game" Name="btnStart" Click="btnStartClick" Width="100" Height="35" Margin="0,20,0,0"/>
+                <Button DockPanel.Dock="Top" Style="{StaticResource MyButtonStyle}" Background="White" Panel.ZIndex="100" Content="Start game" Name="btnStart" Click="BtnStartClick" Width="100" Height="35" Margin="0,20,0,0"/>
 
                 <Grid Name="Board" Margin="20,0"/>
             </DockPanel>

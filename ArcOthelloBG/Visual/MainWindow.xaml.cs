@@ -21,11 +21,10 @@ using ArcOthelloBG.Exceptions;
 namespace ArcOthelloBG
 {
     /// <summary>
-    /// Logique d'interaction pour MainWindow.xaml
+    /// Interaction logic for GUI MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window
     {
-
         private int currentPlayId;
         private int whiteId;
         private int blackId;
@@ -36,9 +35,7 @@ namespace ArcOthelloBG
         private Uri blackUri;
         private Uri whiteUri;
         private List<Vector2> oldValidMoves;
-        private int timeSecondBlack;
-        private int timeSecondWhite;
-        private Timer timerTime;
+
         private UndoRedo undoRedo;
 
         private SolidColorBrush whiteBrush;
@@ -46,8 +43,6 @@ namespace ArcOthelloBG
         private SolidColorBrush greenBrush;
 
         private bool hasWon;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private bool guiBuilded;
         private int winnerId;
@@ -94,56 +89,14 @@ namespace ArcOthelloBG
             this.guiBuilded = false;
         }
 
-        public string TimeWhite
-        {
-            get
-            {
-                TimeSpan result = TimeSpan.FromSeconds(this.timeSecondWhite);
-                return $"Time: {result.ToString("mm':'ss")}";
-            }
-        }
-
-        public string TimeBlack
-        {
-            get
-            {
-                TimeSpan result = TimeSpan.FromSeconds(this.timeSecondBlack);
-                return $"Time: {result.ToString("mm':'ss")}";
-            }
-        }
-
-        public String BlackScore
-        {
-            get
-            {
-                try
-                {
-                    return $"Score: {Game.Instance.BlackScore.ToString()}";
-                }
-                catch (NullReferenceException e) //first time, if board is not init
-                {
-                    return "Score: 0";
-                }
-            }
-        }
-
-        public String WhiteScore
-        {
-            get
-            {
-                try
-                {
-                    return $"Score: {Game.Instance.WhiteScore.ToString()}";
-                }
-                catch (NullReferenceException e) //first time, if board is not init
-                {
-                    return "Score: 0";
-                }
-            }
-        }
 
 
-        private void buildBoard(int colCount, int rowCount)
+        /// <summary>
+        /// Builds the board GUI
+        /// </summary>
+        /// <param name="colCount"></param>
+        /// <param name="rowCount"></param>
+        private void BuildBoard(int colCount, int rowCount)
         {
             Grid grid = this.FindName("Board") as Grid;
             this.btnMatrix = new Button[colCount, rowCount];
@@ -225,6 +178,11 @@ namespace ArcOthelloBG
             }
         }
 
+        /// <summary>
+        /// Method called if a cell of the board is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BoardClickHandler(object sender, EventArgs e)
         {
             Button senderButton = (Button)sender;
@@ -242,7 +200,7 @@ namespace ArcOthelloBG
                 this.undoRedo.DoAction(this.GetBoardState());
                 List<Vector2> changedPositions = Game.Instance.Play(position, this.currentPlayId);
 
-                if(this.hasWon)
+                if (this.hasWon)
                 {
                     return;
                 }
@@ -257,10 +215,10 @@ namespace ArcOthelloBG
                     imageUri = this.blackUri;
                 }
 
-                changeCellImage(senderButton, imageUri);
+                ChangeCellImage(senderButton, imageUri);
                 foreach (Vector2 changedPosition in changedPositions)
                 {
-                    changeCellImage(this.btnMatrix[changedPosition.X, changedPosition.Y], imageUri);
+                    ChangeCellImage(this.btnMatrix[changedPosition.X, changedPosition.Y], imageUri);
                 }
 
                 if (this.currentPlayId == this.whiteId || this.currentPlayId == this.blackId && changedPositions.Count > 0)
@@ -280,8 +238,8 @@ namespace ArcOthelloBG
 
                 this.currentPlayId = Game.Instance.PlayerToPlay;
 
-                this.togglePlayerBorderColors();
-                this.showValidMoves();
+                this.TogglePlayerBorderColors();
+                this.ShowValidMoves();
             }
             catch (ArgumentException exception)
             {
@@ -299,105 +257,37 @@ namespace ArcOthelloBG
         {
             MenuItem mnuResetgame = this.FindName("mnuResetGame") as MenuItem;
             if (mnuResetgame.IsEnabled)
-                resetBoard();
-        }
-
-        /// <summary>
-        /// get the board state
-        /// </summary>
-        /// <returns>state</returns>
-        private BoardState GetBoardState()
-        {
-            BoardState state = Game.Instance.BoardState;
-            state.BlackTime = this.timeSecondBlack;
-            state.WhiteTime = this.timeSecondWhite;
-
-            return state;
+                ResetBoard();
         }
 
 
+
         /// <summary>
-        /// action when open menu clicked
+        /// Action when exit menu item clicked
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void LoadBoard(object sender, EventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-
-            openFileDialog.Filter = EXTENSION;
-            openFileDialog.RestoreDirectory = true;
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                this.resetBoard();
-                Game.Instance.LoadState(BoardFileManager.LoadStateFromFile(openFileDialog.FileName));
-                this.getBoardStateAndRefreshGUI();
-            }
-        }
-
-        /// <summary>
-        /// action when saved menu clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SaveBoard(object sender, EventArgs e)
-        {
-            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
-            saveFileDialog.Filter = EXTENSION;
-            saveFileDialog.RestoreDirectory = true;
-
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                BoardState state = this.GetBoardState();
-
-                BoardFileManager.SaveToFile(saveFileDialog.FileName, this.GetBoardState());
-            }
-
-            Console.WriteLine("Game saved");
-        }
-
-        /// <summary>
-        /// action when redo menu clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void UndoBoard(object sender, EventArgs e)
-        {
-            try
-            {
-                Game.Instance.LoadState(this.undoRedo.Undo(this.GetBoardState()));
-                this.getBoardStateAndRefreshGUI();
-            }
-            catch(StackEmptyException) { }
-        }
-
-        /// <summary>
-        /// action when redo menu clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void RedoBoard(object sender, EventArgs e)
-        {
-            try
-            {
-                Game.Instance.LoadState(this.undoRedo.Redo(this.GetBoardState()));
-                this.getBoardStateAndRefreshGUI();
-            }
-            catch (StackEmptyException) { }
-        }
-
-        private void mnuExitClick(object sender, EventArgs e)
+        private void MnuExitClick(object sender, EventArgs e)
         {
             Application.Current.Shutdown();
         }
 
-        private void btnStartClick(object sender, EventArgs e)
+        /// <summary>
+        /// Action if start menu item is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnStartClick(object sender, EventArgs e)
         {
-            resetBoard();
+            ResetBoard();
         }
 
-        private void togglePlayerBorderColors()
+        /// <summary>
+        /// Changes visualization of currently playing player 
+        /// (if it's the black's player turn, the left area in the GUI containing his information gets its border green 
+        /// and the white player's GUI area border gets white)
+        /// </summary>
+        private void TogglePlayerBorderColors()
         {
             Border blackPlayerBorder = this.FindName("BlackPlayerBorder") as Border;
             Border whitePlayerBorder = this.FindName("WhitePlayerBorder") as Border;
@@ -413,7 +303,12 @@ namespace ArcOthelloBG
             }
         }
 
-        private void changeCellImage(Button cell, Uri imageUri)
+        /// <summary>
+        /// Changes the image of a cell, typically if a player puts a pawn on the cell
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="imageUri"></param>
+        private void ChangeCellImage(Button cell, Uri imageUri)
         {
             cell.Background = new ImageBrush()
             {
@@ -423,38 +318,15 @@ namespace ArcOthelloBG
         }
 
 
-        private void showValidMoves()
-        {
-
-            foreach (Vector2 CellCoor in this.oldValidMoves)
-            {
-                if (Game.Instance.GetColor(CellCoor) == this.emptyId)
-                {
-                    this.btnMatrix[CellCoor.X, CellCoor.Y].Background = this.whiteBrush;
-                }
-            }
-
-            this.oldValidMoves.Clear();
-            List<Vector2> validMoves = Game.Instance.GetPositionsAvailable();
-
-            foreach (Vector2 CellCoor in validMoves)
-            {
-                if (Game.Instance.GetColor(CellCoor) == this.emptyId)
-                {
-                    this.oldValidMoves.Add(CellCoor);
-                    this.btnMatrix[CellCoor.X, CellCoor.Y].Background = this.greenBrush;
-                }
-            }
-
-        }
-
-
-        private void resetBoard()
+        /// <summary>
+        /// Resets the game GUI (e.g. if a new game is started or the first time a game is launched)
+        /// </summary>
+        private void ResetBoard()
         {
             Game.Instance.Init(this.width, this.height, this.whiteId, this.blackId, this.emptyId);
             this.hasWon = false;
             this.currentPlayId = Game.Instance.PlayerToPlay;
-            this.togglePlayerBorderColors();
+            this.TogglePlayerBorderColors();
 
             Image logoBFM = this.FindName("LogoBFM") as Image;
             logoBFM.Opacity = 1.0;
@@ -480,7 +352,7 @@ namespace ArcOthelloBG
                 lblWon.Visibility = Visibility.Collapsed;
                 TextBlock lblSkipped = this.FindName("lblSkipped") as TextBlock;
                 lblSkipped.Visibility = Visibility.Hidden;
-                buildBoard(this.width, this.height);
+                BuildBoard(this.width, this.height);
 
             }
             else
@@ -513,198 +385,16 @@ namespace ArcOthelloBG
 
                     if (idPlayer != this.emptyId)
                     {
-                        changeCellImage(this.btnMatrix[i, j], imageUri);
+                        ChangeCellImage(this.btnMatrix[i, j], imageUri);
                     }
                 }
             }
-            this.showValidMoves();
+            this.ShowValidMoves();
             this.StartTimer();
 
             RaisePropertyChanged("BlackScore");
             RaisePropertyChanged("WhiteScore");
         }
 
-        public void OnTimedEvent(Object source, ElapsedEventArgs e)
-        {
-            if (this.currentPlayId == this.blackId)
-            {
-                this.timeSecondBlack++;
-                RaisePropertyChanged("TimeBlack");
-            }
-            else if (this.currentPlayId == this.whiteId)
-            {
-                this.timeSecondWhite++;
-                RaisePropertyChanged("TimeWhite");
-            }
-        }
-
-        /// <summary>
-        /// Set the timer that counts the time of each player
-        /// </summary>
-        private void SetTimer()
-        {
-
-            this.timerTime = new System.Timers.Timer(1000);
-            // Hook up the Elapsed event for the timer. 
-            this.timerTime.Elapsed += OnTimedEvent;
-            this.timerTime.AutoReset = true;
-            this.timerTime.Enabled = true;
-
-        }
-
-        /// <summary>
-        /// start the timer that counts the time of each player
-        /// </summary>
-        private void StartTimer()
-        {
-            this.timerTime.Stop();
-            this.timeSecondBlack = 0;
-            this.timeSecondWhite = 0;
-            this.timerTime.Start();
-            RaisePropertyChanged("TimeBlack");
-            RaisePropertyChanged("TimeWhite");
-        }
-
-        /// <summary>
-        /// Stop the timer that counts the time of each player
-        /// </summary>
-        private void StopTimer()
-        {
-            this.timerTime.Stop();
-        }
-
-        private void Game_Won(object sender, EventHandling.WinEventArgs e)
-        { 
-            this.winnerId = e.PlayerId;
-
-            this.hasWon = true;
-
-            this.WinGame();
-        }
-
-        private void WinGame()
-        {
-            this.StopTimer();
-            RaisePropertyChanged("WhiteScore");
-            RaisePropertyChanged("BlackScore");
-            MenuItem mnuResetgame = this.FindName("mnuResetGame") as MenuItem;
-            mnuResetgame.IsEnabled = false;
-            Button startButton = this.FindName("btnStart") as Button;
-            startButton.Visibility = Visibility.Visible;
-
-            TextBlock lblWon = this.FindName("lblWon") as TextBlock;
-            lblWon.Visibility = Visibility.Visible;
-
-            TextBlock lblSkipped = this.FindName("lblSkipped") as TextBlock;
-            lblSkipped.Visibility = Visibility.Hidden;
-
-            int whiteScore = Game.Instance.WhiteScore;
-            int blackScore = Game.Instance.BlackScore;
-
-            int winnerScore = whiteScore > blackScore ? whiteScore : blackScore;
-
-            String winnerString = "";
-            if (this.winnerId == this.whiteId)
-                winnerString = WHITE_NAME;
-            else if (this.winnerId == this.blackId)
-                winnerString = BLACK_NAME;
-
-            lblWon.Text = $"The {winnerString} was elected the best beer in the world with {winnerScore} points";
-            this.guiBuilded = false;
-            Grid grid = this.FindName("Board") as Grid;
-            List<UIElement> childrenToRemove = new List<UIElement>();
-            foreach (UIElement child in grid.Children)
-            {
-                if (!(child is StackPanel))
-                {
-                    childrenToRemove.Add(child);
-                }
-            }
-
-            foreach (UIElement child in childrenToRemove)
-            {
-                grid.Children.Remove(child);
-            }
-
-            grid.RowDefinitions.Clear();
-            grid.ColumnDefinitions.Clear();
-
-            MenuItem mnuSaveGame = this.FindName("mnuSaveGame") as MenuItem;
-            mnuSaveGame.IsEnabled = false;
-
-            Border blackPlayerBorder = this.FindName("BlackPlayerBorder") as Border;
-            Border whitePlayerBorder = this.FindName("WhitePlayerBorder") as Border;
-            
-
-            
-            if (this.winnerId == this.whiteId)
-            {
-                BlackPlayerBorder.Opacity = 0.25;
-                WhitePlayerBorder.BorderBrush = this.goldBrush;
-                BlackPlayerBorder.BorderBrush = this.whiteBrush;
-                Image logoPrixG = this.FindName("LogoPrixG") as Image;
-                logoPrixG.Opacity = 1.0;
-            }
-            else if (this.winnerId == this.blackId)
-            {
-                WhitePlayerBorder.Opacity = 0.25;
-                BlackPlayerBorder.BorderBrush = this.goldBrush;
-                WhitePlayerBorder.BorderBrush = this.whiteBrush;
-                Image logoBFM = this.FindName("LogoBFM") as Image;
-                logoBFM.Opacity = 1.0;
-            }
-        }
-
-        private void getBoardStateAndRefreshGUI()
-        {
-            BoardState state = this.GetBoardState();
-            int[,] Board = state.Board;
-            for (int i = 0; i < this.width; i++)
-            {
-                for (int j = 0; j < this.height; j++)
-                {
-                    if (Board[i, j] == this.whiteId)
-                        this.changeCellImage(btnMatrix[i, j], this.whiteUri);
-                    else if (Board[i, j] == this.blackId)
-                        this.changeCellImage(btnMatrix[i, j], this.blackUri);
-                    else btnMatrix[i, j].Background = this.whiteBrush;
-                }
-            }
-            showValidMoves();
-            RaisePropertyChanged("WhiteScore");
-            RaisePropertyChanged("BlackScore");
-            this.timeSecondBlack = state.BlackTime;
-            this.timeSecondWhite = state.WhiteTime;
-            RaisePropertyChanged("TimeBlack");
-            RaisePropertyChanged("TimeWhite");
-
-            this.currentPlayId = Game.Instance.PlayerToPlay;
-
-            this.togglePlayerBorderColors();
-
-        }
-
-        private void Game_TurnSkipped(object sender, EventHandling.SkipTurnEventArgs e)
-        {
-            if(!this.hasWon)
-            {
-                TextBlock lblSkipped = this.FindName("lblSkipped") as TextBlock;
-                lblSkipped.Visibility = Visibility.Visible;
-
-                string player = "";
-
-                if (this.currentPlayId == this.whiteId)
-                    player = BLACK_NAME;
-                else if (this.currentPlayId == this.blackId)
-                    player = WHITE_NAME;
-
-                lblSkipped.Text = $"{player} had no move available and skipped his turn";
-            }
-        }
-
-        public void RaisePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

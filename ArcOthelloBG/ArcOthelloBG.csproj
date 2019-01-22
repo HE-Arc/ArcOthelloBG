@@ -92,6 +92,7 @@
     <Compile Include="Logic\Playable.cs" />
     <Compile Include="Logic\Vector2.cs" />
     <Compile Include="Tools\UndoRedo.cs" />
+    <Compile Include="Visual\GUI-Logic_Interaction.cs" />
     <Compile Include="Visual\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
