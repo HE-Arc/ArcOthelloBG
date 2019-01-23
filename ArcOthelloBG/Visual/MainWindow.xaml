@@ -30,9 +30,39 @@
             <Setter Property="BorderThickness" Value="5,5,5,5"/>
             <Setter Property="Opacity" Value="0.25"/>
         </Style>
+        <Style x:Key="PlayerInfoLabel" TargetType="Label">
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="FontSize" Value="15"/>
+        </Style>
+        <Style x:Key="PlayerNameLabel" TargetType="Label">
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="PlayerLogo" TargetType="Image">
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Height" Value="Auto"/>
+        </Style>
+        <Style x:Key="InfoTextBlock" TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+            <Setter Property="Panel.ZIndex" Value="100"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="15,15,15,12"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+
         <!-- https://stackoverflow.com/questions/3854317/how-to-remove-default-mouse-over-effect-on-wpf-buttons -->
         <!-- This style is used for buttons, to remove the WPF default 'animated' mouse over effect -->
         <Style x:Key="MyButtonStyle" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -80,25 +110,25 @@
             </Grid.RowDefinitions>
             <Border Grid.Column="0" Name="BlackPlayerBorder" Style="{StaticResource PlayerBorderStyle}">
                 <StackPanel>
-                    <Image Name="LogoBFM" Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="bfm.png" />
-                    <Label Name="Player1Name"  Content="Chevalier du comté&#10;des franches montagnes" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" />
-                    <Label Name="Player1Score" Content="{Binding BlackScore}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="15" />
-                    <Label Name="Player1Time" Content="{Binding TimeBlack}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="15" />
+                    <Image Name="LogoBFM" Source="bfm.png" Style="{StaticResource PlayerLogo}"/>
+                    <Label Name="Player1Name"  Content="Chevalier du comté&#10;des franches montagnes" Style="{StaticResource PlayerNameLabel}"  />
+                    <Label Name="Player1Score" Content="{Binding BlackScore}" Style="{StaticResource PlayerInfoLabel}" />
+                    <Label Name="Player1Time" Content="{Binding TimeBlack}" Style="{StaticResource PlayerInfoLabel}" />
                 </StackPanel>
             </Border>
             <DockPanel Grid.Column="1">
-                <TextBlock DockPanel.Dock="Top" Name="lblSkipped" Text="The prix garantie had no move available"  TextWrapping="WrapWithOverflow"  Panel.ZIndex="100" HorizontalAlignment="Center" FontSize="20" Margin="0" Padding="15,15,15,12" VerticalAlignment="Top" Visibility="Collapsed"/>
-                <TextBlock DockPanel.Dock="Top" Name="lblWon" Text="The prix garantie was elected as the best beer in the world with 99 points"  TextWrapping="WrapWithOverflow"  Panel.ZIndex="100" HorizontalAlignment="Center" FontSize="20" Margin="0" Padding="15,15,15,12" Visibility="Hidden" VerticalAlignment="Top" />
+                <TextBlock DockPanel.Dock="Top" Name="lblSkipped" Text="The prix garantie had no move available" Style="{StaticResource InfoTextBlock}" Visibility="Collapsed"/>
+                <TextBlock DockPanel.Dock="Top" Name="lblWon" Text="The prix garantie was elected as the best beer in the world with 99 points"  Style="{StaticResource InfoTextBlock}" Visibility="Hidden"  />
                 <Button DockPanel.Dock="Top" Style="{StaticResource MyButtonStyle}" Background="White" Panel.ZIndex="100" Content="Start game" Name="btnStart" Click="BtnStartClick" Width="100" Height="35" Margin="0,20,0,0"/>
 
-                <Grid Name="Board" Margin="20,0" Cursor="Hand"/>
+                <Grid Name="Board" Margin="20,0" />
             </DockPanel>
             <Border Grid.Column="2" Name="WhitePlayerBorder" Style="{StaticResource PlayerBorderStyle}">
                 <StackPanel Height="Auto" Width="Auto">
-                    <Image Name="LogoPrixG" Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" Source="prixGarantie.jpg" />
-                    <Label Name="Player2Name" Content="Paysan du village&#10;de la coopérative" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" />
-                    <Label Name="Player2Score" Content="{Binding WhiteScore}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="15" />
-                    <Label Name="Player2Time" Content="{Binding TimeWhite}" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="15" />
+                    <Image Name="LogoPrixG" Source="prixGarantie.jpg" Style="{StaticResource PlayerLogo}"/>
+                    <Label Name="Player2Name" Content="Paysan du village&#10;de la coopérative" Style="{StaticResource PlayerNameLabel}"  />
+                    <Label Name="Player2Score" Content="{Binding WhiteScore}"  Style="{StaticResource PlayerInfoLabel}" />
+                    <Label Name="Player2Time" Content="{Binding TimeWhite}" Style="{StaticResource PlayerInfoLabel}"  />
                 </StackPanel>
             </Border>
         </Grid>
