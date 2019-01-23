@@ -127,6 +127,13 @@ namespace ArcOthelloBG
             {
                 this.ResetBoard();
                 Game.Instance.LoadState(BoardFileManager.LoadStateFromFile(openFileDialog.FileName));
+
+                this.timeSecondWhite = Game.Instance.BoardState.WhiteTime;
+                this.timeSecondBlack = Game.Instance.BoardState.BlackTime;
+
+                RaisePropertyChanged("TimeBlack");
+                RaisePropertyChanged("TimeWhite");
+
                 this.GetBoardStateAndRefreshGUI();
             }
         }
@@ -147,6 +154,9 @@ namespace ArcOthelloBG
             if (saveFileDialog.ShowDialog() == true)
             {
                 BoardState state = this.GetBoardState();
+
+                state.WhiteTime = this.timeSecondWhite;
+                state.BlackTime = this.timeSecondBlack;
 
                 BoardFileManager.SaveToFile(saveFileDialog.FileName, this.GetBoardState());
             }
