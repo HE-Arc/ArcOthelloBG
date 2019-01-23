@@ -57,7 +57,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Reset game" Name="mnuResetGame" Command="New" IsEnabled="False"/>
+                <MenuItem Header="_New game" Name="mnuResetGame" Command="New" IsEnabled="False"/>
                 <MenuItem Header="_Load game"  Command="Open"/>
                 <MenuItem Header="_Save game" Name="mnuSaveGame" IsEnabled="False" InputGestureText="Ctrl+S" Command="SaveAs"/>
                 <Separator />
