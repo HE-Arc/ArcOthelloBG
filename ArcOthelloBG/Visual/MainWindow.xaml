@@ -69,7 +69,7 @@
             </MenuItem>
         </Menu>
         
-        <Grid Margin="25">
+        <Grid Margin="25" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="7*" />
@@ -91,7 +91,7 @@
                 <TextBlock DockPanel.Dock="Top" Name="lblWon" Text="The prix garantie was elected as the best beer in the world with 99 points"  TextWrapping="WrapWithOverflow"  Panel.ZIndex="100" HorizontalAlignment="Center" FontSize="20" Margin="0" Padding="15,15,15,12" Visibility="Hidden" VerticalAlignment="Top" />
                 <Button DockPanel.Dock="Top" Style="{StaticResource MyButtonStyle}" Background="White" Panel.ZIndex="100" Content="Start game" Name="btnStart" Click="BtnStartClick" Width="100" Height="35" Margin="0,20,0,0"/>
 
-                <Grid Name="Board" Margin="20,0"/>
+                <Grid Name="Board" Margin="20,0" Cursor="Hand"/>
             </DockPanel>
             <Border Grid.Column="2" Name="WhitePlayerBorder" Style="{StaticResource PlayerBorderStyle}">
                 <StackPanel Height="Auto" Width="Auto">

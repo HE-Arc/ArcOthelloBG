@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using System.ComponentModel;
 using System.Windows;
 using ArcOthelloBG.Logic;
 using ArcOthelloBG.Exceptions;
@@ -13,6 +12,10 @@ using System.Windows.Controls;
 
 namespace ArcOthelloBG
 {
+
+    /// <summary>
+    /// Interaction logic for GUI MainWindow.xaml
+    /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
