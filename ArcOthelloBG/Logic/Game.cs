@@ -284,11 +284,11 @@ namespace ArcOthelloBG.Logic
                 {
                     int color = this.emptyId;
 
-                    if (i == w / 2 && j == h / 2 || i == w / 2 - 1 && j == h / 2 - 1)
+                    if (i == w / 2 && j == h / 2 + 1 || i == w / 2 - 1 && j == h / 2)
                     {
                         color = this.whiteId;
                     }
-                    else if (i == w / 2 - 1 && j == h / 2 || i == w / 2  && j == h / 2 - 1)
+                    else if (i == w / 2 - 1 && j == h / 2  + 1|| i == w / 2  && j == h / 2)
                     {
                         color = this.blackId;
                     }
