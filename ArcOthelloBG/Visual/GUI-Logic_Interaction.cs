@@ -393,6 +393,11 @@ namespace ArcOthelloBG
                     player = WHITE_NAME;
 
                 lblSkipped.Text = $"{player} had no move available and skipped his turn";
+
+                if (this.isIA && this.currentPlayId == this.whiteId)
+                {
+                    this.Play(new Vector2(this.ia.GetNextMove(Game.Instance.Board, 1, true)));
+                }
             }
         }
 

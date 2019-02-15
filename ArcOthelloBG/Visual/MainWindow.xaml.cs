@@ -36,6 +36,9 @@ namespace ArcOthelloBG
         private Uri whiteUri;
         private List<Vector2> oldValidMoves;
 
+        private bool isIA;
+        private IPlayable.IPlayable ia;
+
         private UndoRedo undoRedo;
 
         private SolidColorBrush whiteBrush;
@@ -62,6 +65,8 @@ namespace ArcOthelloBG
             DataContext = this;
             this.undoRedo = new UndoRedo();
             this.hasWon = false;
+            this.isIA = true;
+            this.ia = new OthelloBoard();
 
             try
             {
@@ -195,6 +200,16 @@ namespace ArcOthelloBG
             int row = Convert.ToInt16(colRowString[2]);
             Vector2 position = new Vector2(col, row);
 
+            this.Play(position);
+
+            if(this.isIA && this.currentPlayId == this.whiteId)
+            {
+                this.Play(new Vector2(this.ia.GetNextMove(Game.Instance.Board, 1, true)));
+            }
+        }
+
+        private void Play(Vector2 position)
+        {
             try
             {
                 this.undoRedo.DoAction(this.GetBoardState());
@@ -215,7 +230,6 @@ namespace ArcOthelloBG
                     imageUri = this.blackUri;
                 }
 
-                ChangeCellImage(senderButton, imageUri);
                 foreach (Vector2 changedPosition in changedPositions)
                 {
                     ChangeCellImage(this.btnMatrix[changedPosition.X, changedPosition.Y], imageUri);

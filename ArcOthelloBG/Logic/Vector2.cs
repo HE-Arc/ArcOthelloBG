@@ -54,6 +54,13 @@ namespace ArcOthelloBG.Logic
         { }
 
         /// <summary>
+        /// constructor with a tuple of int
+        /// </summary>
+        /// <param name="toCopy">tuple of int</param>
+        public Vector2(Tuple<int,int> toCopy) : this(toCopy.Item1, toCopy.Item2)
+        { }
+
+        /// <summary>
         /// add a vector to another
         /// </summary>
         /// <param name="vToAdd">vector to add to the vector</param>
