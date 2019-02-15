@@ -22,7 +22,7 @@ namespace ArcOthelloBG.Logic
         private List<Vector2> possibleDirections;
         private int turn;
         private int emptyId;
-        private BoardState boardState;
+        private OthelloState boardState;
         private int blackScore;
         private int whiteScore;
 
@@ -101,7 +101,7 @@ namespace ArcOthelloBG.Logic
             }
         }
 
-        public BoardState BoardState
+        public OthelloState BoardState
         {
             get 
             {
@@ -136,7 +136,7 @@ namespace ArcOthelloBG.Logic
         /// load a board state and changes to match it
         /// </summary>
         /// <param name="state">state to use</param>
-        public void LoadState(BoardState state)
+        public void LoadState(OthelloState state)
         {
             this.board = (int[,])state.Board.Clone();
             this.emptyId = state.EmptyId;
@@ -222,7 +222,7 @@ namespace ArcOthelloBG.Logic
             this.playerToPlay = this.GetNextPlayer();
 
             this.turn++;
-            this.boardState = new BoardState(this.board, this.playerToPlay, this.possibleDirections, this.emptyId, this.whiteScore, this.blackScore);
+            this.boardState = new OthelloState(this.board, this.playerToPlay, this.possibleDirections, this.emptyId, this.whiteScore, this.blackScore);
 
             if(this.GetPositionsAvailable().Count == 0)
             {

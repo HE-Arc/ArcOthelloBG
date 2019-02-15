@@ -5,9 +5,9 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BF488036-E84F-481F-A46F-62F737E6979D}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>ArcOthelloBG</RootNamespace>
-    <AssemblyName>ArcOthelloBG</AssemblyName>
+    <AssemblyName>OthelloBG</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="IPlayable, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -71,32 +74,15 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="Visual\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Exceptions\StackEmptyException.cs" />
     <Compile Include="Logic\OthelloBoard.cs" />
-    <Compile Include="Tools\BoardFileManager.cs" />
+    <Compile Include="Tools\OthelloFileManager.cs" />
     <Compile Include="EventHandling\SkipTurnEventArgs.cs" />
     <Compile Include="EventHandling\WinEventArgs.cs" />
-    <Compile Include="Logic\BoardState.cs" />
+    <Compile Include="Logic\OthelloState.cs" />
     <Compile Include="Logic\Game.cs" />
     <Compile Include="Logic\Vector2.cs" />
     <Compile Include="Tools\UndoRedo.cs" />
-    <Compile Include="Visual\GUI-Logic_Interaction.cs" />
-    <Compile Include="Visual\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

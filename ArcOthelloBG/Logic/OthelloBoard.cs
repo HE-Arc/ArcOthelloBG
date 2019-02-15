@@ -27,6 +27,8 @@ namespace ArcOthelloBG.Logic
         {
             this.game = Game.Instance;
             this.readSettings();
+            Console.WriteLine(this.rows);
+            Console.WriteLine(this.columns);
             this.game.Init(this.rows, this.columns, this.whiteId, this.blackId,this.emptyId);
         }
 
@@ -126,24 +128,12 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         private void readSettings()
         {
-            try
-            {
-                var appSettings = ConfigurationManager.AppSettings;
-                this.rows = Convert.ToInt32(appSettings["rows"]);
-                this.columns = Convert.ToInt32(appSettings["columns"]);
-                this.whiteId = Convert.ToInt32(appSettings["whiteId"]);
-                this.blackId = Convert.ToInt32(appSettings["blackId"]);
-                this.emptyId = Convert.ToInt32(appSettings["emptyId"]);
-            }
-            catch (ConfigurationErrorsException)
-            {
-                Console.WriteLine("Error reading app settings");
-                this.columns = 9;
-                this.rows = 7;
-                this.whiteId = 2;
-                this.blackId = 1;
-                this.emptyId = -1;
-            }
+            Console.WriteLine("Error reading app settings");
+            this.columns = 7;
+            this.rows = 9;
+            this.whiteId = 0;
+            this.blackId = 1;
+            this.emptyId = -1;
         }
     }
 }

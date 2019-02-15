@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ArcOthelloBG.Logic
 {
     [Serializable]
-    class BoardState
+    class OthelloState
     {
         private int[,] board;
         private List<Vector2> availablePositions;
@@ -54,7 +54,7 @@ namespace ArcOthelloBG.Logic
         public int WhiteTime { get; set; }
         public int BlackTime { get; set; }
 
-        public BoardState(int[,] board, int playerId, List<Vector2> possibleDirections, int emptyId, int whiteScore, int blackScore)
+        public OthelloState(int[,] board, int playerId, List<Vector2> possibleDirections, int emptyId, int whiteScore, int blackScore)
         {
             this.board = (int[,])board.Clone();
             this.playerId = playerId;

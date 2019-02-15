@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace ArcOthelloBG
 {
-    class BoardFileManager
+    class OthelloFileManager
     {
-        public static void SaveToFile(string filename, BoardState state)
+        public static void SaveToFile(string filename, OthelloState state)
         {
             IFormatter formatter = new BinaryFormatter();
             Stream stream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
@@ -20,11 +20,11 @@ namespace ArcOthelloBG
             stream.Close();
         }
 
-        public static BoardState LoadStateFromFile(string filename)
+        public static OthelloState LoadStateFromFile(string filename)
         {
             IFormatter formatter = new BinaryFormatter();
             Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-            BoardState state = (BoardState)formatter.Deserialize(stream);
+            OthelloState state = (OthelloState)formatter.Deserialize(stream);
             stream.Close();
 
             return state;
