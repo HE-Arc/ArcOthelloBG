@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ArcOthelloBG.Logic
 {
@@ -26,8 +27,8 @@ namespace ArcOthelloBG.Logic
         private int blackScore;
         private int whiteScore;
 
-        public event EventHandler<SkipTurnEventArgs> TurnSkipped;
-        public event EventHandler<WinEventArgs> Won;
+        //public event EventHandler<SkipTurnEventArgs> TurnSkipped;
+        //public event EventHandler<WinEventArgs> Won;
 
         // GETTERS AND SETTERS
 
@@ -178,6 +179,7 @@ namespace ArcOthelloBG.Logic
             }
             else
             {
+                MessageBox.Show("ici");
                 throw new ArgumentException("This move isn't possible");
             }
 
@@ -224,18 +226,18 @@ namespace ArcOthelloBG.Logic
             this.turn++;
             this.boardState = new OthelloState(this.board, this.playerToPlay, this.possibleDirections, this.emptyId, this.whiteScore, this.blackScore);
 
-            if(this.GetPositionsAvailable().Count == 0)
-            {
-                if (hasSkipped)
-                {
-                    Won?.Invoke(this, new WinEventArgs(this.GetWinner()));
-                    return; 
-                }
+            //if(this.GetPositionsAvailable().Count == 0)
+            //{
+            //    if (hasSkipped)
+            //    {
+            //        Won?.Invoke(this, new WinEventArgs(this.GetWinner()));
+            //        return; 
+            //    }
 
-                int previousPlayer = this.playerToPlay;
-                this.NextTurn(true);
-                TurnSkipped?.Invoke(this, new SkipTurnEventArgs(previousPlayer));
-            }
+            //    int previousPlayer = this.playerToPlay;
+            //    this.NextTurn(true);
+            //    TurnSkipped?.Invoke(this, new SkipTurnEventArgs(previousPlayer));
+            //}
         }
 
         /// <summary>

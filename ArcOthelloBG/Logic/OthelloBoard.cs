@@ -78,7 +78,14 @@ namespace ArcOthelloBG.Logic
         /// <returns></returns>
         Tuple<int, int> IPlayable.IPlayable.GetNextMove(int[,] game, int level, bool whiteTurn)
         {
-            return this.game.GetPositionsAvailable()[0].toTuplesintint();
+            if(this.game.GetPositionsAvailable().Count > 0)
+            {
+                return this.game.GetPositionsAvailable()[0].toTuplesintint();
+            }
+            else
+            {
+                return new Tuple<int, int>(-1, -1);
+            }
         }
 
         /// <summary>
