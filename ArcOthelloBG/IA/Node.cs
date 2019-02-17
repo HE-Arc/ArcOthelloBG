@@ -57,7 +57,15 @@ namespace ArcOthelloBG.IA
 
         public Node apply(Tuple<int, int> op)
         {
-            Game.Instance.Play(new Vector2(op), this.state.PlayerId);
+            if(op.Item1 != -1 && op.Item2 != -1)
+            {
+                Game.Instance.Play(new Vector2(op), this.state.PlayerId);
+            }
+            else
+            {
+                Game.Instance.NextTurn();
+            }
+            
 
             Node newNode = new Node(agent);
 

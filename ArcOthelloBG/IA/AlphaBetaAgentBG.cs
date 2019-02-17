@@ -29,22 +29,30 @@ namespace ArcOthelloBG.IA
         {
             if (depth == 0 || root.final())
             {
-                Console.WriteLine(root.final());
-                Console.WriteLine(depth == 0);
                 return new Tuple<int, Tuple<int, int>>(root.eval(), null);
             }
 
-            int optVal = minOrMax * -1 * int.MaxValue;
+            int optVal = minOrMax * -int.MaxValue;
 
             Tuple<int, int> optOp = null;
 
             OthelloState initialState = Game.Instance.BoardState;
 
-            foreach (Tuple<int, int> op in root.ops())
+            var ops = root.ops();
+
+            if(ops.Count == 0)
+            {
+                ops.Add(new Tuple<int, int>(-1, -1));
+            }
+
+            foreach (Tuple<int, int> op in ops)
             {
                 Game.Instance.LoadState(initialState);
                 Node newNode = root.apply(op);
+                Console.WriteLine($"minormax : {minOrMax}");
+                Console.WriteLine($"optVal : {optVal}");
                 Tuple<int, Tuple<int, int>> result = alphabeta(newNode, depth - 1, -1 * minOrMax, optVal);
+                
                 int val = result.Item1;
 
                 if (val * minOrMax > optVal * minOrMax)
