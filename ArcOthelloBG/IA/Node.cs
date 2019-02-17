@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ArcOthelloBG.IA
 {
@@ -13,24 +14,32 @@ namespace ArcOthelloBG.IA
         private OthelloState state;
         private int score;
         private Tuple<int, int> op;
+        private bool turnSkipped;
+        private Node parent;
 
 
-        public Node(AlphaBetaAgentBG agent, Tuple<int,int> op, int score = 0)
+        public Node(AlphaBetaAgentBG agent, Node parent, Tuple<int,int> op, int score = 0)
         {
             this.agent = agent;
             this.state = agent.IAGame.BoardState; // state of the board for the board
             this.op = op; // operation made to arrive to this state
 
             this.score = score; //score is the number of point lost or won
+            this.turnSkipped = false;
+            this.parent = parent;
+
+            this.agent = agent;
+            //We use the same Game instance for every node, we load the state and playerToPlay before playing/computing next moves
+            this.state = agent.IAGame.BoardState;
+            this.score = 2; //initial score at the beginning of the game
         }
 
         public bool final()
         {
-            bool terminalNode = false;
-
-            // Game over?
-
-            return terminalNode;
+            //The final state is reached if a turn was skipped two consecutive times
+            bool final = this.parent != null && this.parent.turnSkipped && this.turnSkipped;
+            //Console.WriteLine($"final: {final}");
+            return final;
         }
 
         public int Eval()
@@ -73,10 +82,13 @@ namespace ArcOthelloBG.IA
                 }
             }
             
-
             return score + positionScore + malusSkipTurn;
         }
 
+        /// <summary>
+        /// list of moves available
+        /// </summary>
+        /// <returns>list of moves available</returns>
         public List<Tuple<int, int>> Ops()
         {
             List<Tuple<int, int>> children = new List<Tuple<int, int>>();
@@ -95,7 +107,7 @@ namespace ArcOthelloBG.IA
         {
             if (op.Item1 != -1 && op.Item2 != -1)
             {
-                 Game.Instance.Play(new Vector2(op), this.state.PlayerId);
+                Game.Instance.Play(new Vector2(op), this.state.PlayerId);
             }
             else
             {
@@ -113,7 +125,12 @@ namespace ArcOthelloBG.IA
                 score += Game.Instance.WhiteScore - this.state.WhiteScore;
             }
 
-            Node newNode = new Node(agent, op, score);
+            Node newNode = new Node(agent, this, op, score);
+
+            if (op.Item1 == -1 && op.Item2 == -1)
+            {
+                newNode.turnSkipped = true;
+            }
 
             return newNode;
         }

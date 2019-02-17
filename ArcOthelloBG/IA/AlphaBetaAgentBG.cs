@@ -54,7 +54,9 @@ namespace ArcOthelloBG.IA
             foreach (Tuple<int, int> op in ops)
             {
                 Game.Instance.LoadState(initialState);
+
                 Node newNode = root.Apply(op);
+
                 Tuple<int, Tuple<int, int>> result = alphabeta(newNode, depth - 1, -1 * minOrMax, optVal);
                 
                 int val = result.Item1;
