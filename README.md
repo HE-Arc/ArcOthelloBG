@@ -6,5 +6,5 @@
 - Pénalité si un coup nous ferait passer le tour (-10)
 - Bonus pour les coups joués sur les bords du plateau (+10)
 - Grand bonus pour les coups joués dans les coins (+20)
-- Pénalité pour les coups joués à une case du bord (car "dangereux" vu que l'ennemi pourra facilement jouer un coup dans le bord) (-15)
+- Pénalité pour les coups joués à une case du bord (car "dangereux" vu que l'ennemi pourra facilement jouer un coup dans le bord) (-5)
 - Grande pénalité pour les coups joués à une case du coin  (car "dangereux" vu que l'ennemi pourra facilement jouer un coup dans le coin) (-15)
