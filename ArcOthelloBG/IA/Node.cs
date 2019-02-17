@@ -8,17 +8,27 @@ using System.Windows;
 
 namespace ArcOthelloBG.IA
 {
+    /// <summary>
+    /// Class of a node of the tree
+    /// </summary>
     class Node
     {
         private AlphaBetaAgentBG agent;
         private OthelloState state;
         private int score;
-        private Tuple<int, int> op;
+        private Vector2 op;
         private bool turnSkipped;
         private Node parent;
 
 
-        public Node(AlphaBetaAgentBG agent, Node parent, Tuple<int,int> op, int score = 0)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="agent">alphabeta agent</param>
+        /// <param name="parent">parent node</param>
+        /// <param name="op">operation</param>
+        /// <param name="score">score to add, default 0</param>
+        public Node(AlphaBetaAgentBG agent, Node parent, Vector2 op, int score = 0)
         {
             this.agent = agent;
             this.state = agent.IAGame.BoardState; // state of the board for the board
@@ -29,16 +39,19 @@ namespace ArcOthelloBG.IA
             this.parent = parent;
 
             this.agent = agent;
-            //We use the same Game instance for every node, we load the state and playerToPlay before playing/computing next moves
+            // get the state of the board for this child
             this.state = agent.IAGame.BoardState;
-            this.score = 2; //initial score at the beginning of the game
+            this.score = 0; //initial score at the beginning of the game
         }
 
-        public bool final()
+        /// <summary>
+        /// is this a final move or not
+        /// </summary>
+        /// <returns>is final</returns>
+        public bool Final()
         {
             //The final state is reached if a turn was skipped two consecutive times
             bool final = this.parent != null && this.parent.turnSkipped && this.turnSkipped;
-            //Console.WriteLine($"final: {final}");
             return final;
         }
 
@@ -48,7 +61,7 @@ namespace ArcOthelloBG.IA
             int malusSkipTurn = 0;
 
             // if skip a turn, move isn't good
-            if(this.op.Item1 == -1 && this.op.Item2 == -1)
+            if(this.op.X == -1 && this.op.Y == -1)
             {
                 malusSkipTurn = -10;
             }
@@ -56,26 +69,26 @@ namespace ArcOthelloBG.IA
             {
                 // if in the corner
                 if (
-                    this.op.Item1 == 0 && this.op.Item2 == 0 ||
-                    this.op.Item1 == this.state.Board.GetLength(0) - 1 && this.op.Item2 == this.state.Board.GetLength(1) - 1 ||
-                    this.op.Item1 == 0 && this.op.Item2 == this.state.Board.GetLength(1) - 1 ||
-                    this.op.Item1 == this.state.Board.GetLength(0) - 1 && this.op.Item2 == 0
+                    this.op.X == 0 && this.op.Y == 0 ||
+                    this.op.X == this.state.Board.GetLength(0) - 1 && this.op.Y == this.state.Board.GetLength(1) - 1 ||
+                    this.op.X == 0 && this.op.Y == this.state.Board.GetLength(1) - 1 ||
+                    this.op.X == this.state.Board.GetLength(0) - 1 && this.op.Y == 0
                     )
                 {
                     positionScore = 20;
                 }
                 // if on the side
                 else if (
-                    this.op.Item1 == 0 || this.op.Item2 == 0 ||
-                    this.op.Item1 == this.state.Board.GetLength(0) - 1 || this.op.Item2 == this.state.Board.GetLength(1) - 1
+                    this.op.X == 0 || this.op.Y == 0 ||
+                    this.op.X == this.state.Board.GetLength(0) - 1 || this.op.Y == this.state.Board.GetLength(1) - 1
                     )
                 {
                     positionScore = 10;
                 }
                 // if line before side;
                 else if (
-                    this.op.Item1 == 1 || this.op.Item2 == 1 ||
-                    this.op.Item1 == this.state.Board.GetLength(0) - 2 || this.op.Item2 == this.state.Board.GetLength(1) - 2
+                    this.op.X == 1 || this.op.Y == 1 ||
+                    this.op.X == this.state.Board.GetLength(0) - 2 || this.op.Y == this.state.Board.GetLength(1) - 2
                     )
                 {
                     positionScore = -5; // malus because it allow the other player to put a good move on the side
@@ -89,13 +102,9 @@ namespace ArcOthelloBG.IA
         /// list of moves available
         /// </summary>
         /// <returns>list of moves available</returns>
-        public List<Tuple<int, int>> Ops()
+        public List<Vector2> Ops()
         {
-            List<Tuple<int, int>> children = new List<Tuple<int, int>>();
-
-            this.state.AvailablePositions.ForEach(el => children.Add(el.toTuplesintint()));
-
-            return children;
+            return this.state.AvailablePositions.Select(item => (Vector2)item.Clone()).ToList();
         }
 
         /// <summary>
@@ -103,11 +112,11 @@ namespace ArcOthelloBG.IA
         /// </summary>
         /// <param name="op">OPeration to apply</param>
         /// <returns>New node</returns>
-        public Node Apply(Tuple<int, int> op)
+        public Node Apply(Vector2 op)
         {
-            if (op.Item1 != -1 && op.Item2 != -1)
+            if (op.X != -1 && op.X != -1)
             {
-                Game.Instance.Play(new Vector2(op), this.state.PlayerId);
+                Game.Instance.Play(op, this.state.PlayerId);
             }
             else
             {
@@ -125,9 +134,10 @@ namespace ArcOthelloBG.IA
                 score += Game.Instance.WhiteScore - this.state.WhiteScore;
             }
 
+            // create the child
             Node newNode = new Node(agent, this, op, score);
 
-            if (op.Item1 == -1 && op.Item2 == -1)
+            if (op.X == -1 && op.Y == -1)
             {
                 newNode.turnSkipped = true;
             }

@@ -92,14 +92,14 @@ namespace ArcOthelloBG.Logic
                     return this.game.GetPositionsAvailable()[0].toTuplesintint();
                 }
 
-                node = new Node(agent, null, new Tuple<int,int>(-1,-1));
+                node = new Node(agent, null, new Vector2(-1,-1));
 
                 int minOrMax = 1;
                 int initValue = minOrMax * -int.MaxValue;
                 int depth = level;
-                Tuple<int, Tuple<int, int>> ab = agent.alphabeta(node, depth, minOrMax, initValue);
+                Tuple<int, Vector2> ab = agent.alphabeta(node, depth, minOrMax, initValue);
 
-                return ab.Item2;
+                return ab.Item2.toTuplesintint();
             }
             else
             {
