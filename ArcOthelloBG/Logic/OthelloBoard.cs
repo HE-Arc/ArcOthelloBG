@@ -97,14 +97,14 @@ namespace ArcOthelloBG.Logic
                 node = new Node(agent);
                 int minOrMax = 1;
                 int initValue = 0;//minOrMax * -1 * int.MaxValue;  
-                int depth = 3; //TODO: put level as depth
+                int depth = 1; //TODO: put level as depth
                 Tuple<int, Tuple<int, int>> ab = agent.alphabeta(node, depth, minOrMax, initValue);
 
                 if (ab.Item2 == null)
                 {
                     Console.WriteLine("ab is nulll");
                 }
-
+                Console.WriteLine($"optVal: {ab.Item1}");
                 return ab.Item2;
             }
             else

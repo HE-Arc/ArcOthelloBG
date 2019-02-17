@@ -18,7 +18,7 @@ namespace ArcOthelloBG.IA
             this.agent = agent;
             //We use the same Game instance for every node, we load the state and playerToPlay before playing/computing next moves
             this.state = agent.IAGame.BoardState;
-            this.score = 0;
+            this.score = 2; //initial score at the beginning of the game
         }
 
         public bool final()
@@ -63,11 +63,11 @@ namespace ArcOthelloBG.IA
 
             if (Game.Instance.PlayerToPlay == agent.blackId)
             {
-                newNode.score = this.state.WhiteScore;
+                newNode.score = Game.Instance.WhiteScore;
             }
             else
             {
-                newNode.score = this.state.BlackScore;
+                newNode.score = Game.Instance.BlackScore;
             }
 
             return newNode;
