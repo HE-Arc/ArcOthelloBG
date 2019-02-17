@@ -2,7 +2,7 @@
 ## Lucas Bulloni et Sergiy Goloviatinski
 
 ### Fonction d'évaluation
-- Un point par casé gagnée par rapport à l'état d'avant
+- Un point par case gagnée par rapport à l'état d'avant
 - Pénalité si un coup nous ferait passer le tour (-10)
 - Bonus pour les coups joués sur les bords du plateau (+10)
 - Grand bonus pour les coups joués dans les coins (+20)
