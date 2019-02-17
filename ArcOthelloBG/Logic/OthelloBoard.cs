@@ -94,10 +94,10 @@ namespace ArcOthelloBG.Logic
                 
                 Game.Instance.BoardState.AvailablePositions.ForEach(Console.WriteLine);
 
-                node = new Node(agent);
+                node = new Node(agent, new Tuple<int,int>(-1,-1));
                 int minOrMax = 1;
-                int initValue = minOrMax * -int.MaxValue;//  
-                int depth = level; //TODO: don't forget to put level as depth
+                int initValue = minOrMax * -int.MaxValue;
+                int depth = level;
                 Tuple<int, Tuple<int, int>> ab = agent.alphabeta(node, depth, minOrMax, initValue);
 
                 if (ab.Item2 == null)

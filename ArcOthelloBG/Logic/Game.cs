@@ -225,19 +225,6 @@ namespace ArcOthelloBG.Logic
 
             this.turn++;
             this.boardState = new OthelloState(this.board, this.playerToPlay, this.possibleDirections, this.emptyId, this.whiteScore, this.blackScore);
-
-            //if(this.GetPositionsAvailable().Count == 0)
-            //{
-            //    if (hasSkipped)
-            //    {
-            //        Won?.Invoke(this, new WinEventArgs(this.GetWinner()));
-            //        return; 
-            //    }
-
-            //    int previousPlayer = this.playerToPlay;
-            //    this.NextTurn(true);
-            //    TurnSkipped?.Invoke(this, new SkipTurnEventArgs(previousPlayer));
-            //}
         }
 
         /// <summary>

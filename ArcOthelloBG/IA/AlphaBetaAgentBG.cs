@@ -35,7 +35,7 @@ namespace ArcOthelloBG.IA
         {
             if (depth == 0 || root.final())
             {
-                return new Tuple<int, Tuple<int, int>>(root.eval(), null);
+                return new Tuple<int, Tuple<int, int>>(root.Eval(), null);
             }
 
             int optVal = minOrMax * -int.MaxValue;
@@ -44,7 +44,7 @@ namespace ArcOthelloBG.IA
 
             OthelloState initialState = Game.Instance.BoardState;
 
-            var ops = root.ops();
+            var ops = root.Ops();
 
             if(ops.Count == 0)
             {
@@ -54,9 +54,7 @@ namespace ArcOthelloBG.IA
             foreach (Tuple<int, int> op in ops)
             {
                 Game.Instance.LoadState(initialState);
-                Node newNode = root.apply(op);
-                Console.WriteLine($"minormax : {minOrMax}");
-                Console.WriteLine($"optVal : {optVal}");
+                Node newNode = root.Apply(op);
                 Tuple<int, Tuple<int, int>> result = alphabeta(newNode, depth - 1, -1 * minOrMax, optVal);
                 
                 int val = result.Item1;

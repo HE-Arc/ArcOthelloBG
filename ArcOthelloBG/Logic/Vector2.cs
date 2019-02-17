@@ -91,7 +91,7 @@ namespace ArcOthelloBG.Logic
             {
                 toCompare = obj as Vector2;
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 return false;
             }
