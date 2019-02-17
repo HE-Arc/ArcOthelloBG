@@ -87,21 +87,22 @@ namespace ArcOthelloBG.Logic
 
             if (this.game.GetPositionsAvailable().Count > 0)
             {
-                //return this.game.GetPositionsAvailable()[0].toTuplesintint();
+                if(this.game.GetPositionsAvailable().Count == 1)
+                {
+                    return this.game.GetPositionsAvailable()[0].toTuplesintint();
+                }
+                
+                Game.Instance.BoardState.AvailablePositions.ForEach(Console.WriteLine);
 
                 node = new Node(agent);
                 int minOrMax = 1;
                 int initValue = 0;//minOrMax * -1 * int.MaxValue;  
                 int depth = 3; //TODO: put level as depth
-                Tuple<int, Tuple<int, int>> ab = null;
+                Tuple<int, Tuple<int, int>> ab = agent.alphabeta(node, depth, minOrMax, initValue);
 
-                try
+                if (ab.Item2 == null)
                 {
-                    ab = agent.alphabeta(node, depth, minOrMax, initValue);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(new System.Diagnostics.StackTrace().ToString());
+                    Console.WriteLine("ab is nulll");
                 }
 
                 return ab.Item2;
