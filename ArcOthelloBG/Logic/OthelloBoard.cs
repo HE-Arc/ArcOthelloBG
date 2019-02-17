@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IPlayable;
-using System.Configuration;
-using ArcOthelloBG.IA;
+﻿using ArcOthelloBG.IA;
+using System;
 
 namespace ArcOthelloBG.Logic
 {
