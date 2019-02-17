@@ -20,6 +20,19 @@ namespace ArcOthelloBG.IA
         private bool turnSkipped;
         private Node parent;
 
+        private static int[,] bonusPoint =
+        {
+            {20, -15, 10, 10, 10, -15, 20},
+            {-15, -15, -5, -5, -5, -15, -15},
+            {10, -5, 0, 0, 0, -5, 10},
+            {10, -5, 0, 0, 0, -5, 10},
+            {10, -5, 0, 0, 0, -5, 10},
+            {10, -5, 0, 0, 0, -5, 10},
+            {10, -5, 0, 0, 0, -5, 10},
+            {-15, -15, -5, -5, -5, -15, -15},
+            {20, -15, 10, 10, 10, -15, 20},
+        }; // pattern for the eval method
+
 
         /// <summary>
         /// Constructor
@@ -67,48 +80,8 @@ namespace ArcOthelloBG.IA
             }
             else
             {
-                // if in the corner
-                if (
-                    this.op.X == 0 && this.op.Y == 0 ||
-                    this.op.X == this.state.Board.GetLength(0) - 1 && this.op.Y == this.state.Board.GetLength(1) - 1 ||
-                    this.op.X == 0 && this.op.Y == this.state.Board.GetLength(1) - 1 ||
-                    this.op.X == this.state.Board.GetLength(0) - 1 && this.op.Y == 0
-                    )
-                {
-                    positionScore = 20;
-                }
-                // if next to Corner
-                else if (
-                    this.op.X == 1 && this.op.Y == 0 || this.op.X == 0 && this.op.Y == 1 || this.op.X == 1 && this.op.Y == 1 || 
-                    this.op.X == this.state.Board.GetLength(0) - 2 && this.op.Y == this.state.Board.GetLength(1) - 1 ||
-                    this.op.X == this.state.Board.GetLength(0) - 1 && this.op.Y == this.state.Board.GetLength(1) - 2 ||
-                    this.op.X == this.state.Board.GetLength(0) - 2 && this.op.Y == this.state.Board.GetLength(1) - 2 ||
-                    this.op.X == 0 && this.op.Y == this.state.Board.GetLength(1) - 2 ||
-                    this.op.X == 1 && this.op.Y == this.state.Board.GetLength(1) - 1 ||
-                     this.op.X == 1 && this.op.Y == this.state.Board.GetLength(1) - 2 ||
-                    this.op.X == this.state.Board.GetLength(0) - 2 && this.op.Y == 0 ||
-                    this.op.X == this.state.Board.GetLength(0) - 1 && this.op.Y == 1 ||
-                    this.op.X == this.state.Board.GetLength(0) - 2 && this.op.Y == 1
-                    )
-                {
-                    positionScore = -15;
-                }
-                // if on the side
-                else if (
-                    this.op.X == 0 || this.op.Y == 0 ||
-                    this.op.X == this.state.Board.GetLength(0) - 1 || this.op.Y == this.state.Board.GetLength(1) - 1
-                    )
-                {
-                    positionScore = 10;
-                }
-                // if line before side;
-                else if (
-                    this.op.X == 1 || this.op.Y == 1 ||
-                    this.op.X == this.state.Board.GetLength(0) - 2 || this.op.Y == this.state.Board.GetLength(1) - 2
-                    )
-                {
-                    positionScore = -5; // malus because it allow the other player to put a good move on the side
-                }
+                // get the bonus / malus
+                positionScore = bonusPoint[op.X, op.Y];
             }
             
             return score + positionScore + malusSkipTurn;
