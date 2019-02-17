@@ -104,9 +104,9 @@ namespace ArcOthelloBG.Logic
 
         public OthelloState BoardState
         {
-            get 
+            get
             {
-                return this.boardState; 
+                return this.boardState;
             }
 
         }
@@ -249,7 +249,7 @@ namespace ArcOthelloBG.Logic
             return this.playerToPlay == this.whiteId ? this.blackId : this.whiteId;
         }
 
-        
+
         /// <summary>
         /// get the winner of the game
         /// </summary>
@@ -290,7 +290,7 @@ namespace ArcOthelloBG.Logic
                     {
                         color = this.whiteId;
                     }
-                    else if (i == w / 2 - 1 && j == h / 2  + 1|| i == w / 2  && j == h / 2)
+                    else if (i == w / 2 - 1 && j == h / 2 + 1 || i == w / 2 && j == h / 2)
                     {
                         color = this.blackId;
                     }
@@ -327,22 +327,37 @@ namespace ArcOthelloBG.Logic
         /// <param name="position">position, to check if the position had another pawn already</param>
         private void IncrementScore(int playerId, Vector2 position)
         {
+            int weight = 1;
+
+            int w = this.board.GetLength(0);
+            int h = this.board.GetLength(1);
+
+            if (position.X == 0 || position.X == w - 1 || position.Y == 0 || position.Y == h - 1)
+                weight *= 4;
+
+            if ((position.X == 0 || position.X == w - 1) && (position.Y == 0 || position.Y == h - 1))
+                weight *= 100;
+
+            if (position.X == 1 || position.X == w - 2 || position.Y == 1 || position.Y == h - 2)
+                weight *= -25;
+
+
             if (playerId == this.whiteId && this.GetColor(position) != this.whiteId)
             {
-                this.whiteScore++;
+                this.whiteScore += weight;
 
-                if(this.GetColor(position) == this.blackId)
+                if (this.GetColor(position) == this.blackId)
                 {
-                    this.blackScore--;
+                    this.blackScore -= weight;
                 }
             }
-            else if(playerId == this.blackId && this.GetColor(position) != this.blackId)
+            else if (playerId == this.blackId && this.GetColor(position) != this.blackId)
             {
-                this.blackScore++;
+                this.blackScore += weight;
 
                 if (this.GetColor(position) == this.whiteId)
                 {
-                    this.whiteScore--;
+                    this.whiteScore -= weight;
                 }
             }
         }

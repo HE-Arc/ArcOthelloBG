@@ -15,12 +15,18 @@ namespace ArcOthelloBG.IA
 
         public int blackId;
 
+        public int columns;
+
+        public int rows;
+
         public AlphaBetaAgentBG(int columns, int rows, int whiteId, int blackId, int emptyId)
         {
             IAGame = Game.Instance;
             IAGame.Init(columns, rows, whiteId, blackId, emptyId);
             this.whiteId = whiteId;
             this.blackId = blackId;
+            this.rows = rows;
+            this.columns = columns;
         }
 
         //Implemented from the code example in the pdf of the IA course

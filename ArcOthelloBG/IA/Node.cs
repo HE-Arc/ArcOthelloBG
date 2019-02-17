@@ -32,16 +32,7 @@ namespace ArcOthelloBG.IA
 
         public int eval()
         {
-            //IAGame.PlayerToPlay = currentPlayerId;
-            //
-            //IAGame.Board = board;
-            //
-            //int totalScore = 0;
-            //
-            //if (currentPlayerId == IAGame.blackId)
-            //    totalScore += IAGame.BlackScore;
-            //else
-            //    totalScore += IAGame.WhiteScore;
+            //The score is evaluated after the node creation
 
             return score;
         }
@@ -57,23 +48,24 @@ namespace ArcOthelloBG.IA
 
         public Node apply(Tuple<int, int> op)
         {
-            if(op.Item1 != -1 && op.Item2 != -1)
+            if (op.Item1 != -1 && op.Item2 != -1)
             {
-                Game.Instance.Play(new Vector2(op), this.state.PlayerId);
+                 Game.Instance.Play(new Vector2(op), this.state.PlayerId);
             }
             else
             {
                 Game.Instance.NextTurn();
             }
-            
 
             Node newNode = new Node(agent);
 
+
+            //The score calculation was modified in the Game Class (IncrementScore method) to give more/less score to pawns on some strategic positions
             if (Game.Instance.PlayerToPlay == agent.blackId)
             {
                 newNode.score = Game.Instance.WhiteScore;
             }
-            else
+            else 
             {
                 newNode.score = Game.Instance.BlackScore;
             }
