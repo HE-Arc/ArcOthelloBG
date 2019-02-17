@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IPlayable;
 using System.Configuration;
+using ArcOthelloBG.IA;
 
 namespace ArcOthelloBG.Logic
 {
@@ -19,6 +20,8 @@ namespace ArcOthelloBG.Logic
         private int whiteId;
         private int blackId;
         private int emptyId;
+        private Node node;
+        private AlphaBetaAgentBG agent;
 
         /// <summary>
         /// constructor
@@ -27,9 +30,8 @@ namespace ArcOthelloBG.Logic
         {
             this.game = Game.Instance;
             this.readSettings();
-            Console.WriteLine(this.rows);
-            Console.WriteLine(this.columns);
-            this.game.Init(this.rows, this.columns, this.whiteId, this.blackId,this.emptyId);
+            this.game.Init(this.columns, this.rows, this.whiteId, this.blackId,this.emptyId);
+            this.agent = new AlphaBetaAgentBG(columns, rows, whiteId, blackId, emptyId);
         }
 
         /// <summary>
@@ -78,9 +80,31 @@ namespace ArcOthelloBG.Logic
         /// <returns></returns>
         Tuple<int, int> IPlayable.IPlayable.GetNextMove(int[,] game, int level, bool whiteTurn)
         {
-            if(this.game.GetPositionsAvailable().Count > 0)
+            if (this.game.PlayerToPlay != this.getIdFromBool(whiteTurn))
             {
-                return this.game.GetPositionsAvailable()[0].toTuplesintint();
+                this.game.NextTurn();
+            }
+
+            if (this.game.GetPositionsAvailable().Count > 0)
+            {
+                //return this.game.GetPositionsAvailable()[0].toTuplesintint();
+
+                node = new Node(agent);
+                int minOrMax = 1;
+                int initValue = 0;//minOrMax * -1 * int.MaxValue;  
+                int depth = 3; //TODO: put level as depth
+                Tuple<int, Tuple<int, int>> ab = null;
+
+                try
+                {
+                    ab = agent.alphabeta(node, depth, minOrMax, initValue);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(new System.Diagnostics.StackTrace().ToString());
+                }
+
+                return ab.Item2;
             }
             else
             {
@@ -111,6 +135,11 @@ namespace ArcOthelloBG.Logic
         {
             try
             {
+                if (this.game.PlayerToPlay != this.getIdFromBool(isWhite))
+                {
+                    this.game.NextTurn();
+                }
+
                 this.game.Play(new Vector2(column, line), this.getIdFromBool(isWhite));
                 return true;
             }
@@ -136,8 +165,8 @@ namespace ArcOthelloBG.Logic
         private void readSettings()
         {
             Console.WriteLine("Error reading app settings");
-            this.columns = 7;
-            this.rows = 9;
+            this.columns = 9;
+            this.rows = 7;
             this.whiteId = 0;
             this.blackId = 1;
             this.emptyId = -1;

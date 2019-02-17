@@ -75,6 +75,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\StackEmptyException.cs" />
+    <Compile Include="IA\AlphaBetaAgentBG.cs" />
+    <Compile Include="IA\Node.cs" />
     <Compile Include="Logic\OthelloBoard.cs" />
     <Compile Include="Tools\OthelloFileManager.cs" />
     <Compile Include="EventHandling\SkipTurnEventArgs.cs" />

@@ -117,5 +117,10 @@ namespace ArcOthelloBG.Logic
         {
             return new Tuple<int, int>(this.x, this.y);
         }
+
+        public override string ToString()
+        {
+            return $"x : {this.x} y : {this.y}";
+        }
     }
 }

@@ -179,7 +179,7 @@ namespace ArcOthelloBG.Logic
             }
             else
             {
-                MessageBox.Show("ici");
+                Console.WriteLine("Not valid");
                 throw new ArgumentException("This move isn't possible");
             }
 
@@ -219,7 +219,7 @@ namespace ArcOthelloBG.Logic
         /// handle the changes for changing turn
         /// </summary>
         /// <param name="hasSkipped">if the transition was because the turn skipped, useful for detecing the end of the game</param>
-        private void NextTurn(bool hasSkipped = false)
+        public void NextTurn(bool hasSkipped = false)
         {
             this.playerToPlay = this.GetNextPlayer();
 
