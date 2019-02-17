@@ -77,6 +77,22 @@ namespace ArcOthelloBG.IA
                 {
                     positionScore = 20;
                 }
+                // if next to Corner
+                else if (
+                    this.op.X == 1 && this.op.Y == 0 || this.op.X == 0 && this.op.Y == 1 || this.op.X == 1 && this.op.Y == 1 || 
+                    this.op.X == this.state.Board.GetLength(0) - 2 && this.op.Y == this.state.Board.GetLength(1) - 1 ||
+                    this.op.X == this.state.Board.GetLength(0) - 1 && this.op.Y == this.state.Board.GetLength(1) - 2 ||
+                    this.op.X == this.state.Board.GetLength(0) - 2 && this.op.Y == this.state.Board.GetLength(1) - 2 ||
+                    this.op.X == 0 && this.op.Y == this.state.Board.GetLength(1) - 2 ||
+                    this.op.X == 1 && this.op.Y == this.state.Board.GetLength(1) - 1 ||
+                     this.op.X == 1 && this.op.Y == this.state.Board.GetLength(1) - 2 ||
+                    this.op.X == this.state.Board.GetLength(0) - 2 && this.op.Y == 0 ||
+                    this.op.X == this.state.Board.GetLength(0) - 1 && this.op.Y == 1 ||
+                    this.op.X == this.state.Board.GetLength(0) - 2 && this.op.Y == 1
+                    )
+                {
+                    positionScore = -15;
+                }
                 // if on the side
                 else if (
                     this.op.X == 0 || this.op.Y == 0 ||
