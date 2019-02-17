@@ -1,6 +1,10 @@
 # README du rendu du TP d'IA
 ## Lucas Bulloni et Sergiy Goloviatinski
 
+### Fichiers concernés par le TP d'IA
+- Le dossier ArcOthelloBG/IA
+- Le fichier ArcOthelloBG/Logic/OthelloBoard.cs
+
 ### Fonction d'évaluation
 - Un point par case gagnée par rapport à l'état d'avant
 - Pénalité si un coup nous ferait passer le tour (-10)
