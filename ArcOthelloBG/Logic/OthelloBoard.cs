@@ -30,7 +30,7 @@ namespace ArcOthelloBG.Logic
         {
             this.game = Game.Instance;
             this.readSettings();
-            this.game.Init(this.columns, this.rows, this.whiteId, this.blackId,this.emptyId);
+            this.game.Init(this.columns, this.rows, this.whiteId, this.blackId, this.emptyId);
             this.agent = new AlphaBetaAgentBG(columns, rows, whiteId, blackId, emptyId);
         }
 
@@ -40,9 +40,9 @@ namespace ArcOthelloBG.Logic
         /// <returns>score</returns>
         int IPlayable.IPlayable.GetBlackScore()
         {
-           return game.BlackScore;
+            return game.BlackScore;
         }
-  
+
         /// <summary>
         /// get the white score
         /// </summary>
@@ -68,7 +68,7 @@ namespace ArcOthelloBG.Logic
         string IPlayable.IPlayable.GetName()
         {
             return "ArcOthelloBG";
-            
+
         }
 
         /// <summary>
@@ -87,14 +87,14 @@ namespace ArcOthelloBG.Logic
 
             if (this.game.GetPositionsAvailable().Count > 0)
             {
-                if(this.game.GetPositionsAvailable().Count == 1)
+                if (this.game.GetPositionsAvailable().Count == 1)
                 {
                     return this.game.GetPositionsAvailable()[0].toTuplesintint();
                 }
-                
-                Game.Instance.BoardState.AvailablePositions.ForEach(Console.WriteLine);
 
-                node = new Node(agent);
+                //Game.Instance.BoardState.AvailablePositions.ForEach(Console.WriteLine);
+
+                node = new Node(agent, null);
                 int minOrMax = 1;
                 int initValue = minOrMax * -int.MaxValue;//  
                 int depth = level; //TODO: don't forget to put level as depth
@@ -102,9 +102,9 @@ namespace ArcOthelloBG.Logic
 
                 if (ab.Item2 == null)
                 {
-                    Console.WriteLine("ab is nulll");
+                    //Console.WriteLine("ab is nulll");
                 }
-                Console.WriteLine($"optVal: {ab.Item1}");
+                //Console.WriteLine($"optVal: {ab.Item1}");
                 return ab.Item2;
             }
             else
@@ -144,7 +144,7 @@ namespace ArcOthelloBG.Logic
                 this.game.Play(new Vector2(column, line), this.getIdFromBool(isWhite));
                 return true;
             }
-            catch(ArgumentException)
+            catch (ArgumentException)
             {
                 return false;
             }
@@ -165,7 +165,6 @@ namespace ArcOthelloBG.Logic
         /// </summary>
         private void readSettings()
         {
-            Console.WriteLine("Error reading app settings");
             this.columns = 9;
             this.rows = 7;
             this.whiteId = 0;

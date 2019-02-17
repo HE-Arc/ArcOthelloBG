@@ -55,8 +55,8 @@ namespace ArcOthelloBG.IA
             {
                 Game.Instance.LoadState(initialState);
                 Node newNode = root.apply(op);
-                Console.WriteLine($"minormax : {minOrMax}");
-                Console.WriteLine($"optVal : {optVal}");
+                //Console.WriteLine($"minormax : {minOrMax}");
+                //Console.WriteLine($"optVal : {optVal}");
                 Tuple<int, Tuple<int, int>> result = alphabeta(newNode, depth - 1, -1 * minOrMax, optVal);
                 
                 int val = result.Item1;
